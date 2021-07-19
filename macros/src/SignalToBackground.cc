@@ -29,7 +29,7 @@ void AnalysisTool::SignalToBackground(TString cuts, TString plotname) {
   cout << "hey there, general Kenobi!" << endl;
   cout << "Line: " << __LINE__ << endl;
 
-  TString filename = "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/" + year + "/" + pre_tag + "/" + cuts + "/uhh2.AnalysisModuleRunner.";
+  TString filename = "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/" + year + "/" + pre_tag + cuts + "/uhh2.AnalysisModuleRunner.";
   TString tag = "MC."; // no data included
 
   // get signal

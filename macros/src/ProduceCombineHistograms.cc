@@ -59,7 +59,7 @@ void AnalysisTool::ProduceCombineHistograms(){
       for(unsigned int k=0; k<systematics.size(); k++) {
 	TString syst = systematics[k];
 	  cout << "========== Syst: " << syst << endl;
-	TString infilename_base = AnalysisTool::base_path  + AnalysisTool::year + "/" + full_tag + "/" + syst + "/uhh2.AnalysisModuleRunner."; // should be inside systematics loop
+	TString infilename_base = AnalysisTool::base_path  + AnalysisTool::year + "/" + full_tag + syst + "/uhh2.AnalysisModuleRunner."; // should be inside systematics loop
 
 	// for(unsigned int j=0; j<systshift.size(); j++)
 	for(unsigned int i=0; i<samples_base.size(); i++) {
