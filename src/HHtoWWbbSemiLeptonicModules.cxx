@@ -38,6 +38,7 @@ JetCategories CategorizeJets(uhh2::Event& event){
     else lightjets.push_back(jets->at(i));
   }
   output.NBJets = Ndeepjet_med;
+  output.lightjets = lightjets;
   // if only 1 btagged jet -> take lightjet with highest btag-score as b2
   unsigned int b2_index = 999;
   if(Ndeepjet_med == 1) {
@@ -59,6 +60,61 @@ JetCategories CategorizeJets(uhh2::Event& event){
   }
   return output;
 }
+
+
+
+JetCategories CategorizeJetsNew(uhh2::Event& event){
+  //cout << "CategorizeJetsNew: start" << endl;
+  JetCategories output;
+
+  std::vector<Jet>* jets = event.jets;
+  JetId DeepjetMedium = BTag(BTag::DEEPJET, BTag::WP_MEDIUM);
+  vector<Jet> lightjets;
+  output.NJets = jets->size();
+  // assign bjets
+  int Ndeepjet_med=0;
+
+  double btag_b1 = 0;
+  double btag_b2 = 0;
+  unsigned int b1_index = 999;
+  unsigned int b2_index = 999;
+
+  for(unsigned int i =0; i<jets->size(); i++){
+    double btag = jets->at(i).btag_DeepJet();
+    if(btag > btag_b1) {
+      b1_index = i; 
+      btag_b1=btag;
+    }
+  }
+  for(unsigned int i =0; i<jets->size(); i++) {
+    double btag = jets->at(i).btag_DeepJet();
+    if(jets->at(i).btag_DeepJet() > btag_b2 && i != b1_index) {
+      b2_index = i;
+      btag_b2 = btag;
+    }
+    if(b1_index==b2_index) throw runtime_error("b1=b2, this should not happen");
+    if(DeepjetMedium(jets->at(i),event)) Ndeepjet_med++;
+    }
+  output.NBJets = Ndeepjet_med;
+  output.btag_b1=btag_b1;
+  output.btag_b2=btag_b2;
+
+  for(unsigned int i =0; i<jets->size(); i++) {
+    if(i == b1_index) output.b1 =jets->at(i).v4();
+    else if(i == b2_index) output.b2 =jets->at(i).v4();
+    else lightjets.push_back(jets->at(i));
+  }
+  output.lightjets = lightjets;
+  output.q1 = lightjets[0].v4();
+  output.q2 = lightjets[1].v4();
+
+  //cout << "CategorizeJetsNew: finished" << endl;
+  return output;
+}
+
+
+
+
 
 Variables_NN::Variables_NN(uhh2::Context& ctx){
 
@@ -152,9 +208,18 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_DeltaRlnu = ctx.declare_event_output<float> ("DeltaRlnu");
   h_DeltaRbb = ctx.declare_event_output<float> ("DeltaRbb");
   h_DeltaRqq = ctx.declare_event_output<float> ("DeltaRqq");
+  h_DeltaEtalnu = ctx.declare_event_output<float> ("DeltaEtalnu");
+  h_DeltaEtabb = ctx.declare_event_output<float> ("DeltaEtabb");
+  h_DeltaEtaqq = ctx.declare_event_output<float> ("DeltaEtaqq");
   h_minDeltaRlj = ctx.declare_event_output<float> ("minDeltaRlj");
   h_minDeltaRbj = ctx.declare_event_output<float> ("minDeltaRbj");
   h_minDeltaRjj = ctx.declare_event_output<float> ("minDeltaRjj");
+  h_minDeltaRb1j = ctx.declare_event_output<float> ("minDeltaRb1j");
+  h_minDeltaRb2j = ctx.declare_event_output<float> ("minDeltaRb2j");
+
+  h_minDeltaEtalj = ctx.declare_event_output<float> ("minDeltaEtalj");
+  h_minDeltaEtabj = ctx.declare_event_output<float> ("minDeltaEtabj");
+  h_minDeltaEtajj = ctx.declare_event_output<float> ("minDeltaEtajj");
   h_HT = ctx.declare_event_output<float> ("HT");
   h_N_BTag = ctx.declare_event_output<float> ("N_BTag");
   h_N_Ak4 = ctx.declare_event_output<float> ("N_Ak4");
@@ -171,19 +236,6 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
 
 
   // low-level observables
-  /*
-///  MUONS
-  h_Mu_pt = ctx.declare_event_output<float> ("Mu_pt");
-  h_Mu_eta = ctx.declare_event_output<float> ("Mu_eta");
-  h_Mu_phi = ctx.declare_event_output<float> ("Mu_phi");
-  h_Mu_E = ctx.declare_event_output<float> ("Mu_E");
-
-///  ELECTRONS
-  h_Ele_pt = ctx.declare_event_output<float> ("Ele_pt");
-  h_Ele_eta = ctx.declare_event_output<float> ("Ele_eta");
-  h_Ele_phi = ctx.declare_event_output<float> ("Ele_phi");
-  h_Ele_E = ctx.declare_event_output<float> ("Ele_E");
-  */
 
 ///  Leptons
   h_Lep_pt = ctx.declare_event_output<float> ("Lep_pt");
@@ -192,11 +244,20 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_Lep_E = ctx.declare_event_output<float> ("Lep_E");
 
 
-///  MET
+  ///  MET
   h_MET_pt = ctx.declare_event_output<float> ("MET_pt");
   h_MET_phi = ctx.declare_event_output<float> ("MET_phi");
 
-///  AK4 JETS
+  ///  AK4 JETS
+
+  h_deepjetbmean_3jets = ctx.declare_event_output<float> ("deepjetbmean_3jets");
+  h_deepjetbmean_4jets = ctx.declare_event_output<float> ("deepjetbmean_4jets");
+
+  h_b1_pt = ctx.declare_event_output<float> ("b1_pt");
+  h_b1_deepjetbscore = ctx.declare_event_output<float>  ("b1_deepjetbscore");
+  h_b2_pt = ctx.declare_event_output<float> ("b2_pt");
+  h_b2_deepjetbscore = ctx.declare_event_output<float>  ("b2_deepjetbscore");
+
 
   h_Ak4_j1_pt = ctx.declare_event_output<float> ("Ak4_j1_pt");
   h_Ak4_j1_eta = ctx.declare_event_output<float>("Ak4_j1_eta");
@@ -241,7 +302,7 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_Ak4_j6_deepjetbscore = ctx.declare_event_output<float>  ("Ak4_j6_deepjetbscore");
 
 
-///  Higgs masses
+/// Chi2 Higgs masses
   h_MH_bb = ctx.declare_event_output<float> ("MH_bb");
   h_MH_WW = ctx.declare_event_output<float> ("MH_WW");
 
@@ -249,45 +310,11 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
 }
 
 bool Variables_NN::process(uhh2::Event& evt){
-
+  //cout << "Variables_NN::process" << endl;
   double weight = evt.weight;
   evt.set(h_eventweight, -10);
   evt.set(h_eventweight, weight);
 
-  /*
-/////////   MUONS
-  evt.set(h_Mu_pt, -10);
-  evt.set(h_Mu_eta,-10);
-  evt.set(h_Mu_phi, -10);
-  evt.set(h_Mu_E, -10);
-
-  vector<Muon>* muons = evt.muons;
-  int Nmuons = muons->size();
-
-  for(int i=0; i<Nmuons; i++){
-      evt.set(h_Mu_pt, muons->at(i).pt());
-      evt.set(h_Mu_eta, muons->at(i).eta());
-      evt.set(h_Mu_phi, muons->at(i).phi());
-      evt.set(h_Mu_E, muons->at(i).energy());
-  }
-
-
-/////////   ELECTRONS
-  evt.set(h_Ele_pt, -10);
-  evt.set(h_Ele_eta, -10);
-  evt.set(h_Ele_phi, -10);
-  evt.set(h_Ele_E, -10);
-
-  vector<Electron>* electrons = evt.electrons;
-  int Nelectrons = electrons->size();
-
-  for(int i=0; i<Nelectrons; i++){
-      evt.set(h_Ele_pt, electrons->at(i).pt());
-      evt.set(h_Ele_eta, electrons->at(i).eta());
-      evt.set(h_Ele_phi, electrons->at(i).phi());
-      evt.set(h_Ele_E, electrons->at(i).energy());
-  }
-  */
 /////////   LEPTONS
   evt.set(h_Lep_pt, -10);
   evt.set(h_Lep_eta, -10);
@@ -440,9 +467,20 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_DeltaRlnu, -10);
   evt.set(h_DeltaRbb, -10);
   evt.set(h_DeltaRqq, -10);
+  evt.set(h_DeltaEtalnu, -10);
+  evt.set(h_DeltaEtabb, -10);
+  evt.set(h_DeltaEtaqq, -10);
+
   evt.set(h_minDeltaRlj, -10);
   evt.set(h_minDeltaRbj, -10);
   evt.set(h_minDeltaRjj, -10);
+  evt.set(h_minDeltaRb1j, -10);
+  evt.set(h_minDeltaRb2j, -10);
+
+  evt.set(h_minDeltaEtalj, -10);
+  evt.set(h_minDeltaEtabj, -10);
+  evt.set(h_minDeltaEtajj, -10);
+
   evt.set(h_HT, -10);
   evt.set(h_N_BTag, -10);
   evt.set(h_mtop_lep_hyp1, -10);
@@ -450,7 +488,7 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_mtop_had_hyp1, -10);
   evt.set(h_mtop_had_hyp2, -10);
 
-  JetCategories jc = CategorizeJets(evt);
+  JetCategories jc = CategorizeJetsNew(evt);
   
   evt.set(h_mbb, (jc.b1+jc.b2).M());
   evt.set(h_mWW, TransverseMass4particles(jc.q1,jc.q2, lepton, evt.met->v4()));
@@ -461,21 +499,66 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_DeltaRbb, deltaR(jc.b1, jc.b2));
   evt.set(h_DeltaRqq, deltaR(jc.q1, jc.q2));
   
+  evt.set(h_DeltaEtalnu, lepton.eta()-evt.met->v4().eta());
+  evt.set(h_DeltaEtabb, jc.b1.eta()-jc.b2.eta());
+  evt.set(h_DeltaEtaqq, jc.q1.eta()-jc.q2.eta());
+  
+
   double HT=0;
   for(const Jet j : *Ak4jets) HT+= j.pt();
   evt.set(h_HT, HT);
   evt.set(h_N_BTag, jc.NBJets);
+
+
+
+  evt.set(h_deepjetbmean_3jets, -10);
+  evt.set(h_deepjetbmean_4jets, -10);
+  
+  double bsum = 0;
+  for(int i=0; i<NAk4jets; i++){
+    bsum += Ak4jets->at(i).btag_DeepJet();
+    if(i==2) evt.set(h_deepjetbmean_3jets, bsum/3);
+    if(i==3) evt.set(h_deepjetbmean_4jets, bsum/4);
+  }
+
+  // b1 and b2 pt_sorted
+  LorentzVector b1 = jc.b1;
+  LorentzVector b2 = jc.b2;
+  vector<Jet>* lightjets = &(jc.lightjets);
+
+  evt.set(h_b1_pt, -10);
+  evt.set(h_b2_pt, -10);
+  evt.set(h_b1_deepjetbscore, -10);
+  evt.set(h_b2_deepjetbscore, -10);
+
+  evt.set(h_b1_pt, b1.pt());
+  evt.set(h_b1_deepjetbscore, jc.btag_b1);
+  evt.set(h_b2_pt, b2.pt());
+  evt.set(h_b2_deepjetbscore, jc.btag_b2);
+
+
+
+  evt.set(h_minDeltaRlj, minDeltaR(Ak4jets, lepton));
+  evt.set(h_minDeltaRbj, minDeltaR(Ak4jets, b1));
+  evt.set(h_minDeltaRjj, minDeltaR_jj(Ak4jets));
+  evt.set(h_minDeltaRb1j, minDeltaR(lightjets, b1));
+  evt.set(h_minDeltaRb2j, minDeltaR(lightjets, b2));
+
+  evt.set(h_minDeltaEtalj, minDeltaEta(Ak4jets, lepton));
+  evt.set(h_minDeltaEtabj, minDeltaEta(Ak4jets, b1));
+  evt.set(h_minDeltaEtajj, minDeltaEta_jj(Ak4jets));
+
   // Top Mass
 
-  LorentzVector b1, b2;
   // lep_hyp1 if deltaR(lep,b) is minimal
-  if(deltaR(lepton, jc.b1)<deltaR(lepton, jc.b2)) {b1 = jc.b1; b2 = jc.b2;}
-  else {b2 = jc.b1; b1 = jc.b2;}
-  
-  double mtop_lep1 = (lepton+evt.met->v4()+b1).M(); // transverse mass?
-  double mtop_lep2 = (lepton+evt.met->v4()+b2).M(); // transverse mass?
-  double mtop_had1 = (jc.q1+jc.q2+b2).M();
-  double mtop_had2 = (jc.q1+jc.q2+b1).M();
+  LorentzVector b_lep,b_had;
+  if(deltaR(lepton, jc.b1)<deltaR(lepton, jc.b2)) {b_lep = jc.b1; b_had = jc.b2;}
+  else {b_had = jc.b1; b_lep = jc.b2;}
+
+  double mtop_lep1 = (lepton+evt.met->v4()+b_lep).M(); // transverse mass?
+  double mtop_lep2 = (lepton+evt.met->v4()+b_had).M(); // transverse mass?
+  double mtop_had1 = (jc.q1+jc.q2+b_had).M();
+  double mtop_had2 = (jc.q1+jc.q2+b_lep).M();
 
   evt.set(h_mtop_lep_hyp1, mtop_lep1);
   evt.set(h_mtop_lep_hyp2, mtop_lep2);
@@ -495,6 +578,6 @@ bool Variables_NN::process(uhh2::Event& evt){
   }
 
 
-
+  //cout << "VariablesNN: done" << endl;
   return true;
 }
