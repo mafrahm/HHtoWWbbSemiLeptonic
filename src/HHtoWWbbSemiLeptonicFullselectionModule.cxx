@@ -65,7 +65,7 @@ namespace uhh2examples {
     std::unique_ptr<CommonModules> common;
 
     unique_ptr<Hists> h_btageff, h_NNInputVariables;
-    std::unique_ptr<AnalysisModule> SF_muonIso, SF_muonID, SF_muonTrigger, SF_eleReco, SF_eleID, SF_eleTrigger, SF_btag;
+    std::unique_ptr<AnalysisModule> SF_muonIso, SF_muonID, SF_muonTrigger, SF_eleReco, SF_eleID, SF_eleTrigger, SF_btag, scale_variation_module;
     std::unique_ptr<Selection> nbtag1_medium_sel, nbtag2_medium_sel, njet4_sel, muon_trigger_sel1, muon_trigger_sel2, ele_trigger_sel1, ele_trigger_sel2, ele_trigger_sel3;
     
 
@@ -101,7 +101,7 @@ namespace uhh2examples {
     BTag::algo btag_algo;
     BTag::wp wp_btag_loose, wp_btag_medium, wp_btag_tight;
 
-    bool is_mc, do_permutations;
+    bool is_mc, do_permutations, do_scale_variations;
     bool is_signal;
     string s_permutation;
 
@@ -258,6 +258,8 @@ namespace uhh2examples {
     mHH_reco.reset(new HHtoWWbbMassReconstruction(ctx));
     chi2_module.reset(new HHChi2Discriminator(ctx, "HHHypotheses"));
 
+    scale_variation_module.reset(new MCScaleVariation(ctx));
+
     // systematic uncertainties
     Sys_EleID = ctx.get("Systematic_EleID");
     Sys_EleReco = ctx.get("Systematic_EleReco");
@@ -282,7 +284,7 @@ namespace uhh2examples {
 
 
 
-    // SF_btag.reset(new MCBTagScaleFactor(ctx, btag_algo, wp_btag_medium, "jets", Sys_BTag)); // comment out when re-doing SF_btag
+    SF_btag.reset(new MCBTagScaleFactor(ctx, btag_algo, wp_btag_medium, "jets", Sys_BTag)); // comment out when re-doing SF_btag
 
 
     // CommonModules
@@ -343,13 +345,15 @@ namespace uhh2examples {
     double eventweight_lumi = event.weight;
     event.set(h_eventweight_lumi, eventweight_lumi);
     
-
+    //if(region == "srmu"){
     SF_eleReco->process(event);
     SF_eleID->process(event);
-    
+    //}
+    //else if(region == "srele"){
     SF_muonID->process(event);
     SF_muonIso->process(event);
-    
+    //}
+
     fill_histograms(event,"Cleaner", region);
 
     TString leptonregion = "muon";
@@ -409,15 +413,15 @@ namespace uhh2examples {
     */
 
 
-    //SF_btag->process(event); //comment out when re-doing SF_btag
+    SF_btag->process(event); //comment out when re-doing SF_btag
     h_btageff->fill(event);
 
     if(!nbtag1_medium_sel->passes(event)) return false; // comment out when re-doing SF_btag
     fill_histograms(event,"BTag", region);
     //if(!nbtag2_medium_sel->passes(event)) return false;
 
-    // cout << "mH_bb: " << event.get(h_mH_bb) << endl;
-    // cout << "Chi2_H_bb: " << event.get(h_chi2_H_bb) << endl;
+    scale_variation_module->process(event);
+
 
     bool is_mHH_reconstructed = event.get(h_is_mHH_reconstructed);
     // cout << "is_mHH_reconstructed: " << is_mHH_reconstructed << endl;

@@ -143,7 +143,7 @@
 	<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&SELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
 
 
-<!--
+
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Muon_B;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -185,7 +185,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
--->
+
 
 
 
@@ -776,10 +776,10 @@ MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
 event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="use_sframe_weight" Value="false" />
 
-<!--
-<Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/2016/BTagMCEfficiencyHists_DJLoose_MuonChannel_2016.root" />
+
+<Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/2016/BTagMCEfficiencyHists.root" />
 <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/DeepJet_2016LegacySF_WP_V1.csv" />
--->
+
 <Item Name="pileup_directory" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyMCPileupHistogram.root" />
 <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram.root" />
 <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_72383.root" />
