@@ -52,9 +52,14 @@ private:
   uhh2::Event::Handle<float> h_mbb, h_mWW, h_mlnu, h_mqq;
   uhh2::Event::Handle<float> h_DeltaRqq, h_DeltaRlnu, h_DeltaRbb;
   uhh2::Event::Handle<float> h_DeltaEtaqq, h_DeltaEtalnu, h_DeltaEtabb;
-  uhh2::Event::Handle<float> h_minDeltaRlj, h_minDeltaRbj, h_minDeltaRjj;
+  uhh2::Event::Handle<float> h_DeltaPhiqq, h_DeltaPhilnu, h_DeltaPhibb;
+  uhh2::Event::Handle<float> h_minDeltaRlj, h_minDeltaRjj;
   uhh2::Event::Handle<float> h_minDeltaRb1j, h_minDeltaRb2j;
-  uhh2::Event::Handle<float> h_minDeltaEtalj, h_minDeltaEtabj, h_minDeltaEtajj;
+  uhh2::Event::Handle<float> h_minDeltaPhilj, h_minDeltaPhijj;
+  uhh2::Event::Handle<float> h_minDeltaPhib1j, h_minDeltaPhib2j;
+  uhh2::Event::Handle<float> h_minDeltaEtalj, h_minDeltaEtajj;
+  uhh2::Event::Handle<float> h_minDeltaEtab1j, h_minDeltaEtab2j;
+
   uhh2::Event::Handle<float> h_HT;
   uhh2::Event::Handle<float> h_N_BTag, h_N_Ak4;
   uhh2::Event::Handle<float> h_mtop_lep_hyp1, h_mtop_lep_hyp2, h_mtop_had_hyp1, h_mtop_had_hyp2;

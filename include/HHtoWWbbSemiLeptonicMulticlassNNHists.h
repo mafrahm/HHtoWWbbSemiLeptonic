@@ -43,10 +43,17 @@ public:
   map<string, HHAutoHist> histMap;
 
 
-  TH1F *NN_mbb, *NN_mWW, *NN_mlnu, *NN_mqq, *NN_DeltaRlnu, *NN_DeltaRbb, *NN_DeltaRqq, *NN_minDeltaRlj, *NN_minDeltaRbj, *NN_minDeltaRjj, *NN_HT, *NN_NBTag, *NN_NAk4, *NN_mtop_lep1, *NN_mtop_lep2, *NN_mtop_had1, *NN_mtop_had2, *NN_mbb_chi2, *NN_mWW_chi2;
+  TH1F *NN_mbb, *NN_mWW, *NN_mlnu, *NN_mqq;
+  TH1F *NN_DeltaRlnu, *NN_DeltaRbb, *NN_DeltaRqq;
+  TH1F *NN_DeltaEtalnu, *NN_DeltaEtabb, *NN_DeltaEtaqq;
+  TH1F *NN_DeltaPhilnu, *NN_DeltaPhibb, *NN_DeltaPhiqq;
+  
+  TH1F *NN_minDeltaRlj, *NN_minDeltaRjj;
+  TH1F *NN_HT, *NN_NBTag, *NN_NAk4, *NN_mtop_lep1, *NN_mtop_lep2, *NN_mtop_had1, *NN_mtop_had2, *NN_mbb_chi2, *NN_mWW_chi2;
 
-  TH1F *NN_minDeltaRb1j, *NN_minDeltaRb2j;
-  TH1F *NN_minDeltaEtalj, *NN_minDeltaEtabj, *NN_minDeltaEtajj;
+  TH1F *NN_minDeltaRb1j, *NN_minDeltaRb2j, *NN_minDeltaEtab1j, *NN_minDeltaEtab2j, *NN_minDeltaPhib1j, *NN_minDeltaPhib2j;
+  TH1F *NN_minDeltaEtalj, *NN_minDeltaEtajj;
+  TH1F *NN_minDeltaPhilj, *NN_minDeltaPhijj;
 
   TH1F *HT_rebin1, *HT_rebin2;
 

@@ -10,10 +10,10 @@ double TransverseMass4particles(LorentzVector A, LorentzVector B, LorentzVector 
 
 
 double minDeltaR(vector<Jet>* A, LorentzVector b);
-double minDeltaR_withVeto(vector<Jet>* A, LorentzVector b, LorentzVector c);
 double minDeltaR_jj(vector<Jet>* jets);
+double minDeltaPhi(vector<Jet>* A, LorentzVector b);
+double minDeltaPhi_jj(vector<Jet>* jets);
 
 double minDeltaEta(vector<Jet>* A, LorentzVector b);
-double minDeltaEta_withVeto(vector<Jet>* A, LorentzVector b, LorentzVector c);
 double minDeltaEta_jj(vector<Jet>* jets);
 
