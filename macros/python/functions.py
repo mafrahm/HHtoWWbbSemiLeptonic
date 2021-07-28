@@ -114,11 +114,12 @@ def create_datacard(year, node, category, channel, backgrounds, systematics, pat
         raise RuntimeError('Rootfile %s does not exist.' % (path_datacards + '/' + rootfilename))
     # else: print 'rootfile containing histograms: %s' % (path_datacards + '/' + rootfilename)
 
-    filename_datacard = variables_per_category[category] + '_' + channel + '_cat' + category + '_' + node + '.txt' # + '_node_'
-
+    #filename_datacard = variables_per_category[category] + '_' + channel + '_cat' + category + '_' + node + '.txt' # + '_node_'
+    filename_datacard = channel + '_cat' + category + '_' + node + '.txt' # + '_node_'
     # print 'filename: %s ' % (filename_datacard)
     # print 'going to create file: %s' % (path_datacards + '/' + filename_datacard)
-    varcat = variables_per_category[category] + '_' + channel + '_cat' + category
+    #varcat = variables_per_category[category] + '_' + channel + '_cat' + category
+    varcat = channel + '_cat' + category
     separator = ['-----------------------------\n']
 
 

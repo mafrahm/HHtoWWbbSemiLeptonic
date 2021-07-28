@@ -34,7 +34,8 @@ class CombineRunner:
                 finalname += '_' + chan + '_cat'
                 for cat in categories:
                     if not cat in categories_per_channel[chan]: continue
-                    datacards.append(self.path_datacards + '/' + variables_per_category[cat] + '_' + chan + '_cat' + cat + '_' + node + '.txt')
+                    #datacards.append(self.path_datacards + '/' + variables_per_category[cat] + '_' + chan + '_cat' + cat + '_' + node + '.txt')
+                    datacards.append(self.path_datacards + '/' + chan + '_cat' + cat + '_' + node + '.txt')
                     finalname += cat
             finalname += '_' + node + '.txt'
             command = [combine_dir + '/scripts/combineCards.py']

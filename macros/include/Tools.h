@@ -23,11 +23,13 @@ public:
   void ControlPlots(TString selection, TString cuts, vector<TString> processes);
   void SignalToBackground(TString cuts, TString plotname);
 
+  void ScaleVariationEnvelope();
+
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN();
 
 private:
-  TString base_path, pre_tag, full_tag, uhh2_path, combine_path;
+  TString base_path, pre_tag, full_tag, NN_tag, uhh2_path, combine_path;
   TString year;
   TString yeartag;
   map<char,int> test;

@@ -97,12 +97,15 @@ signaltag = 'HHtoWWbbSemiLeptonic'
 
 
 variables_per_category = {
-'A': 'mH'
+'A': ''
 }
 
 categories_per_channel = {
 'srmu' : ['A'],
-'srele': ['A']
+'srele': ['A'],
+'ttcrmu' : ['A'],
+'stcrmu' : ['A'],
+'wdycrmu' : ['A']
 }
 
 yeartags = {
