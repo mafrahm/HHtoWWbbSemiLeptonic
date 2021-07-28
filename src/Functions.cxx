@@ -57,6 +57,34 @@ double minDeltaR_jj(vector<Jet>* jets) {
   return dRmin;
 }
 
+
+
+double minDeltaPhi(vector<Jet>* A, LorentzVector b) {
+  double dPhimin = 999;
+  for(const Jet a: *A) {
+    double dPhi = deltaPhi(a,b);
+    // dPhi should only be 0 if a and b are the same jets (I hope)
+    if(dPhi<dPhimin && dPhi!=0) dPhimin = dPhi;
+  }
+  //cout << "minDeltaPhi: dPhimin = " << dPhimin << endl;
+  return dPhimin;
+}
+
+double minDeltaPhi_jj(vector<Jet>* jets) {
+  int Njets = jets->size();
+  double dPhimin = 999;
+  // loop over every pair of jets without repetition of pairs
+  for(int i=0; i<Njets-1; i++){
+    for(int j=i+1; j<Njets; j++){
+      double dPhi = deltaPhi(jets->at(i),jets->at(j));
+      if(dPhi<dPhimin) dPhimin=dPhi;
+    }
+  }
+  //cout << "minDeltaPhi_jj: dPhimin = " << dPhimin << endl;
+  return dPhimin;
+}
+
+
 double minDeltaEta(vector<Jet>* A, LorentzVector b) {
   double dEtamin = 999;
   for(const Jet a: *A) {

@@ -125,76 +125,6 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   //h_region = ctx.get_handle<TString>("region");
 
 
-
-  /*
-  NNInputs_id = {"mbb", "mWW", "mlnu", "mqq", "DeltaRlnu", "DeltaRbb", "DeltaRqq", "minDeltaRlj", "minDeltaRbj", "minDeltaRjj", "HT", "N_BTag", "N_Ak4", "mtop_lep_hyp1", "mtop_lep_hyp2", "mtop_had_hyp1", "mtop_had_hyp2", "MH_bb", "MH_WW", "Lep_pt", "Lep_eta", "Lep_phi", "Lep_E", "MET_pt", "MET_phi", "Ak4_j1_pt", "Ak4_j1_eta", "Ak4_j1_phi", "Ak4_j1_E", "Ak4_j1_m", "Ak4_j1_deepjetbscore", "Ak4_j2_pt", "Ak4_j2_eta", "Ak4_j2_phi", "Ak4_j2_E", "Ak4_j2_m", "Ak4_j2_deepjetbscore", "Ak4_j3_pt", "Ak4_j3_eta", "Ak4_j3_phi", "Ak4_j3_E", "Ak4_j3_m", "Ak4_j3_deepjetbscore", "Ak4_j4_pt", "Ak4_j4_eta", "Ak4_j4_phi", "Ak4_j4_E", "Ak4_j4_m", "Ak4_j4_deepjetbscore", "Ak4_j5_pt", "Ak4_j5_eta", "Ak4_j5_phi", "Ak4_j5_E", "Ak4_j5_m", "Ak4_j5_deepjetbscore", "Ak4_j6_pt", "Ak4_j6_eta", "Ak4_j6_phi", "Ak4_j6_E", "Ak4_j6_m", "Ak4_j6_deepjetbscore"};
-
-  NNInputs_map = {
-    {"mbb", h_mbb},
-    {"mWW", h_mWW},
-    {"mqq", h_mqq},
-    {"mlnu", h_mlnu},
-    {"DeltaRlnu", h_DeltaRlnu},
-    {"DeltaRbb", h_DeltaRbb},
-    {"DeltaRqq", h_DeltaRqq},
-    {"minDeltaRlj", h_minDeltaRlj},
-    {"minDeltaRbj", h_minDeltaRbj},
-    {"minDeltaRjj", h_minDeltaRjj},
-    {"HT", h_HT},
-    {"N_BTag", h_N_BTag},
-    {"N_Ak4", h_N_Ak4},
-    {"mtop_lep_hyp1", h_mtop_lep_hyp1},
-    {"mtop_lep_hyp2", h_mtop_lep_hyp2},
-    {"mtop_had_hyp1", h_mtop_had_hyp1},
-    {"mtop_had_hyp2", h_mtop_had_hyp2},
-    {"MH_bb", h_MH_bb},
-    {"MH_WW", h_MH_WW},
-    {"Lep_pt", h_Lep_pt},
-    {"Lep_eta", h_Lep_eta},
-    {"Lep_phi", h_Lep_phi},
-    {"Lep_E", h_Lep_E},
-    {"MET_pt", h_MET_pt},    
-    {"MET_phi", h_MET_phi},
-    {"Ak4_j1_pt", h_Ak4_j1_pt},    
-    {"Ak4_j1_eta", h_Ak4_j1_eta},
-    {"Ak4_j1_phi", h_Ak4_j1_phi},
-    {"Ak4_j1_E", h_Ak4_j1_E},
-    {"Ak4_j1_m", h_Ak4_j1_E},
-    {"Ak4_j1_deepjetbscore", h_Ak4_j1_deepjetbscore},
-    {"Ak4_j2_pt", h_Ak4_j2_pt},    
-    {"Ak4_j2_eta", h_Ak4_j2_eta},
-    {"Ak4_j2_phi", h_Ak4_j2_phi},
-    {"Ak4_j2_E", h_Ak4_j2_E},
-    {"Ak4_j2_m", h_Ak4_j2_E},
-    {"Ak4_j2_deepjetbscore", h_Ak4_j2_deepjetbscore},
-    {"Ak4_j3_pt", h_Ak4_j3_pt},
-    {"Ak4_j3_eta", h_Ak4_j3_eta},
-    {"Ak4_j3_phi", h_Ak4_j3_phi},
-    {"Ak4_j3_E", h_Ak4_j3_E},
-    {"Ak4_j3_m", h_Ak4_j3_E},
-    {"Ak4_j3_deepjetbscore", h_Ak4_j3_deepjetbscore},
-    {"Ak4_j4_pt", h_Ak4_j4_pt},
-    {"Ak4_j4_eta", h_Ak4_j4_eta},
-    {"Ak4_j4_phi", h_Ak4_j4_phi},
-    {"Ak4_j4_E", h_Ak4_j4_E},
-    {"Ak4_j4_m", h_Ak4_j4_E},
-    {"Ak4_j4_deepjetbscore", h_Ak4_j4_deepjetbscore},
-    {"Ak4_j5_pt", h_Ak4_j5_pt},
-    {"Ak4_j5_eta", h_Ak4_j5_eta},
-    {"Ak4_j5_phi", h_Ak4_j5_phi},
-    {"Ak4_j5_E", h_Ak4_j5_E},
-    {"Ak4_j5_m", h_Ak4_j5_E},
-    {"Ak4_j5_deepjetbscore", h_Ak4_j5_deepjetbscore},
-    {"Ak4_j6_pt", h_Ak4_j6_pt},
-    {"Ak4_j6_eta", h_Ak4_j6_eta},
-    {"Ak4_j6_phi", h_Ak4_j6_phi},
-    {"Ak4_j6_E", h_Ak4_j6_E},
-    {"Ak4_j6_m", h_Ak4_j6_E},
-    {"Ak4_j6_deepjetbscore", h_Ak4_j6_deepjetbscore}
-  };
-*/
-
-
   // output
 
   h_eventweight = ctx.declare_event_output<float> ("eventweight");
@@ -211,15 +141,25 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_DeltaEtalnu = ctx.declare_event_output<float> ("DeltaEtalnu");
   h_DeltaEtabb = ctx.declare_event_output<float> ("DeltaEtabb");
   h_DeltaEtaqq = ctx.declare_event_output<float> ("DeltaEtaqq");
+  h_DeltaPhilnu = ctx.declare_event_output<float> ("DeltaPhilnu");
+  h_DeltaPhibb = ctx.declare_event_output<float> ("DeltaPhibb");
+  h_DeltaPhiqq = ctx.declare_event_output<float> ("DeltaPhiqq");
+
   h_minDeltaRlj = ctx.declare_event_output<float> ("minDeltaRlj");
-  h_minDeltaRbj = ctx.declare_event_output<float> ("minDeltaRbj");
   h_minDeltaRjj = ctx.declare_event_output<float> ("minDeltaRjj");
   h_minDeltaRb1j = ctx.declare_event_output<float> ("minDeltaRb1j");
   h_minDeltaRb2j = ctx.declare_event_output<float> ("minDeltaRb2j");
 
+  h_minDeltaPhilj = ctx.declare_event_output<float> ("minDeltaPhilj");
+  h_minDeltaPhijj = ctx.declare_event_output<float> ("minDeltaPhijj");
+  h_minDeltaPhib1j = ctx.declare_event_output<float> ("minDeltaPhib1j");
+  h_minDeltaPhib2j = ctx.declare_event_output<float> ("minDeltaPhib2j");
+
   h_minDeltaEtalj = ctx.declare_event_output<float> ("minDeltaEtalj");
-  h_minDeltaEtabj = ctx.declare_event_output<float> ("minDeltaEtabj");
   h_minDeltaEtajj = ctx.declare_event_output<float> ("minDeltaEtajj");
+  h_minDeltaEtab1j = ctx.declare_event_output<float> ("minDeltaEtab1j");
+  h_minDeltaEtab2j = ctx.declare_event_output<float> ("minDeltaEtab2j");
+
   h_HT = ctx.declare_event_output<float> ("HT");
   h_N_BTag = ctx.declare_event_output<float> ("N_BTag");
   h_N_Ak4 = ctx.declare_event_output<float> ("N_Ak4");
@@ -470,16 +410,24 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_DeltaEtalnu, -10);
   evt.set(h_DeltaEtabb, -10);
   evt.set(h_DeltaEtaqq, -10);
+  evt.set(h_DeltaPhilnu, -10);
+  evt.set(h_DeltaPhibb, -10);
+  evt.set(h_DeltaPhiqq, -10);
 
   evt.set(h_minDeltaRlj, -10);
-  evt.set(h_minDeltaRbj, -10);
   evt.set(h_minDeltaRjj, -10);
   evt.set(h_minDeltaRb1j, -10);
   evt.set(h_minDeltaRb2j, -10);
 
+  evt.set(h_minDeltaPhilj, -10);
+  evt.set(h_minDeltaPhijj, -10);
+  evt.set(h_minDeltaPhib1j, -10);
+  evt.set(h_minDeltaPhib2j, -10);
+
   evt.set(h_minDeltaEtalj, -10);
-  evt.set(h_minDeltaEtabj, -10);
   evt.set(h_minDeltaEtajj, -10);
+  evt.set(h_minDeltaEtab1j, -10);
+  evt.set(h_minDeltaEtab2j, -10);
 
   evt.set(h_HT, -10);
   evt.set(h_N_BTag, -10);
@@ -502,6 +450,9 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_DeltaEtalnu, lepton.eta()-evt.met->v4().eta());
   evt.set(h_DeltaEtabb, jc.b1.eta()-jc.b2.eta());
   evt.set(h_DeltaEtaqq, jc.q1.eta()-jc.q2.eta());
+  evt.set(h_DeltaPhilnu, deltaPhi(lepton, evt.met->v4()));
+  evt.set(h_DeltaPhibb, deltaPhi(jc.b1, jc.b2));
+  evt.set(h_DeltaPhiqq, deltaPhi(jc.q1, jc.q2));
   
 
   double HT=0;
@@ -539,14 +490,21 @@ bool Variables_NN::process(uhh2::Event& evt){
 
 
   evt.set(h_minDeltaRlj, minDeltaR(Ak4jets, lepton));
-  evt.set(h_minDeltaRbj, minDeltaR(Ak4jets, b1));
   evt.set(h_minDeltaRjj, minDeltaR_jj(Ak4jets));
   evt.set(h_minDeltaRb1j, minDeltaR(lightjets, b1));
   evt.set(h_minDeltaRb2j, minDeltaR(lightjets, b2));
 
+  evt.set(h_minDeltaPhilj, minDeltaPhi(Ak4jets, lepton));
+  evt.set(h_minDeltaPhijj, minDeltaPhi_jj(Ak4jets));
+  evt.set(h_minDeltaPhib1j, minDeltaPhi(lightjets, b1));
+  evt.set(h_minDeltaPhib2j, minDeltaPhi(lightjets, b2));
+
+
   evt.set(h_minDeltaEtalj, minDeltaEta(Ak4jets, lepton));
-  evt.set(h_minDeltaEtabj, minDeltaEta(Ak4jets, b1));
   evt.set(h_minDeltaEtajj, minDeltaEta_jj(Ak4jets));
+  evt.set(h_minDeltaEtab1j, minDeltaEta(lightjets, b1));
+  evt.set(h_minDeltaEtab2j, minDeltaEta(lightjets, b2));
+
 
   // Top Mass
 

@@ -76,15 +76,27 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
   fill_map(ctx, "DeltaRlnu", NN_DeltaRlnu, {40,0,6});
   fill_map(ctx, "DeltaRbb", NN_DeltaRbb, {40,0,6});
   fill_map(ctx, "DeltaRqq", NN_DeltaRqq, {40,0,6});
+  fill_map(ctx, "DeltaEtalnu", NN_DeltaEtalnu, {40,-2.5,2.5});
+  fill_map(ctx, "DeltaEtabb", NN_DeltaEtabb, {40,-2.5,2.5});
+  fill_map(ctx, "DeltaEtaqq", NN_DeltaEtaqq, {40,-2.5,2.5});
+  fill_map(ctx, "DeltaPhilnu", NN_DeltaPhilnu, {40,0,3.2});
+  fill_map(ctx, "DeltaPhibb", NN_DeltaPhibb, {40,0,3.2});
+  fill_map(ctx, "DeltaPhiqq", NN_DeltaPhiqq, {40,0,3.2});
+
   fill_map(ctx, "minDeltaRlj", NN_minDeltaRlj, {40,0,6});
-  fill_map(ctx, "minDeltaRbj", NN_minDeltaRbj, {40,0,6});
   fill_map(ctx, "minDeltaRjj", NN_minDeltaRjj, {40,0,6});
   fill_map(ctx, "minDeltaRb1j", NN_minDeltaRb1j, {40,0,6});
   fill_map(ctx, "minDeltaRb2j", NN_minDeltaRb2j, {40,0,6});
 
+  fill_map(ctx, "minDeltaPhilj", NN_minDeltaPhilj, {40,0,3.2});
+  fill_map(ctx, "minDeltaPhijj", NN_minDeltaPhijj, {40,0,3.2});
+  fill_map(ctx, "minDeltaPhib1j", NN_minDeltaPhib1j, {40,0,3.2});
+  fill_map(ctx, "minDeltaPhib2j", NN_minDeltaPhib2j, {40,0,3.2});
+
   fill_map(ctx, "minDeltaEtalj", NN_minDeltaEtalj, {40,0,3});
-  fill_map(ctx, "minDeltaEtabj", NN_minDeltaEtabj, {40,0,3});
   fill_map(ctx, "minDeltaEtajj", NN_minDeltaEtajj, {40,0,3});
+  fill_map(ctx, "minDeltaEtab1j", NN_minDeltaEtab1j, {40,0,3});
+  fill_map(ctx, "minDeltaEtab2j", NN_minDeltaEtab2j, {40,0,3});
 
   fill_map(ctx, "HT", NN_HT, {60,0,1500});
   fill_map(ctx, "N_BTag", NN_NBTag, {4,-0,5,5,5});
