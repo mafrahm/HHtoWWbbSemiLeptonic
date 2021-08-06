@@ -16,6 +16,17 @@
 
 
 
+<!ENTITY HHtoWWbbSL_cHHH0 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2016v3/HHtoWWbbSemiLeptonic/GluGluToHHTo2B2VLNu2J_node_cHHH0_2016v3.xml">
+<!ENTITY HHtoWWbbSL_cHHH1 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2016v3/HHtoWWbbSemiLeptonic/GluGluToHHTo2B2VLNu2J_node_cHHH1_2016v3.xml">
+<!ENTITY HHtoWWbbSL_cHHH2p45 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2016v3/HHtoWWbbSemiLeptonic/GluGluToHHTo2B2VLNu2J_node_cHHH2p45_2016v3.xml">
+<!ENTITY HHtoWWbbSL_cHHH5 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2016v3/HHtoWWbbSemiLeptonic/GluGluToHHTo2B2VLNu2J_node_cHHH5_2016v3.xml">
+
+
+
+
+
+
+
 <!-- Background: TTbar, WJets, DYJets (SingleTop, Diboson, TTV, QCD?) -->
 
 
@@ -150,6 +161,7 @@
 	<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&PRESELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
 
 <!-- DATA -->
+
 
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			&DATA_Muon_B;
@@ -301,12 +313,36 @@
 
 
 
-		<InputData Lumi="87304580.64" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
+		<InputData Lumi="86978575.16" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSemiLeptonic_SM;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
+
+		<InputData Lumi="3068822.203" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2016v3" Cacheable="&b_Cacheable;">
+			&HHtoWWbbSL_cHHH0;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3096039.185" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2016v3" Cacheable="&b_Cacheable;">
+			&HHtoWWbbSL_cHHH1;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3035849.658" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH2p45_2016v3" Cacheable="&b_Cacheable;">
+			&HHtoWWbbSL_cHHH2p45;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="2971676.091" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH5_2016v3" Cacheable="&b_Cacheable;">
+			&HHtoWWbbSL_cHHH5;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
 
 
 

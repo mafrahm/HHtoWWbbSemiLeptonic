@@ -2,7 +2,7 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/NOMINAL">
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/NOMINAL"> <!-- NOMINAL, ECH, MUCH -->
 <!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/NNApplied/NOMINAL">
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
@@ -14,6 +14,12 @@
 
 
 <!ENTITY HHtoWWbbSemiLeptonic_SM "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSemiLeptonic_SM_2016v3.root">
+
+
+<!ENTITY HHtoWWbbSL_cHHH0 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH0_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH1 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH1_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH2p45 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH2p45_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH5 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH5_2016v3.root">
 
 
 <!-- Background: TTbar, WJets, DYJets, SingleTop, Diboson, TTV, QCD -->
@@ -143,7 +149,7 @@
 	<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&SELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
 
 
-<!--
+
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Muon_B;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -233,10 +239,10 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
--->
 
 
-<!--
+
+
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Photon_B1_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Photon_B1;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -285,20 +291,47 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
--->
 
 
 
 
-<!-- SIGNAL (check lumi with Matthias) -->
+<!-- SIGNAL -->
 
 <!-- Lumi="9661706.924" before HHtoWWbbSemiLeptonic BR -->
 
-		<InputData Lumi="87304580.64" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
+		<InputData Lumi="86978575.16" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&HHtoWWbbSemiLeptonic_SM;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+
+
+
+
+		<InputData Lumi="3068822.203" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH0;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3096039.185" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH1;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3035849.658" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH2p45_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH2p45;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="2971676.091" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH5_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH5;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
 
 
 <!-- BACKGROUND -->
@@ -737,8 +770,7 @@
 	<Item Name="GenParticleCollection" Value="GenParticles" />
 	<Item Name="GenInfoName" Value="genInfo" />
 
-	<Item Name="additionalBranches" Value="is_mHH_reconstructed mHH mH_WW mH_bb chi2 chi2_H_WW chi2_H_bb eventweight_final eventweight_lumi region" />
-
+	<Item Name="additionalBranches"      Value="is_mHH_reconstructed mHH mH_WW mH_bb chi2 chi2_H_WW chi2_H_bb region eventweight_final eventweight_lumi weight_sfmu_id_up weight_sfmu_id_down weight_sfmu_id weight_pu weight_pu_up weight_pu_down weight_sfelec_id weight_sfelec_id_up weight_sfelec_id_down weight_sfelec_reco weight_sfelec_reco_up weight_sfelec_reco_down weight_sfelec_trigger weight_sfelec_trigger_up weight_sfelec_trigger_down weight_sfmu_iso weight_sfmu_iso_up weight_sfmu_iso_down weight_sfmu_trigger weight_sfmu_trigger_up weight_sfmu_trigger_down weight_btag weight_btag_bc_up weight_btag_bc_down weight_btag_udsg_up weight_btag_udsg_down weight_murmuf_upup weight_murmuf_upnone weight_murmuf_noneup weight_murmuf_nonedown weight_murmuf_downnone weight_murmuf_downdown" />
 
 	<Item Name="lumi_file" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.root" />
 	<Item Name="lumihists_lumi_per_bin" Value="1000."/>

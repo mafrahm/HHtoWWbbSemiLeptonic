@@ -3,17 +3,26 @@
 
 <!ENTITY TargetLumi      "35920">
 <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/NOMINAL">
-<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/NOMINAL">
+<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/NOMINAL"> <!-- NOMINAL, ECH, MUCH -->
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
 <!ENTITY PRESELfilename  "uhh2.AnalysisModuleRunner">
-
+<!ENTITY CHANNEL         "incl"> <!-- incl, ech, much -->
 
 <!-- Signal Samples -->
 
 
 <!ENTITY HHtoWWbbSemiLeptonic_SM "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSemiLeptonic_SM_2016v3.root">
+
+
+
+<!ENTITY HHtoWWbbSL_cHHH0 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH0_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH1 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH1_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH2p45 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH2p45_2016v3.root">
+<!ENTITY HHtoWWbbSL_cHHH5 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH5_2016v3.root">
+
+
 
 
 <!-- Background: TTbar, WJets, DYJets, SingleTop, Diboson, TTV, QCD -->
@@ -189,8 +198,6 @@
 
 
 
-
-<!--
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Electron_B_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Electron_B;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -284,7 +291,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
--->
+
 
 
 
@@ -294,11 +301,39 @@
 
 <!-- Lumi="9661706.924" before HHtoWWbbSemiLeptonic BR -->
 
-		<InputData Lumi="87304580.64" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
+		<InputData Lumi="86978575.16" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&HHtoWWbbSemiLeptonic_SM;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+
+
+
+
+		<InputData Lumi="3068822.203" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH0;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3096039.185" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH1;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="3035849.658" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH2p45_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH2p45;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="2971676.091" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH5_2016v3" Cacheable="&b_Cacheable;">
+			<In FileName="&HHtoWWbbSL_cHHH5;" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
 
 
 <!-- BACKGROUND -->
@@ -786,6 +821,7 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_66017.root" />
 
 
+<Item Name="Channel" Value="&CHANNEL;" />
 
 <!-- for systematics -->
 
