@@ -169,6 +169,8 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_mtop_had_hyp1 = ctx.declare_event_output<float> ("mtop_had_hyp1");
   h_mtop_had_hyp2 = ctx.declare_event_output<float> ("mtop_had_hyp2");
 
+  h_MTtop_lep_hyp1 = ctx.declare_event_output<float> ("MTtop_lep_hyp1");
+  h_MTtop_lep_hyp2 = ctx.declare_event_output<float> ("MTtop_lep_hyp2");
 
 ///  Higgs masses (chi2)
   h_MH_bb = ctx.declare_event_output<float> ("MH_bb");
@@ -402,6 +404,7 @@ bool Variables_NN::process(uhh2::Event& evt){
   // high-level observables
 
   evt.set(h_mbb, -10);
+  evt.set(h_mWW, -10);
   evt.set(h_mlnu, -10);
   evt.set(h_mqq, -10);
   evt.set(h_DeltaRlnu, -10);
@@ -433,27 +436,32 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_N_BTag, -10);
   evt.set(h_mtop_lep_hyp1, -10);
   evt.set(h_mtop_lep_hyp2, -10);
+  evt.set(h_MTtop_lep_hyp1, -10);
+  evt.set(h_MTtop_lep_hyp2, -10);
   evt.set(h_mtop_had_hyp1, -10);
   evt.set(h_mtop_had_hyp2, -10);
 
   JetCategories jc = CategorizeJetsNew(evt);
   
   evt.set(h_mbb, (jc.b1+jc.b2).M());
-  evt.set(h_mWW, TransverseMass4particles(jc.q1,jc.q2, lepton, evt.met->v4()));
   //evt.set(h_mlnu, (lepton+evt.met->v4()).M());
   evt.set(h_mlnu, TransverseMass(lepton, evt.met->v4(), 0, 0));
-  evt.set(h_mqq, (jc.q1+jc.q2).M());
   evt.set(h_DeltaRlnu, deltaR(lepton, evt.met->v4()));
   evt.set(h_DeltaRbb, deltaR(jc.b1, jc.b2));
-  evt.set(h_DeltaRqq, deltaR(jc.q1, jc.q2));
   
   evt.set(h_DeltaEtalnu, lepton.eta()-evt.met->v4().eta());
   evt.set(h_DeltaEtabb, jc.b1.eta()-jc.b2.eta());
-  evt.set(h_DeltaEtaqq, jc.q1.eta()-jc.q2.eta());
   evt.set(h_DeltaPhilnu, deltaPhi(lepton, evt.met->v4()));
   evt.set(h_DeltaPhibb, deltaPhi(jc.b1, jc.b2));
-  evt.set(h_DeltaPhiqq, deltaPhi(jc.q1, jc.q2));
-  
+
+
+  if(NAk4jets>3) {
+    evt.set(h_mWW, TransverseMass4particles(jc.q1,jc.q2, lepton, evt.met->v4()));
+    evt.set(h_mqq, (jc.q1+jc.q2).M());
+    evt.set(h_DeltaRqq, deltaR(jc.q1, jc.q2));
+    evt.set(h_DeltaEtaqq, jc.q1.eta()-jc.q2.eta());
+    evt.set(h_DeltaPhiqq, deltaPhi(jc.q1, jc.q2));
+  }
 
   double HT=0;
   for(const Jet j : *Ak4jets) HT+= j.pt();
@@ -513,16 +521,23 @@ bool Variables_NN::process(uhh2::Event& evt){
   if(deltaR(lepton, jc.b1)<deltaR(lepton, jc.b2)) {b_lep = jc.b1; b_had = jc.b2;}
   else {b_had = jc.b1; b_lep = jc.b2;}
 
+
   double mtop_lep1 = (lepton+evt.met->v4()+b_lep).M(); // transverse mass?
   double mtop_lep2 = (lepton+evt.met->v4()+b_had).M(); // transverse mass?
   double mtop_had1 = (jc.q1+jc.q2+b_had).M();
   double mtop_had2 = (jc.q1+jc.q2+b_lep).M();
-
   evt.set(h_mtop_lep_hyp1, mtop_lep1);
   evt.set(h_mtop_lep_hyp2, mtop_lep2);
-  evt.set(h_mtop_had_hyp1, mtop_had1);
-  evt.set(h_mtop_had_hyp2, mtop_had2);
+  if(NAk4jets>3) {
+    evt.set(h_mtop_had_hyp1, mtop_had1);
+    evt.set(h_mtop_had_hyp2, mtop_had2);
+  }
 
+  double MTtop_lep1 = TransverseMass(lepton+evt.met->v4(), b_lep, TransverseMass(lepton,evt.met->v4(),0,0), 0);
+  double MTtop_lep2 = TransverseMass(lepton+evt.met->v4(), b_had, TransverseMass(lepton,evt.met->v4(),0,0), 0);
+
+  evt.set(h_MTtop_lep_hyp1, MTtop_lep1);
+  evt.set(h_MTtop_lep_hyp2, MTtop_lep2);
 
   // Higgs mass
   evt.set(h_MH_bb, -10);

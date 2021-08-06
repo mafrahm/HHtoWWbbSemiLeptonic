@@ -105,6 +105,8 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
   fill_map(ctx, "mtop_lep_hyp2", NN_mtop_lep2, {40,0,800});
   fill_map(ctx, "mtop_had_hyp1", NN_mtop_had1, {40,0,800});
   fill_map(ctx, "mtop_had_hyp2", NN_mtop_had2, {40,0,800});
+  fill_map(ctx, "MTtop_lep_hyp1", NN_MTtop_lep1, {40,0,800});
+  fill_map(ctx, "MTtop_lep_hyp2", NN_MTtop_lep2, {40,0,800});
   fill_map(ctx, "MH_bb", NN_mbb_chi2, {40,0,400});
   fill_map(ctx, "MH_WW", NN_mWW_chi2, {40,0,400});
 

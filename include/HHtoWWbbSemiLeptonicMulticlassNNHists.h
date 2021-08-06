@@ -50,6 +50,7 @@ public:
   
   TH1F *NN_minDeltaRlj, *NN_minDeltaRjj;
   TH1F *NN_HT, *NN_NBTag, *NN_NAk4, *NN_mtop_lep1, *NN_mtop_lep2, *NN_mtop_had1, *NN_mtop_had2, *NN_mbb_chi2, *NN_mWW_chi2;
+  TH1F *NN_MTtop_lep1, *NN_MTtop_lep2;
 
   TH1F *NN_minDeltaRb1j, *NN_minDeltaRb2j, *NN_minDeltaEtab1j, *NN_minDeltaEtab2j, *NN_minDeltaPhib1j, *NN_minDeltaPhib2j;
   TH1F *NN_minDeltaEtalj, *NN_minDeltaEtajj;

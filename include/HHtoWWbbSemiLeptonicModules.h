@@ -62,7 +62,7 @@ private:
 
   uhh2::Event::Handle<float> h_HT;
   uhh2::Event::Handle<float> h_N_BTag, h_N_Ak4;
-  uhh2::Event::Handle<float> h_mtop_lep_hyp1, h_mtop_lep_hyp2, h_mtop_had_hyp1, h_mtop_had_hyp2;
+  uhh2::Event::Handle<float> h_mtop_lep_hyp1, h_mtop_lep_hyp2, h_mtop_had_hyp1, h_mtop_had_hyp2, h_MTtop_lep_hyp1, h_MTtop_lep_hyp2;
 
 
 
