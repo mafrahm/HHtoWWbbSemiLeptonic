@@ -25,10 +25,10 @@ class HHGenObjects {
 
 
 
-  virtual bool isQuark(int id);
-  virtual bool isLepton(int id);
-  virtual bool isChargedLepton(int id);
-  virtual bool isNeutrino(int id);
+  bool isQuark(int id);
+  bool isLepton(int id);
+  bool isChargedLepton(int id);
+  bool isNeutrino(int id);
 
  private:
 

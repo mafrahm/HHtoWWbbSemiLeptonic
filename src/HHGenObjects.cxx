@@ -5,9 +5,9 @@ using namespace std;
 
 
 HHGenObjects::HHGenObjects(const vector<GenParticle> & genparticles, bool throw_on_failure) {
-  // cout << "HHGenObjects: start" << endl;
-  // cout << "genp size: " <<genparticles.size() << endl;
-  // for(unsigned int i=0; i<genparticles.size(); i++) cout << "Genparticle Ids: " << genparticles[i].pdgId() << endl;
+  //cout << "HHGenObjects: start" << endl;
+  //cout << "genp size: " <<genparticles.size() << endl;
+  //for(unsigned int i=0; i<genparticles.size(); i++) cout << "Genparticle Ids: " << genparticles[i].pdgId() << endl;
 
   for(unsigned int i=0; i<genparticles.size(); i++) {
     
@@ -72,11 +72,12 @@ HHGenObjects::HHGenObjects(const vector<GenParticle> & genparticles, bool throw_
 	    const GenParticle & gp = genparticles[j];
 	   
 	    int gp_Id = gp.pdgId();
-	    if(isNeutrino(gp_Id) && abs(gp.mother(&genparticles,1)->pdgId()) == 24) {
+	    auto m_gp = gp.mother(&genparticles, 1); // to check if gp even has a mother
+	    if(isNeutrino(gp_Id) && m_gp && abs(m_gp->pdgId()) == 24) {
 	      neutrino = &gp;
 	      if(isNeutrino(genparticles[j-1].pdgId()) && abs(genparticles[j-1].mother(&genparticles,1)->pdgId()) == 24) {
 		lepton = &genparticles[j-1]; // lepton is always right before it's associated neutrino
-		//cout << lepton->pdgId() << endl;
+		cout << lepton->pdgId() << endl;
 	      }
 	    }
 	  }
@@ -90,7 +91,9 @@ HHGenObjects::HHGenObjects(const vector<GenParticle> & genparticles, bool throw_
 	    const GenParticle & gp = genparticles[j];
 	    int gp_Id = gp.pdgId();
 	    //cout << gp_Id << endl;
-	    if(isQuark(gp_Id) && abs(gp.mother(&genparticles,1)->pdgId()) == 24) {
+	    auto m_gp = gp.mother(&genparticles, 1); // to check if gp even has a mother
+	    //if(!m_gp) continue;
+	    if(isQuark(gp_Id) && m_gp && abs(m_gp->pdgId()) == 24) {
 	      //cout << "counter: " <<  counter << endl;
 	      if(counter==1) quark1 = &gp;
 	      else if(counter==2) quark2 = &gp;
