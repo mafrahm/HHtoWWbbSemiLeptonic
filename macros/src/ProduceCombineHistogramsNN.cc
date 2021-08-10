@@ -1,26 +1,6 @@
 #include "../include/cosmetics.h"
 #include "../include/Tools.h"
-#include <TString.h>
-#include <iostream>
-#include <TStyle.h>
-#include <TFile.h>
-#include <TH1.h>
-#include <TH2.h>
-#include <TCanvas.h>
-#include <TText.h>
-#include <TPaveText.h>
-#include <TGaxis.h>
-#include <TGraph.h>
-#include <TStyle.h>
-#include <TGraphAsymmErrors.h>
-#include <TLegend.h>
-#include <TLegendEntry.h>
-#include <TROOT.h>
-#include <TKey.h>
-#include <TLatex.h>
-#include <TClass.h>
-#include <fstream>
-// WORK IN PROGRESS!!
+
 using namespace std;
 
 void AnalysisTool::ProduceCombineHistogramsNN(){
@@ -30,27 +10,19 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 
 
   //vector<TString> systematics = {"NOMINAL"};
-  vector<TString> systematics = {"nominal", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"};
+  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"};
   vector<TString> syst_shift = {"up", "down"};
   vector<TString> syst_shift_combine = {"Up", "Down"};
-  vector<TString> region_tags = {"catA"};
-  //vector<TString> channel_tags = {"srmu", "srele"};
+  //vector<TString> region_tags = {"catA"};
+  vector<TString> channel_tags = {"much", "ech"};
   //vector<TString> channel_tags = {"srmu"};
-  vector<TString> channel_tags = {"srmu", "ttcrmu", "stcrmu", "wdycrmu"};
+  vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"};
   vector<TString> histinname_base = {"srmu_DNNoutput0", "srmu_DNNoutput1", "srmu_DNNoutput2", "srmu_DNNoutput3"};
   //vector<TString> histoutname_base = {"mH"};
-  vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"}; //, "DATA"
+  vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"}; //, "DATA"
 
   TString outfilename = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root"; 
   TFile* f_out = new TFile(outfilename, "RECREATE");
-
-  /*
-    for(region)
-    for(channel)
-    for(systematics)
-    for(systshift)
-    for(samples)
-  */
 
 
 
@@ -77,11 +49,11 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 
 	    // change qcd and data to required input name
 	    if (proc == "DATA") {
-	      if(channel_tags[channel].Contains("ele")) proc += "_Electron";
+	      if(channel_tags[channel]=="ech") proc += "_Electron";
 	      else proc += "_Muon";
 	    }
 	    if (proc == "QCD") {
-	      if(channel_tags[channel].Contains("ele")) proc += "Ele";
+	      if(channel_tags[channel]=="ech") proc += "Ele";
 	      else proc += "Mu";
 	    }
 
@@ -108,12 +80,13 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 
 	    //TString histname = histinname_base[channel] + "_";
 
-	    // note: 'channel' is an integer from 0 to 3
-	    TString histname = "srmu_DNNoutput"+to_string(channel)+"_";
+	    // note: 'region' is an integer from 0 to 3
+	    TString histname = channel_tags[channel] + "_DNNoutput"+to_string(region)+"_";
 	    if(force_nominal || syst=="nominal") histname+="nominal";
 	    else if(syst.Contains("scale")) histname+="scale_" + syst_shift[j];
 	    else histname += syst + "_" + syst_shift[j];
-	    histname+="/NN_out"+to_string(channel);
+	    histname+="/NN_out"+to_string(region); // + "_rebin";
+	    // e.g. histname = much_DNNoutput0_scale_up/NNout0
 	    cout << "histname: " << histname << endl;
 
 	    TH1F* h_out = (TH1F*) f_in->Get(histname);
@@ -122,8 +95,10 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    // change data and qcd to the required output name
 	    if(proc.Contains("DATA")) proc = "data_obs";
 	    if(proc.Contains("QCD")) proc = "QCD";
-	    TString histname_out = /*histoutname_base[region] + "_" +*/ channel_tags[channel] + "_" + region_tags[region] + "__" + proc + "_" + AnalysisTool::yeartag;
+	    //TString histname_out = /*histoutname_base[region] + "_" +*/ channel_tags[channel] + "_" + region_tags[region] + "__" + proc + "_" + AnalysisTool::yeartag;
+	    TString histname_out = region_tags[region] + channel_tags[channel] + "_catA" + "__" + proc + "_" + AnalysisTool::yeartag;
 	    if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
+	    // e.g. histname_out = srmuch_TTbar_2016v3__scale_TTbarUp
 	    cout << "histname_out: " << histname_out << endl;
 
 	    cout << __LINE__ << endl;
