@@ -13,7 +13,7 @@ AnalysisTool::AnalysisTool(int year_) {
   combine_path = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/";
   pre_tag = "Preselection/";
   full_tag = "Fullselection/";
-  NN_tag = "NNApplied_3jets/";
+  NN_tag = "NNApplied/";
 
 
   year = "";
@@ -37,6 +37,7 @@ AnalysisTool::AnalysisTool(int year_) {
     {"TTbar", 810},
     {"DYJets", 798},
     {"QCDMu", 867},
+    {"QCD", 867},
     {"Diboson", 860},
     {"SingleTop", 801},
     {"TTV", 413},

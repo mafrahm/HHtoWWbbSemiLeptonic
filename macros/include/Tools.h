@@ -1,10 +1,31 @@
 #pragma once
 
 #include <cmath>
-#include <iostream>
-#include <TString.h>
-#include <TFile.h>
 #include <map>
+#include <TString.h>
+#include <iostream>
+#include <TStyle.h>
+#include <TFile.h>
+#include <TH1.h>
+#include <TH2.h>
+#include <TCanvas.h>
+#include <TText.h>
+#include <TPaveText.h>
+#include <TGaxis.h>
+#include <TGraph.h>
+#include <TStyle.h>
+#include <TGraphErrors.h>
+#include <TGraphAsymmErrors.h>
+#include <TLegend.h>
+#include <TLegendEntry.h>
+#include <TROOT.h>
+#include <TKey.h>
+#include <TLatex.h>
+#include <TClass.h>
+#include <fstream>
+//#include <THStack>
+
+
 
 using namespace std;
 
@@ -23,10 +44,18 @@ public:
   void ControlPlots(TString selection, TString cuts, vector<TString> processes);
   void SignalToBackground(TString cuts, TString plotname);
 
+
   void ScaleVariationEnvelope();
 
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN();
+
+  void PlotSystematicHists();
+  
+  // only after running NNsteer.py
+  void PlotLimitsCombine(TString channel);
+  void postFitPlot();
+
 
 private:
   TString base_path, pre_tag, full_tag, NN_tag, uhh2_path, combine_path;
