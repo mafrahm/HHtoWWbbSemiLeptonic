@@ -24,6 +24,7 @@ processes_per_systematic = {
 'btag_udsg': 'all',
 'scale_TTbar': 'TTbar',
 'scale_DYJets': 'DYJets',
+'scale_WJets': 'WJets',
 'scale_TTV': 'TTV',
 'scale_Diboson': 'Diboson',
 'scale_SingleTop': 'SingleTop'
@@ -52,6 +53,7 @@ pdf_per_systematic = {
 #'rate_qcdele': 'lnN',
 'scale_TTbar': 'shape',
 'scale_DYJets': 'shape',
+'scale_WJets': 'shape',
 'scale_TTV': 'shape',
 'scale_Diboson': 'shape',
 'scale_SingleTop': 'shape'
@@ -80,6 +82,7 @@ value_per_systematic = {
 #'rate_qcdele': 1.5,
 'scale_TTbar': 1,
 'scale_DYJets': 1,
+'scale_WJets': 1,
 'scale_TTV': 1,
 'scale_Diboson': 1,
 'scale_SingleTop': 1
@@ -93,7 +96,8 @@ backgrounds_per_category = {
 }
 
 
-signaltag = 'HHtoWWbbSemiLeptonic'
+#signaltag = 'HHtoWWbbSemiLeptonic'
+signaltag = 'HHtoWWbbSL'
 
 
 variables_per_category = {
@@ -101,11 +105,15 @@ variables_per_category = {
 }
 
 categories_per_channel = {
-'srmu' : ['A'],
-'srele': ['A'],
-'ttcrmu' : ['A'],
-'stcrmu' : ['A'],
-'wdycrmu' : ['A']
+'srmuch' : ['A'],
+'ttcrmuch' : ['A'],
+'stcrmuch' : ['A'],
+'wdycrmuch' : ['A'],
+'srech': ['A'],
+'ttcrech' : ['A'],
+'stcrech' : ['A'],
+'wdycrech' : ['A']
+
 }
 
 yeartags = {

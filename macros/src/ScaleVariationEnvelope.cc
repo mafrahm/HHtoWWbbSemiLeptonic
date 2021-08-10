@@ -36,7 +36,7 @@ void AnalysisTool::ScaleVariationEnvelope(){
   //Files & histograms for other processes
   TString path = AnalysisTool::base_path + AnalysisTool::year + "/" + AnalysisTool::NN_tag; // Finalselection == NNApplied
 
-  vector<TString> processes = {"TTbar_" + AnalysisTool::yeartag,"SingleTop_" + AnalysisTool::yeartag, "DYJets_" + AnalysisTool::yeartag, "Diboson_" + AnalysisTool::yeartag, "TTV_" + AnalysisTool::yeartag, "WJets_" + AnalysisTool::yeartag, "QCDMu_" + AnalysisTool::yeartag/*, "QCDEle_" + AnalysisTool::yeartag*/};
+  vector<TString> processes = {"TTbar_" + AnalysisTool::yeartag,"SingleTop_" + AnalysisTool::yeartag, "DYJets_" + AnalysisTool::yeartag, "Diboson_" + AnalysisTool::yeartag, "TTV_" + AnalysisTool::yeartag, "WJets_" + AnalysisTool::yeartag, "QCDMu_" + AnalysisTool::yeartag, "QCDEle_" + AnalysisTool::yeartag};
   unique_ptr<TFile> f_in;
 
   for(unsigned int aa=0; aa< processes.size();aa++){
@@ -52,7 +52,7 @@ void AnalysisTool::ScaleVariationEnvelope(){
       {"SingleTop", "output2"},
       {"WJets+DYJets", "output3"}
     };
-    vector<TString> channel_tags = {"srmu"}; //, "srele"
+    vector<TString> channel_tags = {"much", "ech"};
     // vector<TString> region_tags = {"catA", "catB"}; // probably not necessary / exchange with cat_tags
     vector<TString> region_tags = {"DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3"/*, "DNNoutput4"*/};
     

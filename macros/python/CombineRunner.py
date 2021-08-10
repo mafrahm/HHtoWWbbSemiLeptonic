@@ -61,16 +61,17 @@ class CombineRunner:
                     if not cat in categories_per_channel[chan]: continue
                     combcard += cat
             combcard += '_' + node + '.txt'
+            name = signaltag + "_" + node
 
             #command = ['combine', '-n', signaltag, combcard]
-            command = ['combine', '-n', signaltag, '--run', 'blind', combcard]
+            command = ['combine', '-n', name, '--run', 'blind', combcard]
             #command = ['combine', '-n', signaltag, '-M', 'FitDiagnostics', combcard]
             #command = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-5', '--rMax', '5', '--saveShapes', combcard]
             #command = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-10', '--rMax', '10', '--expectSignal', '2', '--saveShapes', combcard]
-            diagnostics = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-200', '--rMax', '200', '--expectSignal', '2', '--saveShapes', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '0', combcard]
+            diagnostics = ['combine', '-n', name, '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-200', '--rMax', '200', '--expectSignal', '2', '--saveShapes', '--saveWithUncertainties', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '0', combcard]
             #diagnostics = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-20', '--rMax', '20', '--saveShapes', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '0', combcard]
 
-            #processes.append(subprocess.Popen(diagnostics))
+            processes.append(subprocess.Popen(diagnostics))
             processes.append(subprocess.Popen(command))
 
 

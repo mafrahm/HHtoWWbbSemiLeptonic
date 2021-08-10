@@ -99,7 +99,7 @@ def get_lines_datacard_systematics(category, systematics, backgrounds):
 def get_lines_datacard_statistics():
     lines = []
     lines.append('# STATISTICS')
-    lines.append('* autoMCStats 1 0 1')
+    lines.append('* autoMCStats 0 0 1')
     return lines
 
 
