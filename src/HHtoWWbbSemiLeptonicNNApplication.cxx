@@ -432,7 +432,7 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 
   // Separately book one set of PDF hists (each contains the 100 variations for M_Tprime)
   cout << "Line: " << __LINE__ << endl;
-  //book_pdf_histograms(ctx, {"pdf"});
+  book_pdf_histograms(ctx, {"pdf"});
 
 }
 
@@ -467,7 +467,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   double out4 =  (double)(NNoutputs[0].tensor<float, 2>()(0,4));
   //double out5 =  (double)(NNoutputs[0].tensor<float, 2>()(0,5));
 
-  vector<double> out_event = {out0,out1,out2,out3,out4};
+  vector<double> out_event = {out0,out1,out2,out3/*,out4*/};
   /*
   cout << "out0= " << out0 << endl;
   cout << "out1= " << out1 << endl;
@@ -534,7 +534,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   // Fill PDF histograms
   event.weight = weight_nominal;
 
-  //fill_syst_histograms(event, DNN_hist_tag, region, "pdf");
+  fill_syst_histograms(event, DNN_hist_tag, region, "pdf");
 
 
 

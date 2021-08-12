@@ -20,17 +20,29 @@ HHtoWWbbSemiLeptonicMulticlassNNHists::HHtoWWbbSemiLeptonicMulticlassNNHists(uhh
 
 void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
 
-NN_out0 = book<TH1F>("NN_out0", "NN output 0", 40, 0, 1);
-NN_out1 = book<TH1F>("NN_out1", "NN output 1", 40, 0, 1);
-NN_out2 = book<TH1F>("NN_out2", "NN output 2", 40, 0, 1);
-NN_out3 = book<TH1F>("NN_out3", "NN output 3", 40, 0, 1);
-NN_out4 = book<TH1F>("NN_out4", "NN output 4", 40, 0, 1);
+  NN_out0 = book<TH1F>("NN_out0", "NN output 0", 40, 0, 1);
+  NN_out1 = book<TH1F>("NN_out1", "NN output 1", 40, 0, 1);
+  NN_out2 = book<TH1F>("NN_out2", "NN output 2", 40, 0, 1);
+  NN_out3 = book<TH1F>("NN_out3", "NN output 3", 40, 0, 1);
+  //NN_out4 = book<TH1F>("NN_out4", "NN output 4", 40, 0, 1);
 
-NN_out0_rebin = book<TH1F>("NN_out0_rebin", "NN output 0", 10, 0, 1);
-NN_out1_rebin = book<TH1F>("NN_out1_rebin", "NN output 1", 10, 0, 1);
-NN_out2_rebin = book<TH1F>("NN_out2_rebin", "NN output 2", 10, 0, 1);
-NN_out3_rebin = book<TH1F>("NN_out3_rebin", "NN output 3", 10, 0, 1);
-NN_out4_rebin = book<TH1F>("NN_out4_rebin", "NN output 4", 10, 0, 1);
+  NN_out0_rebin = book<TH1F>("NN_out0_rebin", "NN output 0", 10, 0, 1);
+  NN_out1_rebin = book<TH1F>("NN_out1_rebin", "NN output 1", 10, 0, 1);
+  NN_out2_rebin = book<TH1F>("NN_out2_rebin", "NN output 2", 10, 0, 1);
+  NN_out3_rebin = book<TH1F>("NN_out3_rebin", "NN output 3", 10, 0, 1);
+  //NN_out4_rebin = book<TH1F>("NN_out4_rebin", "NN output 4", 10, 0, 1);
+
+  vector<float> limitbins_sr = {0,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.93,0.96,0.98,1.0};
+  vector<float> limitbins_ttcr = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
+  vector<float> limitbins_stcr = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
+  vector<float> limitbins_wdycr = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
+  vector<float> limitbins_placeholder = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
+
+  NN_out0_limits = book<TH1F>("NN_out0_limits", "NN output 0", limitbins_sr.size()-1, &limitbins_sr[0]);
+  NN_out1_limits = book<TH1F>("NN_out1_limits", "NN output 1", limitbins_ttcr.size()-1, &limitbins_ttcr[0]);
+  NN_out2_limits = book<TH1F>("NN_out2_limits", "NN output 2", limitbins_stcr.size()-1, &limitbins_stcr[0]);
+  NN_out3_limits = book<TH1F>("NN_out3_limits", "NN output 3", limitbins_wdycr.size()-1, &limitbins_wdycr[0]);
+  // NN_out4_limits = book<TH1F>("NN_out4_limits", "NN output 4", limitbins_placeholder.size()-1, &limitbins_placeholder[0]);
 }
 
 void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
@@ -46,13 +58,19 @@ NN_out0->Fill(NNoutput0, weight);
 NN_out1->Fill(NNoutput1, weight);
 NN_out2->Fill(NNoutput2, weight);
 NN_out3->Fill(NNoutput3, weight);
-NN_out4->Fill(NNoutput4, weight);
+//NN_out4->Fill(NNoutput4, weight);
 
 NN_out0_rebin->Fill(NNoutput0, weight);
 NN_out1_rebin->Fill(NNoutput1, weight);
 NN_out2_rebin->Fill(NNoutput2, weight);
 NN_out3_rebin->Fill(NNoutput3, weight);
-NN_out4_rebin->Fill(NNoutput4, weight);
+//NN_out4_rebin->Fill(NNoutput4, weight);
+
+NN_out0_limits->Fill(NNoutput0, weight);
+NN_out1_limits->Fill(NNoutput1, weight);
+NN_out2_limits->Fill(NNoutput2, weight);
+NN_out3_limits->Fill(NNoutput3, weight);
+//NN_out4_limits->Fill(NNoutput4, weight);
 }
 
 HHtoWWbbSemiLeptonicMulticlassNNHists::~HHtoWWbbSemiLeptonicMulticlassNNHists(){}
