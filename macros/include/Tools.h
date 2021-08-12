@@ -46,6 +46,7 @@ public:
 
 
   void ScaleVariationEnvelope();
+  void PDFRMS();
 
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN();

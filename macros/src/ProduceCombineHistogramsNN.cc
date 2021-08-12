@@ -10,14 +10,14 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 
 
   //vector<TString> systematics = {"NOMINAL"};
-  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"};
+  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"};
   vector<TString> syst_shift = {"up", "down"};
   vector<TString> syst_shift_combine = {"Up", "Down"};
   //vector<TString> region_tags = {"catA"};
   vector<TString> channel_tags = {"much", "ech"};
   //vector<TString> channel_tags = {"srmu"};
   vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"};
-  vector<TString> histinname_base = {"srmu_DNNoutput0", "srmu_DNNoutput1", "srmu_DNNoutput2", "srmu_DNNoutput3"};
+  //vector<TString> histinname_base = {"srmu_DNNoutput0", "srmu_DNNoutput1", "srmu_DNNoutput2", "srmu_DNNoutput3"};
   //vector<TString> histoutname_base = {"mH"};
   vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"}; //, "DATA"
 
@@ -58,7 +58,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    }
 
 	    bool force_nominal = false;
-            if(proc == "DATA" && syst != "nominal") force_nominal = true;
+            if(proc.Contains("DATA") && syst != "nominal") force_nominal = true;
             if(!proc.Contains("TTbar") && syst == "scale_TTbar") force_nominal = true;
             if(!proc.Contains("SingleTop") && syst == "scale_SingleTop") force_nominal = true;
             if(!proc.Contains("DYJets") && syst == "scale_DYJets") force_nominal = true;
@@ -85,7 +85,10 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    if(force_nominal || syst=="nominal") histname+="nominal";
 	    else if(syst.Contains("scale")) histname+="scale_" + syst_shift[j];
 	    else histname += syst + "_" + syst_shift[j];
-	    histname+="/NN_out"+to_string(region); // + "_rebin";
+
+	    // quick fix: naming convention is different for PDF
+	    if(syst=="pdf") histname+="/NN_out"+to_string(region);
+	    else histname+="/NN_out"+to_string(region) + "_limits"; // + "_rebin";
 	    // e.g. histname = much_DNNoutput0_scale_up/NNout0
 	    cout << "histname: " << histname << endl;
 
