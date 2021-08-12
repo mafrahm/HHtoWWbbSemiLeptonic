@@ -2,8 +2,8 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/NOMINAL"> <!-- NOMINAL, ECH, MUCH -->
-<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/NNApplied/NOMINAL">
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/incl/NOMINAL"> <!-- incl, ech, much -->
+<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/NNApplied/incl/NOMINAL">
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
@@ -135,7 +135,7 @@
 
 
 <!--
-<ConfigParse NEventsBreak="150000" FileSplit="0" AutoResubmit="5"/>
+<ConfigParse NEventsBreak="25000" FileSplit="0" AutoResubmit="5"/>
 <ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_NNApply_2016"/>
 -->
 
@@ -821,7 +821,7 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 
 
 
-<!-- for systematics -->
+<!-- for systematics (not necessarcy, can delete) -->
 
 <Item Name="Systematic_EleID"        Value="nominal" />
 <Item Name="Systematic_EleTrigger"   Value="nominal" />
@@ -845,6 +845,8 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="jecsmear_direction" Value="nominal" />
 <Item Name="jersmear_direction" Value="nominal" />
 
+
+<Item Name="PDFWeightPath" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/PDFWeights/" />
 
 <!-- Some test configuration; see HHtoWWbbSemiLeptonicNNApplication.cxx for how to access it: -->
 <Item Name="TestKey" Value="TestKeyValue" />
