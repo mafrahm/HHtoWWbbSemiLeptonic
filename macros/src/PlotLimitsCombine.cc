@@ -75,7 +75,7 @@ void AnalysisTool::PlotLimitsCombine(TString channel){
       double rr = *r;
       //rr *= g_theory->Eval(nodes[i]);
       rr *= HHtheory_xsecs[i];
-      //rr /= HHtheory_xsecs[1]; // normalize on node 1
+      rr /= HHtheory_xsecs[1]; // normalize on node 1
 
       if(q<0.) observed.emplace_back(rr);
       else if(q<0.1) expected_low_95.emplace_back(rr);
@@ -201,7 +201,7 @@ void AnalysisTool::PlotLimitsCombine(TString channel){
   TH1D* h = (TH1D*)g_expected_95->GetHistogram();
   h->GetXaxis()->SetRangeUser(nodes[0], nodes[n_points-1]);
   h->SetXTitle("#kappa_#lambda");
-  h->SetYTitle("#sigma_{HH#rightarrow bbWW(qql#nu)} [fb]");
+  h->SetYTitle("#sigma_{HH#rightarrow bbWW(qql#nu)}/#sigma_{SM}"); // [fb]
   //h->SetYTitle("limits");
   h->GetYaxis()->SetTitleSize(0.048);
   h->GetYaxis()->SetTitleOffset(1.05);
@@ -214,8 +214,9 @@ void AnalysisTool::PlotLimitsCombine(TString channel){
 
 
 
-  c->SaveAs("limitplot_combine_mc_fullsyst.eps");
-  c->SaveAs("limitplot_combine_mc_fullsyst.pdf");
+  c->SaveAs("Plots/limitplot_"+AnalysisTool::year+".eps");
+  c->SaveAs("Plots/limitplot_"+AnalysisTool::year+".pdf");
+  c->SaveAs("Plots/limitplot_"+AnalysisTool::year+".png");
 }
 
 

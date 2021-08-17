@@ -11,11 +11,14 @@ AnalysisTool::AnalysisTool(int year_) {
   uhh2_path = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/";
   //combine_path ="../data/datacards/";
   combine_path = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/";
-  TString run = "Inclusive/"
-  pre_tag = "Preselection/"+run;
-  full_tag = "Fullselection/"+run;
-  NN_tag = "NNApplied/"+run;
-  
+
+  channel = "Inclusive"; // Inclusive, ech, much
+  ptjet = "30";
+  nnmodel = "incl";
+
+  pre_tag = "Preselection/"+run+"_PTJet"+ptjet+"/";
+  full_tag = "Fullselection/"+run+"_PTJet"+ptjet+"/";
+  NN_tag = "NNApplication/"+run+"_PTJet"+ptjet+"NN"+nnmodel+"/";
 
   year = "";
   year += year_;

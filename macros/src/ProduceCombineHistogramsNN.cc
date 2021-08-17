@@ -10,7 +10,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 
 
   //vector<TString> systematics = {"NOMINAL"};
-  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"};
+  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"}; // "JEC", "JER"
   vector<TString> syst_shift = {"up", "down"};
   vector<TString> syst_shift_combine = {"Up", "Down"};
   //vector<TString> region_tags = {"catA"};
@@ -71,7 +71,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    TString infilename = infilename_base;
 	    if(syst.Contains("scale") && !force_nominal) infilename += "scale/";
 	    else if(syst=="pdf"       && !force_nominal) infilename += "pdf/";
-	    // else if((syst=="JEC" || syst =="JER") && !force_nominal) ...
+	    else if((syst=="JEC" || syst =="JER") && !force_nominal) infilename+= syst + syst_shift_combine[j] + "/uhh2.AnalysisModuleRunner."+tag;
 	    else infilename += "NOMINAL/uhh2.AnalysisModuleRunner."+tag;
 	    infilename += proc + "_" + yeartag + ".root";
 	  
@@ -86,9 +86,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    else if(syst.Contains("scale")) histname+="scale_" + syst_shift[j];
 	    else histname += syst + "_" + syst_shift[j];
 
-	    // quick fix: naming convention is different for PDF
-	    if(syst=="pdf") histname+="/NN_out"+to_string(region);
-	    else histname+="/NN_out"+to_string(region) + "_limits"; // + "_rebin";
+	    histname+="/NN_out"+to_string(region) + "_limits"; // + "_rebin";
 	    // e.g. histname = much_DNNoutput0_scale_up/NNout0
 	    cout << "histname: " << histname << endl;
 

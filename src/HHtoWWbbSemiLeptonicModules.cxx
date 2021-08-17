@@ -194,6 +194,7 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
 
   h_deepjetbmean_3jets = ctx.declare_event_output<float> ("deepjetbmean_3jets");
   h_deepjetbmean_4jets = ctx.declare_event_output<float> ("deepjetbmean_4jets");
+  h_deepjetbmean = ctx.declare_event_output<float> ("deepjetbmean");
 
   h_b1_pt = ctx.declare_event_output<float> ("b1_pt");
   h_b1_deepjetbscore = ctx.declare_event_output<float>  ("b1_deepjetbscore");
@@ -472,12 +473,14 @@ bool Variables_NN::process(uhh2::Event& evt){
 
   evt.set(h_deepjetbmean_3jets, -10);
   evt.set(h_deepjetbmean_4jets, -10);
-  
+  evt.set(h_deepjetbmean, -10);
+
   double bsum = 0;
   for(int i=0; i<NAk4jets; i++){
     bsum += Ak4jets->at(i).btag_DeepJet();
     if(i==2) evt.set(h_deepjetbmean_3jets, bsum/3);
     if(i==3) evt.set(h_deepjetbmean_4jets, bsum/4);
+    if(i==NAk4jets-1) evt.set(h_deepjetbmean, bsum/NAk4jets);
   }
 
   // b1 and b2 pt_sorted

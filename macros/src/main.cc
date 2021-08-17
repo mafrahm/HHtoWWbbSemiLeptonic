@@ -41,10 +41,19 @@ int main(){
   //  Analysis16.SignalToBackground(cutsLep5, plot_ptMu);
 
 
+  //Analysis16.ScaleVariationEnvelope();
+  //Analysis16.PDFRMS();
 
-  Analysis16.ProduceCombineHistograms();
-  Analysis16.ProduceCombineHistogramsNN();
+  //Analysis16.ProduceCombineHistograms();
+  //Analysis16.ProduceCombineHistogramsNN();
+ 
 
+  //Analysis16.PlotSystematicHists();
+
+
+  Analysis16.PlotLimitsCombine("comb");
+  //Analysis16.PlotPostfitDistribution();
+  //Analysis16.PlotPostfitDistribution(true);
 
 
   cout << "Finished main(). cya." << endl;

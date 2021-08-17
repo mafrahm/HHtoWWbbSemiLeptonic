@@ -32,10 +32,10 @@
 using namespace std;
 
 void AnalysisTool::ScaleVariationEnvelope(){
-
+  cout << "ScaleVariationEnvelope: " << endl;
   //Files & histograms for other processes
   TString path = AnalysisTool::base_path + AnalysisTool::year + "/" + AnalysisTool::NN_tag; // Finalselection == NNApplied
-
+  cout << path << endl;
   vector<TString> processes = {"TTbar_" + AnalysisTool::yeartag,"SingleTop_" + AnalysisTool::yeartag, "DYJets_" + AnalysisTool::yeartag, "Diboson_" + AnalysisTool::yeartag, "TTV_" + AnalysisTool::yeartag, "WJets_" + AnalysisTool::yeartag, "QCDMu_" + AnalysisTool::yeartag, "QCDEle_" + AnalysisTool::yeartag};
   unique_ptr<TFile> f_in;
 

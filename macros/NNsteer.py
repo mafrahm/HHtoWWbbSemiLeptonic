@@ -6,7 +6,7 @@ CombineRunner = CombineRunner(path_datacards, 2016)
 
 #systematics = ['lumi', 'rate_ttbar', 'rate_dy', 'rate_ttv', 'rate_diboson', 'rate_singletop', 'rate_wjets', 'rate_qcd', 'pu', 'pdf', 'muid', 'muiso', 'mutrigger', 'eleid', 'elereco', 'eletrigger', 'btag_bc', 'btag_udsg', 'scale_TTbar', 'scale_DYJets', 'scale_TTV', 'scale_Diboson', 'scale_SingleTop', 'scale_WJets']
 
-systematics = ['lumi', 'rate_qcd', 'pu', 'muid', 'muiso', 'eleid', 'elereco','btag_bc', 'btag_udsg', 'scale_TTbar', 'scale_DYJets', 'scale_TTV', 'scale_Diboson', 'scale_SingleTop', 'scale_WJets']
+systematics = ['lumi', 'rate_qcd', 'pu', 'muid', 'muiso', 'eleid', 'elereco','btag_bc', 'btag_udsg', 'pdf', 'scale_TTbar', 'scale_DYJets', 'scale_TTV', 'scale_Diboson', 'scale_SingleTop', 'scale_WJets']
 #systematics = ['lumi', 'rate_ttbar', 'rate_dy', 'rate_ttv', 'rate_diboson', 'rate_singletop', 'rate_wjets']
 #systematics = ['lumi', 'scale_TTbar', 'scale_DYJets', 'scale_TTV', 'scale_Diboson', 'scale_SingleTop', 'scale_WJets']
 #systematics = ['lumi']

@@ -87,4 +87,6 @@ g_postfit_b.Draw("PSAME")
 leg.Draw()
 ROOT.gPad.RedrawAxis()
 
-c.Print("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/output/nuisance_plot.pdf")
+c.Print("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/nuisance_plot.pdf")
+c.Print("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/nuisance_plot.eps")
+c.Print("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/nuisance_plot.png")

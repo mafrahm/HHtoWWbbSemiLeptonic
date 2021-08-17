@@ -55,12 +55,13 @@ public:
   
   // only after running NNsteer.py
   void PlotLimitsCombine(TString channel);
-  void postFitPlot();
+  void PlotPostfitDistribution(bool do_prefit=false);
 
 
 private:
   TString base_path, uhh2_path, combine_path;
   TString pre_tag, full_tag, NN_tag;
+  TString run;
   TString year;
   TString yeartag;
   map<char,int> test;

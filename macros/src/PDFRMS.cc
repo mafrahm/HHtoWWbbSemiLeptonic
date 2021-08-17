@@ -53,7 +53,7 @@ void AnalysisTool::PDFRMS() {
 
 
   TString infolder = AnalysisTool::base_path + AnalysisTool::year + "/" + AnalysisTool::NN_tag;
-
+  cout << infolder << endl;
   FindRMS(infolder, samplemap, "TTbar_" + yeartag);
   FindRMS(infolder, samplemap, "DYJets_" + yeartag);
   FindRMS(infolder, samplemap, "Diboson_" + yeartag);
@@ -146,7 +146,7 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
     vector<vector<TH1F*>> histograms;
     vector<TH1F*> histograms_nom;
     // cout << histnames.size() << endl;
-    for(size_t j=0; j<histnames.size()-1; j++){ // '-1- as a quick fix to remove the NNout4 node
+    for(size_t j=0; j<histnames.size(); j++){
       TString histname = histnames[j];
 
 

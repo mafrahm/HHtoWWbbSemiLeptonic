@@ -24,7 +24,7 @@
 using namespace std;
 
 void AnalysisTool::PlotSystematicHists(){
-
+  cout << "PlotSystematicHists: " << endl;
   gStyle->SetOptStat(0);
   gErrorIgnoreLevel = 2002;
 
@@ -236,8 +236,8 @@ void AnalysisTool::PlotSystematicHists(){
         text2->SetY(0.98);
         text2->Draw("SAME");
 
-
-        c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+        c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".png");
+        //c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
         // delete c_out;
 
 	/*

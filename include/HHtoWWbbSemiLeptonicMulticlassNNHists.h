@@ -61,7 +61,7 @@ public:
 
   TH1F *NN_Lep_pt, *NN_Lep_eta, *NN_Lep_phi, *NN_Lep_E;
   TH1F *NN_MET_pt, *NN_MET_phi;
-  TH1F *NN_deepjetbmean_3jets, *NN_deepjetbmean_4jets;
+  TH1F *NN_deepjetbmean_3jets, *NN_deepjetbmean_4jets, *NN_deepjetbmean;
   TH1F *NN_b1_pt, *NN_b2_pt, *NN_b1_deepjetbscore, *NN_b2_deepjetbscore;
   TH1F *NN_Ak4_j1_pt, *NN_Ak4_j1_eta, *NN_Ak4_j1_phi, *NN_Ak4_j1_E, *NN_Ak4_j1_m, *NN_Ak4_j1_deepjetbscore;;
   TH1F *NN_Ak4_j2_pt, *NN_Ak4_j2_eta, *NN_Ak4_j2_phi, *NN_Ak4_j2_E, *NN_Ak4_j2_m, *NN_Ak4_j2_deepjetbscore;;

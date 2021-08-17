@@ -137,6 +137,7 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
 
   fill_map(ctx, "deepjetbmean_3jets", NN_deepjetbmean_3jets, {40,0,1});
   fill_map(ctx, "deepjetbmean_4jets", NN_deepjetbmean_4jets, {40,0,1});
+  fill_map(ctx, "deepjetbmean", NN_deepjetbmean, {40,0,1});
 
   fill_map(ctx, "b1_pt", NN_b1_pt, {40,0,400});
   fill_map(ctx, "b2_pt", NN_b2_pt, {40,0,400});

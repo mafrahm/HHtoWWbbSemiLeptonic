@@ -159,6 +159,7 @@ void HHtoWWbbSemiLeptonicGenHists::fill(const Event & event){
   double dr_HH = deltaR(Higgs_W, Higgs_b);
   double dphi_HH = deltaPhi(Higgs_W, Higgs_b);
   double deta_HH = Higgs_b.eta() - Higgs_W.eta();
+  //cout << "dphi_HH = " << dphi_HH << endl;
   hist("M_HH")->Fill(m_HH, weight);
   hist("deltaR HH")->Fill(dr_HH, weight);
   hist("deltaPhi HH")->Fill(dphi_HH, weight);

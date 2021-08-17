@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
+<!ENTITY PTJET           "30">
+<!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
+<!ENTITY NNMODEL         "incl"> <!-- 3/4 classes, which variables, dunno man -->
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive/NOMINAL">
-<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/Inclusive/NOMINAL"> <!-- Inclusive, ECH, MUCH -->
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/&CHANNEL;_PTJet&PTJET;/NOMINAL"> <!-- Inclusive, ech, much -->
+<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/NNApplication/&CHANNEL;_PTJet&PTJET;_NN&NNMODEL;/NOMINAL">
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
 <!ENTITY PRESELfilename  "uhh2.AnalysisModuleRunner">
-<!ENTITY CHANNEL         "incl"> <!-- incl, ech, much -->
+
 
 <!-- Signal Samples -->
 
@@ -16,13 +19,10 @@
 <!ENTITY HHtoWWbbSemiLeptonic_SM "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSemiLeptonic_SM_2016v3.root">
 
 
-
 <!ENTITY HHtoWWbbSL_cHHH0 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH0_2016v3.root">
 <!ENTITY HHtoWWbbSL_cHHH1 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH1_2016v3.root">
 <!ENTITY HHtoWWbbSL_cHHH2p45 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH2p45_2016v3.root">
 <!ENTITY HHtoWWbbSL_cHHH5 "&PRESELdir;/&PRESELfilename;.MC.HHtoWWbbSL_cHHH5_2016v3.root">
-
-
 
 
 <!-- Background: TTbar, WJets, DYJets, SingleTop, Diboson, TTV, QCD -->
@@ -138,8 +138,8 @@
 
 
 <!--
-<ConfigParse NEventsBreak="150000" FileSplit="0" AutoResubmit="5"/>
-<ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_Full_2016"/>
+<ConfigParse NEventsBreak="25000" FileSplit="0" AutoResubmit="5"/>
+<ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_NNApplication_NOMINAL_2016"/>
 -->
 
 
@@ -194,6 +194,8 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+
+
 
 
 
@@ -291,7 +293,6 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
 
 
 
@@ -766,12 +767,13 @@
 	<!-- <Item Name="JetCollection" Value="jetsAk4CHS" /> -->
 	<Item Name="JetCollection" Value="jetsAk4Puppi" />
 	<Item Name="METName" Value="slimmedMETsPuppi" />
-	<Item Name="GenJetCollection" Value="slimmedGenJets" />
+	<!--  <Item Name="GenJetCollection" Value="slimmedGenJets" /> -->
 	<!--  <Item Name="TopJetCollection" Value="patJetsAk8CHSJetsSoftDropPacked_daughters" />  --> 
-	<Item Name="TopJetCollection" Value="jetsAk8PuppiSubstructure_SoftDropPuppi" />
-	<Item Name="GenParticleCollection" Value="GenParticles" />
-	<Item Name="GenInfoName" Value="genInfo" />
+	<!-- <Item Name="TopJetCollection" Value="jetsAk8PuppiSubstructure_SoftDropPuppi" />  -->
+	<!-- <Item Name="GenParticleCollection" Value="GenParticles" /> -->
+	<!-- <Item Name="GenInfoName" Value="genInfo" />  -->
 
+	<Item Name="additionalBranches"      Value="is_mHH_reconstructed mHH mH_WW mH_bb region eventweight_final eventweight_lumi weight_sfmu_id_up weight_sfmu_id_down weight_sfmu_id weight_pu weight_pu_up weight_pu_down weight_sfelec_id weight_sfelec_id_up weight_sfelec_id_down weight_sfelec_reco weight_sfelec_reco_up weight_sfelec_reco_down weight_sfelec_trigger weight_sfelec_trigger_up weight_sfelec_trigger_down weight_sfmu_iso weight_sfmu_iso_up weight_sfmu_iso_down weight_sfmu_trigger weight_sfmu_trigger_up weight_sfmu_trigger_down weight_btag weight_btag_bc_up weight_btag_bc_down weight_btag_udsg_up weight_btag_udsg_down weight_murmuf_upup weight_murmuf_upnone weight_murmuf_noneup weight_murmuf_nonedown weight_murmuf_downnone weight_murmuf_downdown" />
 
 	<Item Name="lumi_file" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.root" />
 	<Item Name="lumihists_lumi_per_bin" Value="1000."/>
@@ -804,26 +806,27 @@
 -->
 
 <!-- the class name of the AnalysisModule subclasses to run: -->
-<Item Name="AnalysisModule" Value="HHtoWWbbSemiLeptonicFullselectionModule" />
+<Item Name="AnalysisModule" Value="HHtoWWbbSemiLeptonicNNApplication" />
 
 <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
 MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
 event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="use_sframe_weight" Value="false" />
 
-
-<Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/2016/BTagMCEfficiencyHists.root" />
+<!--
+<Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/2016/BTagMCEfficiencyHists_DJLoose_MuonChannel_2016.root" />
 <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/DeepJet_2016LegacySF_WP_V1.csv" />
-
+-->
 <Item Name="pileup_directory" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyMCPileupHistogram.root" />
 <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram.root" />
 <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_72383.root" />
 <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_66017.root" />
 
-
+<Item Name="PTJet" Value="&PTJET;" />
 <Item Name="Channel" Value="&CHANNEL;" />
+<Item Name="NNModel" Value="&NNMODEL;" />
 
-<!-- for systematics -->
+<!-- for systematics (not necessarcy, can delete) -->
 
 <Item Name="Systematic_EleID"        Value="nominal" />
 <Item Name="Systematic_EleTrigger"   Value="nominal" />
@@ -848,7 +851,9 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="jersmear_direction" Value="nominal" />
 
 
-<!-- Some test configuration; see HHtoWWbbSemiLeptonicFullselectionModule.cxx for how to access it: -->
+<Item Name="PDFWeightPath" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/PDFWeights/" />
+
+<!-- Some test configuration; see HHtoWWbbSemiLeptonicNNApplication.cxx for how to access it: -->
 <Item Name="TestKey" Value="TestKeyValue" />
 </UserConfig>
 </Cycle>

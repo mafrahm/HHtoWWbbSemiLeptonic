@@ -157,11 +157,14 @@ HHtoWWbbSemiLeptonicPreselectionModule::HHtoWWbbSemiLeptonicPreselectionModule(C
 
     // Object IDs
     //cout << "Year: " << year << endl;
+    int jetpt = std::stoi(ctx.get("PTJet"));
+    cout << "PTJet for Jet_ID is: " << jetpt << endl;
+
     JetId jet_pfid = JetPFID(JetPFID::WP_TIGHT_CHS);
     EleId = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(28.0, 2.4));
     if (year == Year::is2016v2) MuId = AndId<Muon>(MuonID(Muon::Tight), PtEtaCut(25.0, 2.4), MuonIso(0.15));
     else                        MuId = AndId<Muon>(MuonID(Muon::CutBasedIdTight), PtEtaCut(25.0, 2.4), MuonID(Muon::PFIsoTight));
-    Jet_ID = AndId<Jet>(jet_pfid, PtEtaCut(30.0, 2.4));
+    Jet_ID = AndId<Jet>(jet_pfid, PtEtaCut(jetpt, 2.4));
 
 
     // BTagging

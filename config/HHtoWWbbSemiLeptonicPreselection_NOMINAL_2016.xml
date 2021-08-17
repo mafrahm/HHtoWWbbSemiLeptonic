@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
+<!ENTITY PTJET           "30">
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive/NOMINAL">
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive_PTJet&PTJET;/NOMINAL">
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
-
 
 
 <!-- Signal Samples -->
@@ -147,8 +147,8 @@
 ]>
 
 <!--
-<ConfigParse NEventsBreak="0" FileSplit="25" AutoResubmit="5"/>
-<ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_Pre_2016"/>
+<ConfigParse NEventsBreak="0" FileSplit="15" AutoResubmit="5"/>
+<ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_Preselection_NOMINAL_2016"/>
 -->
 
 
@@ -162,7 +162,7 @@
 
 <!-- DATA -->
 
-
+<!--
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			&DATA_Muon_B;
 			<InputTree Name="AnalysisTree" />
@@ -307,7 +307,7 @@
 		</InputData>
 
 
-
+-->
 
 <!-- SIGNAL  -->
 
@@ -787,11 +787,11 @@
 		  <Item Name="MuonCollection" Value="slimmedMuonsUSER" />
 		  <!-- <Item Name="JetCollection" Value="jetsAk4CHS" /> -->
 		  <Item Name="JetCollection" Value="jetsAk4Puppi" />
-		  <Item Name="GenJetCollection" Value="slimmedGenJets" />
+		  <!-- <Item Name="GenJetCollection" Value="slimmedGenJets" />  -->
 		  <!-- <Item Name="METName" Value="slimmedMETs" /> -->
 		  <Item Name="METName" Value="slimmedMETsPuppi" />
 		  <!--  <Item Name="TopJetCollection" Value="patJetsAk8CHSJetsSoftDropPacked_daughters" />  -->
-		  <Item Name="TopJetCollection" Value="jetsAk8PuppiSubstructure_SoftDropPuppi" />
+		  <!-- <Item Name="TopJetCollection" Value="jetsAk8PuppiSubstructure_SoftDropPuppi" />  -->
 		  <Item Name="GenParticleCollection" Value="GenParticles" />
 		  <Item Name="GenInfoName" Value="genInfo" />
 
@@ -837,6 +837,8 @@
 		  <Item Name="pileup_directory" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyMCPileupHistogram.root" />
 		  <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram.root" />
 
+
+		  <Item Name="PTJet" Value="&PTJET;" />
 
 		  <Item Name="jecsmear_direction" Value="nominal" />
 		  <Item Name="jersmear_direction" Value="nominal" />

@@ -109,7 +109,7 @@ error_poi = fpf_s.find(options.poi).getError()
 
 ##### csv file
 
-with open('/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/output/nuisances.csv', mode='w') as f:
+with open('/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/nuisances.csv', mode='w') as f:
     f_writer = csv.writer(f, delimiter=',')
     
     f_writer.writerow(['label','prefit','prefit_e','postfit_b','postfit_b_up','postfit_b_down','postfit_s','postfit_s_up','postfit_s_down','impact'])
@@ -301,7 +301,7 @@ for i in range(fpf_s.getSize()):
     print postfit_s_down
     print impact
 
-    with open('/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/output/nuisances.csv', mode='a') as f:
+    with open('/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/nuisances.csv', mode='a') as f:
         if name=='r': continue
         f_writer = csv.writer(f, delimiter=',')
         

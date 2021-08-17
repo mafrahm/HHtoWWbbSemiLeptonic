@@ -83,6 +83,7 @@ protected:
   uhh2::Event::Handle<float> h_Ak4_j3_pt, h_Ak4_j3_eta, h_Ak4_j3_phi, h_Ak4_j3_E, h_Ak4_j3_m, h_Ak4_j3_deepjetbscore;
 
 
+  string NNmodel;
   
   map<string, uhh2::Event::Handle<float>> NNInputs_map = {
     {"mbb", h_mbb},
@@ -152,7 +153,8 @@ NeuralNetworkModule::NeuralNetworkModule(Context& ctx, const std::string & Model
   for(it=NNInputs_map.begin(); it!=NNInputs_map.end();it++){
     it->second = ctx.get_handle<float>(it->first);
   }
- 
+
+  NNmodel = ctx.get("NNModel");
 }
 
   
@@ -167,7 +169,7 @@ void NeuralNetworkModule::CreateInputs(Event & event) {
   string std[N_variables];
   double mean_val[N_variables];
   double std_val[N_variables];
-  ifstream normfile ("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/NNModel/incl/NormInfo.txt", ios::in);
+  ifstream normfile ("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/NNModel/"+NNmodel+"/NormInfo.txt", ios::in);
   if (normfile.is_open()) { 
     for(int i = 0; i < N_variables; ++i) {   
       normfile >> varname[i] >> scal[i] >> mean[i] >> std[i];
@@ -353,7 +355,8 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   h_NNoutput4 = ctx.declare_event_output<double>("NNoutput4");
 
   string data_dir = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data//";
-  NNModule.reset(new NeuralNetworkModule(ctx, data_dir+"NNModel/incl/model.pb", data_dir+"NNModel/incl/model.config.pbtxt"));
+  string NNmodel = ctx.get("NNModel");
+  NNModule.reset(new NeuralNetworkModule(ctx, data_dir+"NNModel/"+NNmodel+"/model.pb", data_dir+"NNModel/"+NNmodel+"/model.config.pbtxt"));
   
 
   // Book histograms
@@ -540,7 +543,10 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
 
   // event.set(h_eventweight_final, event.weight);
   // event.set(h_region, region);
-  return true;
+
+  // we don't need the AnalysisTree anymore, just return false
+  return false;
+  //return true;
 }
 
 // as we want to run the ExampleCycleNew directly with AnalysisModuleRunner,

@@ -70,7 +70,7 @@ private:
   uhh2::Event::Handle<float> h_Lep_pt, h_Lep_eta, h_Lep_phi, h_Lep_E;
   uhh2::Event::Handle<float> h_MET_pt, h_MET_phi;
   
-  uhh2::Event::Handle<float> h_deepjetbmean_3jets, h_deepjetbmean_4jets;
+  uhh2::Event::Handle<float> h_deepjetbmean_3jets, h_deepjetbmean_4jets, h_deepjetbmean;
   uhh2::Event::Handle<float> h_b1_pt, h_b2_pt, h_b1_deepjetbscore, h_b2_deepjetbscore;
 
   uhh2::Event::Handle<float> h_Ak4_j1_pt, h_Ak4_j1_eta, h_Ak4_j1_phi, h_Ak4_j1_E, h_Ak4_j1_m, h_Ak4_j1_deepjetbscore;

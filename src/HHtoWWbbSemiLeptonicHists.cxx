@@ -250,22 +250,22 @@ void HHtoWWbbSemiLeptonicHists::fill(const Event & event){
   int Nmuons = event.muons->size();
   N_mu->Fill(Nmuons, weight);
   for (const Muon & thismu : *event.muons){
-      pt_mu->Fill(thismu.pt(), weight);
-      eta_mu->Fill(thismu.eta(), weight);
-      eta_mu_rebin->Fill(thismu.eta(), weight);
-      reliso_mu->Fill(thismu.relIso(), weight);
+    pt_mu->Fill(thismu.pt(), weight);
+    eta_mu->Fill(thismu.eta(), weight);
+    eta_mu_rebin->Fill(thismu.eta(), weight);
+    reliso_mu->Fill(thismu.relIso(), weight);
   }
-
-
+  
+  
   // Electrons
   vector<Electron>* electrons = event.electrons;
   int Nelectrons = event.electrons->size();
   N_ele->Fill(Nelectrons, weight);
-  for (const Electron & thismu : *event.electrons){
-      pt_ele->Fill(thismu.pt(), weight);
-      eta_ele->Fill(thismu.eta(), weight);      
-      eta_ele_rebin->Fill(thismu.eta(), weight);
-      reliso_ele->Fill(thismu.relIso(), weight);
+  for (const Electron & thisele : *event.electrons){
+    pt_ele->Fill(thisele.pt(), weight);
+    eta_ele->Fill(thisele.eta(), weight);      
+    eta_ele_rebin->Fill(thisele.eta(), weight);
+    reliso_ele->Fill(thisele.relIso(), weight);
   }
 
   N_lep->Fill(Nelectrons+Nmuons, weight);

@@ -65,7 +65,7 @@ namespace uhh2examples {
     std::unique_ptr<CommonModules> common;
 
     unique_ptr<Hists> h_btageff;
-    unique_ptr<Hists> h_NNInputVariables_incl, h_NNInputVariables_ech, h_NNInputVariables_much;
+    unique_ptr<Hists> h_NNInputVariables_Inclusive, h_NNInputVariables_ech, h_NNInputVariables_much;
     std::unique_ptr<AnalysisModule> SF_muonIso, SF_muonID, SF_muonTrigger, SF_eleReco, SF_eleID, SF_eleTrigger, SF_btag, scale_variation_module;
     std::unique_ptr<Selection> nbtag1_medium_sel, nbtag2_medium_sel, njet4_sel, muon_trigger_sel1, muon_trigger_sel2, ele_trigger_sel1, ele_trigger_sel2, ele_trigger_sel3;
     
@@ -128,7 +128,7 @@ namespace uhh2examples {
     for(const auto & tag : tags){
       cout << "booking histograms with tag " << tag << endl;
       string mytag = "";
-      if(channel=="ech" || channel=="incl"){
+      if(channel=="ech" || channel=="Inclusive"){
 	mytag = tag + "_ech" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
 	mytag = tag + "_ech" + "_Signal"; 
@@ -136,7 +136,7 @@ namespace uhh2examples {
 	mytag = tag + "_ech" + "_Matched"; 
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
       }
-      if(channel=="much" || channel=="incl"){
+      if(channel=="much" || channel=="Inclusive"){
 	mytag = tag + "_much" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
 	mytag = tag + "_much" + "_Signal"; 
@@ -162,7 +162,7 @@ namespace uhh2examples {
 
   HHtoWWbbSemiLeptonicFullselectionModule::HHtoWWbbSemiLeptonicFullselectionModule(Context & ctx){
     channel = ctx.get("Channel");
-    //channel = "incl";
+    //channel = "Inclusive";
     cout << "channel: " << channel << endl;
     for(auto & kv : ctx.get_all()){
       cout << " " << kv.first << " = " << kv.second << endl;
@@ -293,7 +293,7 @@ namespace uhh2examples {
     book_histograms(ctx, histogram_tags);
 
     h_btageff.reset(new BTagMCEfficiencyHists(ctx, "BTagEff", DeepjetMedium));
-    h_NNInputVariables_incl.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_incl"));
+    h_NNInputVariables_Inclusive.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_Inclusive"));
     h_NNInputVariables_ech.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_ech"));
     h_NNInputVariables_much.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_much"));
 
@@ -330,7 +330,7 @@ namespace uhh2examples {
     
     if(channel=="much" && region !="much") return false;
     else if(channel=="ech" && region !="ech") return false;
-    else if(channel!="ech" && channel!="much" && channel!="incl") throw runtime_error("In FullselectionModule: channel should be either ech, much or incl");
+    else if(channel!="ech" && channel!="much" && channel!="Inclusive") throw runtime_error("In FullselectionModule: channel should be either ech, much or Inclusive");
 
 
     mHH_reco->process(event);    
@@ -425,7 +425,7 @@ namespace uhh2examples {
 
     //if(!njet4_sel->passes(event)) return false; // quick hack to only consider 4 Jet category
     Variables_module->process(event);
-    h_NNInputVariables_incl->fill(event);
+    h_NNInputVariables_Inclusive->fill(event);
     if(region=="ech")       h_NNInputVariables_ech->fill(event);
     else if(region=="much") h_NNInputVariables_much->fill(event);
     event.set(h_eventweight_final, event.weight);
