@@ -31,6 +31,7 @@
 #include "UHH2/common/include/Utils.h"
 
 #include "UHH2/common/include/NeuralNetworkBase.hpp"
+#include "UHH2/HHtoWWbbSemiLeptonic/include/NeuralNetworkModule.h"
 
 // my own classes
 #include "UHH2/HHtoWWbbSemiLeptonic/include/HHtoWWbbSemiLeptonicSelections.h"
@@ -57,144 +58,6 @@
 using namespace std;
 using namespace uhh2;
 using namespace uhh2examples;
-
-class NeuralNetworkModule: public NeuralNetworkBase {
-public:
-  explicit NeuralNetworkModule(uhh2::Context&, const std::string & ModelName, const std::string& ConfigName);
-  virtual void CreateInputs(uhh2::Event & event) override;
-protected:
-  uhh2::Event::Handle<float> h_eventweight;
-
-  uhh2::Event::Handle<float> h_mbb, h_mWW, h_mlnu, h_mqq;
-  uhh2::Event::Handle<float> h_DeltaRlnu, h_DeltaRbb, h_DeltaRqq;
-  uhh2::Event::Handle<float> h_minDeltaRlj, h_minDeltaRjj;
-  uhh2::Event::Handle<float> h_HT;
-  uhh2::Event::Handle<float> h_N_BTag, h_N_Ak4;
-  uhh2::Event::Handle<float> h_mtop_lep_hyp1, h_mtop_lep_hyp2, h_mtop_had_hyp1, h_mtop_had_hyp2, h_MTtop_lep_hyp1, h_MTtop_lep_hyp2;
-  uhh2::Event::Handle<float> h_MH_bb, h_MH_WW;
-
-  uhh2::Event::Handle<float> h_Lep_pt, h_Lep_eta, h_Lep_phi, h_Lep_E;
-  uhh2::Event::Handle<float> h_MET_pt, h_MET_phi;
-
-  uhh2::Event::Handle<float> h_deepjetbmean_3jets, h_deepjetbmean_4jets;
-  uhh2::Event::Handle<float> h_b1_pt, h_b2_pt, h_b1_deepjetbscore, h_b2_deepjetbscore;
-  uhh2::Event::Handle<float> h_Ak4_j1_pt, h_Ak4_j1_eta, h_Ak4_j1_phi, h_Ak4_j1_E, h_Ak4_j1_m, h_Ak4_j1_deepjetbscore;
-  uhh2::Event::Handle<float> h_Ak4_j2_pt, h_Ak4_j2_eta, h_Ak4_j2_phi, h_Ak4_j2_E, h_Ak4_j2_m, h_Ak4_j2_deepjetbscore;
-  uhh2::Event::Handle<float> h_Ak4_j3_pt, h_Ak4_j3_eta, h_Ak4_j3_phi, h_Ak4_j3_E, h_Ak4_j3_m, h_Ak4_j3_deepjetbscore;
-
-
-  string NNmodel;
-  
-  map<string, uhh2::Event::Handle<float>> NNInputs_map = {
-    {"mbb", h_mbb},
-    {"mWW", h_mWW},
-    {"mqq", h_mqq},
-    {"mlnu", h_mlnu},
-    {"DeltaRlnu", h_DeltaRlnu},
-    {"DeltaRbb", h_DeltaRbb},
-    {"DeltaRqq", h_DeltaRqq},
-    {"minDeltaRlj", h_minDeltaRlj},
-    {"minDeltaRjj", h_minDeltaRjj},
-    {"HT", h_HT},
-    {"N_BTag", h_N_BTag},
-    {"N_Ak4", h_N_Ak4},
-    {"mtop_lep_hyp1", h_mtop_lep_hyp1},
-    {"mtop_lep_hyp2", h_mtop_lep_hyp2},
-    {"mtop_had_hyp1", h_mtop_had_hyp1},
-    {"mtop_had_hyp2", h_mtop_had_hyp2},
-    {"MTtop_lep_hyp1", h_MTtop_lep_hyp1},
-    {"MTtop_lep_hyp2", h_MTtop_lep_hyp2},
-    {"MH_bb", h_MH_bb},
-    {"MH_WW", h_MH_WW},
-    {"Lep_pt", h_Lep_pt},    
-    {"Lep_eta", h_Lep_eta},
-    {"Lep_phi", h_Lep_phi},
-    {"Lep_E", h_Lep_E},
-    {"MET_pt", h_MET_pt},    
-    {"MET_phi", h_MET_phi},
-    {"b1_pt", h_b1_pt},
-    {"b2_pt", h_b2_pt},
-    {"b1_deepjetbscore", h_b1_deepjetbscore},
-    {"b2_deepjetbscore", h_b2_deepjetbscore},
-    {"Ak4_j1_pt", h_Ak4_j1_pt},    
-    {"Ak4_j1_eta", h_Ak4_j1_eta},
-    {"Ak4_j1_phi", h_Ak4_j1_phi},
-    {"Ak4_j1_E", h_Ak4_j1_E},
-    {"Ak4_j1_m", h_Ak4_j1_E},
-    {"Ak4_j1_deepjetbscore", h_Ak4_j1_deepjetbscore},
-    {"Ak4_j2_pt", h_Ak4_j2_pt},    
-    {"Ak4_j2_eta", h_Ak4_j2_eta},
-    {"Ak4_j2_phi", h_Ak4_j2_phi},
-    {"Ak4_j2_E", h_Ak4_j2_E},
-    {"Ak4_j2_m", h_Ak4_j2_E},
-    {"Ak4_j2_deepjetbscore", h_Ak4_j2_deepjetbscore},
-    {"Ak4_j3_pt", h_Ak4_j3_pt},    
-    {"Ak4_j3_eta", h_Ak4_j3_eta},
-    {"Ak4_j3_phi", h_Ak4_j3_phi},
-    {"Ak4_j3_E", h_Ak4_j3_E},
-    {"Ak4_j3_m", h_Ak4_j3_E},
-    {"Ak4_j3_deepjetbscore", h_Ak4_j3_deepjetbscore}
-  };
-
-};
-
-
-NeuralNetworkModule::NeuralNetworkModule(Context& ctx, const std::string & ModelName, const std::string& ConfigName): NeuralNetworkBase(ctx, ModelName, ConfigName) {
-  
-  h_eventweight = ctx.declare_event_output<float> ("eventweight");
-  /*
-  for(string var : NNInputs_id) {
-    map<string, uhh2::Event::Handle<float>>::iterator it = NNInputs_map.find(var);
-    if(it == NNInputs_map.end()) throw runtime_error("NNInputs_map in NeuralNetworkModule: "+var+ " is not mapped");
-    it->second = ctx.get_handle<float>(var);
-  }
-  */
-  map<string, uhh2::Event::Handle<float>>::iterator it;
-  for(it=NNInputs_map.begin(); it!=NNInputs_map.end();it++){
-    it->second = ctx.get_handle<float>(it->first);
-  }
-
-  NNmodel = ctx.get("NNModel");
-}
-
-  
-void NeuralNetworkModule::CreateInputs(Event & event) {
-  NNInputs.clear();
-  NNoutputs.clear();
- 
-  int N_variables = 16; // change manually
-  string varname[N_variables];
-  string scal[N_variables];
-  string mean[N_variables];
-  string std[N_variables];
-  double mean_val[N_variables];
-  double std_val[N_variables];
-  ifstream normfile ("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/NNModel/"+NNmodel+"/NormInfo.txt", ios::in);
-  if (normfile.is_open()) { 
-    for(int i = 0; i < N_variables; ++i) {   
-      normfile >> varname[i] >> scal[i] >> mean[i] >> std[i];
-      mean_val[i] = std::stod(mean[i]);
-      std_val[i] = std::stod(std[i]);
-    }
-    normfile.close();
-  }
-  NNInputs.push_back( tensorflow::Tensor(tensorflow::DT_FLOAT, {1, N_variables}));
-  //cout << varname[0] << endl;
-  //cout << mean_val[0] << endl;
-
-  
-  for(int i = 0; i<N_variables; i++) {
-    string identifier = varname[i];
-    map<string, uhh2::Event::Handle<float>>::iterator it = NNInputs_map.find(identifier);
-    if(it == NNInputs_map.end()) throw runtime_error("NNInputs_map in CreateInputs: "+identifier+ " is not mapped");
-    float val = event.get(it->second);
-    //cout << val << endl;
-    NNInputs.at(0).tensor<float, 2>()(0,i)  = (val - mean_val[i]) / (std_val[i]);
-  }
-
-  if (NNInputs.size()!=LayerInputs.size()) throw logic_error("NeuralNetworkModule.cxx: Create a number of inputs diffetent wrt. LayerInputs.size()="+to_string(LayerInputs.size()));
-}
-
 
   
 class HHtoWWbbSemiLeptonicNNApplication: public ModuleBASE {
@@ -223,6 +86,7 @@ private:
   Event::Handle<vector<tensorflow::Tensor>> h_NNoutput;
   Event::Handle<double> h_NNoutput0, h_NNoutput1, h_NNoutput2, h_NNoutput3, h_NNoutput4;
   unique_ptr<NeuralNetworkModule> NNModule;
+  int NN_classes;
 
   uhh2::Event::Handle<TString> h_region;
 
@@ -248,15 +112,16 @@ private:
 void HHtoWWbbSemiLeptonicNNApplication::book_histograms(uhh2::Context& ctx, vector<string> tags){
   for(const auto & tag : tags){
     cout << "booking histograms with tag " << tag << endl;
-    string mytag = tag + "_ech" + "_General";
-    book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
+    string mytag;
+    //mytag = tag + "_ech" + "_General";
+    //book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
     mytag = tag + "_ech" + "_NNInput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx,mytag));
     mytag = tag + "_ech" + "_NNOutput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNHists(ctx,mytag));
 
-    mytag = tag + "_much" + "_General";
-    book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
+    //mytag = tag + "_much" + "_General";
+    //book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
     mytag = tag + "_much" + "_NNInput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx,mytag));
     mytag = tag + "_much" + "_NNOutput";
@@ -268,8 +133,9 @@ void HHtoWWbbSemiLeptonicNNApplication::book_histograms(uhh2::Context& ctx, vect
 
 
 void HHtoWWbbSemiLeptonicNNApplication::fill_histograms(uhh2::Event& event, string tag, string region){
-  string mytag = tag + "_" + region + "_General";
-  HFolder(mytag)->fill(event);
+  string mytag;
+  //string mytag = tag + "_" + region + "_General";
+  //HFolder(mytag)->fill(event);
   mytag = tag + "_" + region + "_NNInput";
   HFolder(mytag)->fill(event);
   mytag = tag + "_" + region + "_NNOutput";
@@ -333,16 +199,8 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   is_signal = dataset_version.Contains("HHtoWWbb");
 
 
-
-  // CommonModules
-  common.reset(new CommonModules());
-  common->disable_lumisel();
-  common->disable_jersmear();
-  common->disable_jec();
-  common->init(ctx);
-
   // Selections
-  njet4_sel.reset(new NJetSelection(4, -1));
+  //njet4_sel.reset(new NJetSelection(4, -1));
 
 
   // NN Stuff
@@ -357,7 +215,7 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   string data_dir = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data//";
   string NNmodel = ctx.get("NNModel");
   NNModule.reset(new NeuralNetworkModule(ctx, data_dir+"NNModel/"+NNmodel+"/model.pb", data_dir+"NNModel/"+NNmodel+"/model.config.pbtxt"));
-  
+  NN_classes = stoi(ctx.get("NN_Classes"));
 
   // Book histograms
   vector<string> histogram_tags = {"Finalselection", "DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4"};
@@ -443,8 +301,6 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   //cout << "NNApplication: process" << endl;
 
-  bool pass_common = common->process(event);
-  if(!pass_common) return false;
 
 
   //double eventweight_lumi = event.weight;
@@ -456,7 +312,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   //if(!njet4_sel->passes(event)) return false;
 
 
-  Variables_module->process(event);
+  //Variables_module->process(event); // (hopefully) not needed anymore :)
   NNModule->process(event);
 
 
@@ -470,7 +326,8 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   double out4 =  (double)(NNoutputs[0].tensor<float, 2>()(0,4));
   //double out5 =  (double)(NNoutputs[0].tensor<float, 2>()(0,5));
 
-  vector<double> out_event = {out0,out1,out2,out3/*,out4*/};
+  vector<double> out_event = {out0,out1,out2,out3,out4};
+  if(NN_classes>5)runtime_error("In HHtoWWbbSemiLeptonicNNApplication: max. 5 NN categories are implemented ATM");
   /*
   cout << "out0= " << out0 << endl;
   cout << "out1= " << out1 << endl;
@@ -488,7 +345,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   // Categorization using NN output
   double max_score = 0.0;
   string max_score_tag = "";
-  for (unsigned  int i = 0; i < out_event.size(); i++ ) {
+  for (int i = 0; i < NN_classes; i++ ) {
     if ( out_event[i] > max_score) {
     max_score = out_event[i];
     max_score_tag = std::to_string(i);

@@ -245,9 +245,6 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_Ak4_j6_deepjetbscore = ctx.declare_event_output<float>  ("Ak4_j6_deepjetbscore");
 
 
-/// Chi2 Higgs masses
-  h_MH_bb = ctx.declare_event_output<float> ("MH_bb");
-  h_MH_WW = ctx.declare_event_output<float> ("MH_WW");
 
 
 }
