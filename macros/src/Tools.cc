@@ -14,11 +14,11 @@ AnalysisTool::AnalysisTool(int year_) {
 
   channel = "Inclusive"; // Inclusive, ech, much
   ptjet = "30";
-  nnmodel = "incl";
+  nnmodel = "incl_classes5_fraction050";
 
-  pre_tag = "Preselection/"+run+"_PTJet"+ptjet+"/";
-  full_tag = "Fullselection/"+run+"_PTJet"+ptjet+"/";
-  NN_tag = "NNApplication/"+run+"_PTJet"+ptjet+"NN"+nnmodel+"/";
+  pre_tag = "Preselection/"+channel+"_PTJet"+ptjet+"/";
+  full_tag = "Fullselection/"+channel+"_PTJet"+ptjet+"/";
+  NN_tag = "NNApplication/"+channel+"_PTJet"+ptjet+"_NN"+nnmodel+"/";
 
   year = "";
   year += year_;
@@ -46,6 +46,32 @@ AnalysisTool::AnalysisTool(int year_) {
     {"SingleTop", 801},
     {"TTV", 413},
     {"WJets", 613}
+  };
+
+  channel_to_histname = {
+    {"srmuch", "much_DNNoutput0_nominal/NN_out0"},
+    {"ttcrmuch", "much_DNNoutput1_nominal/NN_out1"},
+    {"stcrmuch", "much_DNNoutput2_nominal/NN_out2"},
+    {"wdycrmuch", "much_DNNoutput3_nominal/NN_out3"},
+    {"qcdcrmuch", "much_DNNoutput4_nominal/NN_out4"},
+    {"srech", "ech_DNNoutput0_nominal/NN_out0"},
+    {"ttcrech", "ech_DNNoutput1_nominal/NN_out1"},
+    {"stcrech", "ech_DNNoutput2_nominal/NN_out2"},
+    {"wdycrech", "ech_DNNoutput3_nominal/NN_out3"},
+    {"qcdcrech", "ech_DNNoutput4_nominal/NN_out4"}
+  };
+
+  channel_to_chNumber = {
+    {"ch1", "srmuch"},
+    {"ch2", "ttcrmuch"},
+    {"ch3", "stcrmuch"},
+    {"ch4", "wdycrmuch"},
+    {"ch5", "qcdcrmuch"},
+    {"ch6", "srech"},
+    {"ch7", "ttcrech"},
+    {"ch8", "stcrech"},
+    {"ch9", "wdycrech"},
+    {"ch10", "qcdcrech"},
   };
 
 }
