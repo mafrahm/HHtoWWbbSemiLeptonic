@@ -3,41 +3,41 @@
 
 using namespace std;
 
-void AnalysisTool::ProduceCombineHistogramsNN(){
-  cout << "ProduceCombinedHistograms:"<< endl;
-  cout << "year: " << AnalysisTool::yeartag << endl;
-  cout << "Line: " << __LINE__ << endl;
-
+void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
+  bool debug = false;
+  if(debug){
+    cout << "ProduceCombinedHistograms:"<< endl;
+    cout << "year: " << AnalysisTool::yeartag << endl;
+    cout << "Line: " << __LINE__ << endl;
+  }
 
   //vector<TString> systematics = {"NOMINAL"};
-  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf", "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"}; // "JEC", "JER"
+  vector<TString> systematics = {"nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg",/* "pdf",*/ "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV"}; // "JEC", "JER"
   vector<TString> syst_shift = {"up", "down"};
   vector<TString> syst_shift_combine = {"Up", "Down"};
   //vector<TString> region_tags = {"catA"};
   vector<TString> channel_tags = {"much", "ech"};
   //vector<TString> channel_tags = {"srmu"};
-  vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"};
-  //vector<TString> histinname_base = {"srmu_DNNoutput0", "srmu_DNNoutput1", "srmu_DNNoutput2", "srmu_DNNoutput3"};
+  vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr", "qcdcr"};
+  vector<TString> histinname_tag = {"limits1", "limits1", "limits1", "limits1", "limits1"}; // to change, which binning is used in which region
   //vector<TString> histoutname_base = {"mH"};
   vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"}; //, "DATA"
 
-  TString outfilename = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root"; 
+  TString outfilename = AnalysisTool::combine_path + "input/combineInput_PTJet" + ptjet + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root"; 
   TFile* f_out = new TFile(outfilename, "RECREATE");
-
-
 
   for(unsigned int region = 0; region <region_tags.size(); region++) {
     for(unsigned int channel=0; channel<channel_tags.size(); channel++) {
-      cout << "============= Channel: " << channel_tags[channel] << ", Region: " << region_tags[region] << endl;
+      if(debug) cout << "============= Channel: " << channel_tags[channel] << ", Region: " << region_tags[region] << endl;
 
       for(unsigned int k=0; k<systematics.size(); k++) {
 	TString syst = systematics[k];
-	cout << "========== Syst: " << syst << endl;
+	if(debug) cout << "========== Syst: " << syst << endl;
 	for(unsigned int j=0; j<syst_shift.size(); j++) {
-	  //cout << " === syst_shift: " << systshift[j] << endl;
+	  //if(debug) cout << " === syst_shift: " << systshift[j] << endl;
 
 	  TString infilename_base = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag; 
-	  cout << infilename_base << endl;
+	  if(debug) cout << infilename_base << endl;
 
 
 
@@ -45,7 +45,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    TString proc = samples_base[i];
 
             TString tag = "MC.";
-            if(proc == "DATA") tag = "DATA.";
+            if(use_data && proc == "DATA") tag = "DATA.";
 
 	    // change qcd and data to required input name
 	    if (proc == "DATA") {
@@ -66,7 +66,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
             if(!proc.Contains("TTV") && syst == "scale_TTV") force_nominal = true;
             if(!proc.Contains("WJets") && syst == "scale_WJets") force_nominal = true;
 
-	    cout << "======= Sample " << proc << endl;
+	    if(debug) cout << "======= Sample " << proc << endl;
 
 	    TString infilename = infilename_base;
 	    if(syst.Contains("scale") && !force_nominal) infilename += "scale/";
@@ -75,7 +75,13 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    else infilename += "NOMINAL/uhh2.AnalysisModuleRunner."+tag;
 	    infilename += proc + "_" + yeartag + ".root";
 	  
-	    cout << "infilename: " << infilename << endl;
+	    // if running blind & data is not processed yet: use dummy
+	    if(!use_data && proc.Contains("DATA")) {
+	      infilename.ReplaceAll("DATA_Electron", "TTbar");
+	      infilename.ReplaceAll("DATA_Muon", "TTbar");
+	    }
+
+	    if(debug) cout << "infilename: " << infilename << endl;
 	    TFile* f_in = new TFile(infilename);
 
 	    //TString histname = histinname_base[channel] + "_";
@@ -86,42 +92,35 @@ void AnalysisTool::ProduceCombineHistogramsNN(){
 	    else if(syst.Contains("scale")) histname+="scale_" + syst_shift[j];
 	    else histname += syst + "_" + syst_shift[j];
 
-	    histname+="/NN_out"+to_string(region) + "_limits"; // + "_rebin";
+	    histname+="/NN_out"+to_string(region);
+	    //histname+="/NN_out"+to_string(region) + "_" + histinname_tag[region];
 	    // e.g. histname = much_DNNoutput0_scale_up/NNout0
-	    cout << "histname: " << histname << endl;
+	    if(debug) cout << "histname: " << histname << endl;
 
-	    TH1F* h_out = (TH1F*) f_in->Get(histname);
+	    //TH1F* h_out = (TH1F*) f_in->Get(histname);
+	    TH1F* h_out = ApplyOptimizeBinning((TH1F*)f_in->Get(histname), channel_to_bins[region_tags[region]+channel_tags[channel]]);
+
+
 	    //h_out->Scale(3.8);
-	    cout << __LINE__ << endl;
 	    // change data and qcd to the required output name
 	    if(proc.Contains("DATA")) proc = "data_obs";
 	    if(proc.Contains("QCD")) proc = "QCD";
-	    //TString histname_out = /*histoutname_base[region] + "_" +*/ channel_tags[channel] + "_" + region_tags[region] + "__" + proc + "_" + AnalysisTool::yeartag;
-	    TString histname_out = region_tags[region] + channel_tags[channel] + "_catA" + "__" + proc + "_" + AnalysisTool::yeartag;
+
+	    TString histname_out = region_tags[region] + channel_tags[channel] + "__" + proc + "_" + AnalysisTool::yeartag;
 	    if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
 	    // e.g. histname_out = srmuch_TTbar_2016v3__scale_TTbarUp
-	    cout << "histname_out: " << histname_out << endl;
+	    if(debug) cout << "histname_out: " << histname_out << endl;
 
-	    cout << __LINE__ << endl;
 	    h_out->SetName(histname_out);
-	    cout << __LINE__ << endl;
 	    f_out->cd();
-	    cout << __LINE__ << endl;
 	    h_out->Write();
-	    cout << __LINE__ << endl;
 	    f_in->Close();
 	  }
 	}
       }
     }
   }
+  f_out->Close();
   
-  
-
-
-
-
   cout << "finished!" << endl;
-
-  
 }

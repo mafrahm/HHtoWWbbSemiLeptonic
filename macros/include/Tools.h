@@ -80,5 +80,5 @@ private:
   map<TString, TString> channel_to_chNumber;
 
 
-
+  // bool debug;
 };
