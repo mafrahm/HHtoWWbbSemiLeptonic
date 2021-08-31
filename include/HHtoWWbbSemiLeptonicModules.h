@@ -3,12 +3,10 @@
 #include <UHH2/core/include/AnalysisModule.h>
 #include <UHH2/core/include/Event.h>
 #include <UHH2/core/include/NtupleObjects.h>
-//#include <UHH2/ZprimeSemiLeptonic/include/ZprimeCandidate.h>
 #include <UHH2/core/include/LorentzVector.h>
 
 
 //#include <UHH2/common/include/TTbarGen.h>
-//#include <UHH2/ZprimeSemiLeptonic/include/constants.hpp>
 
 #include "UHH2/HHtoWWbbSemiLeptonic/include/HHReconstructionHypothesisDiscriminators.h"
 #include "UHH2/HHtoWWbbSemiLeptonic/include/HHReconstructionHypothesis.h"
@@ -60,6 +58,8 @@ private:
   uhh2::Event::Handle<float> h_minDeltaEtalj, h_minDeltaEtajj;
   uhh2::Event::Handle<float> h_minDeltaEtab1j, h_minDeltaEtab2j;
 
+  uhh2::Event::Handle<float> h_DeltaPhi_j1MET, h_DeltaPhi_j2MET, h_DeltaPhi_j3MET;
+
   uhh2::Event::Handle<float> h_HT;
   uhh2::Event::Handle<float> h_N_BTag, h_N_Ak4;
   uhh2::Event::Handle<float> h_mtop_lep_hyp1, h_mtop_lep_hyp2, h_mtop_had_hyp1, h_mtop_had_hyp2, h_MTtop_lep_hyp1, h_MTtop_lep_hyp2;
@@ -67,7 +67,7 @@ private:
 
 
   //low-level observables
-  uhh2::Event::Handle<float> h_Lep_pt, h_Lep_eta, h_Lep_phi, h_Lep_E;
+  uhh2::Event::Handle<float> h_Lep_pt, h_Lep_eta, h_Lep_phi, h_Lep_E, h_Lep_reliso;
   uhh2::Event::Handle<float> h_MET_pt, h_MET_phi;
   
   uhh2::Event::Handle<float> h_deepjetbmean_3jets, h_deepjetbmean_4jets, h_deepjetbmean;

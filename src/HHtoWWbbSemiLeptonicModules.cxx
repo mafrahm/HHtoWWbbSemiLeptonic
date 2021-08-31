@@ -14,6 +14,9 @@
 #include "TFile.h"
 #include "TH1F.h"
 
+
+
+
 using namespace std;
 using namespace uhh2;
 
@@ -160,6 +163,11 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_minDeltaEtab1j = ctx.declare_event_output<float> ("minDeltaEtab1j");
   h_minDeltaEtab2j = ctx.declare_event_output<float> ("minDeltaEtab2j");
 
+
+  h_DeltaPhi_j1MET = ctx.declare_event_output<float> ("DeltaPhi_j1MET");
+  h_DeltaPhi_j2MET = ctx.declare_event_output<float> ("DeltaPhi_j2MET");
+  h_DeltaPhi_j3MET = ctx.declare_event_output<float> ("DeltaPhi_j3MET");
+
   h_HT = ctx.declare_event_output<float> ("HT");
   h_N_BTag = ctx.declare_event_output<float> ("N_BTag");
   h_N_Ak4 = ctx.declare_event_output<float> ("N_Ak4");
@@ -184,6 +192,7 @@ Variables_NN::Variables_NN(uhh2::Context& ctx){
   h_Lep_eta = ctx.declare_event_output<float> ("Lep_eta");
   h_Lep_phi = ctx.declare_event_output<float> ("Lep_phi");
   h_Lep_E = ctx.declare_event_output<float> ("Lep_E");
+  h_Lep_reliso = ctx.declare_event_output<float>("Lep_reliso");
 
 
   ///  MET
@@ -260,6 +269,7 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_Lep_eta, -10);
   evt.set(h_Lep_phi, -10);
   evt.set(h_Lep_E, -10);
+  evt.set(h_Lep_reliso, -10);
 
   vector<Electron>* electrons = evt.electrons;
   int Nelectrons = electrons->size();
@@ -276,6 +286,7 @@ bool Variables_NN::process(uhh2::Event& evt){
       evt.set(h_Lep_eta, electrons->at(i).eta());
       evt.set(h_Lep_phi, electrons->at(i).phi());
       evt.set(h_Lep_E, electrons->at(i).energy());
+      evt.set(h_Lep_reliso, electrons->at(i).relIso());
     }
   }
   else if(evt.muons->size() == 1 && evt.electrons->size() == 0) {
@@ -285,6 +296,7 @@ bool Variables_NN::process(uhh2::Event& evt){
       evt.set(h_Lep_eta, muons->at(i).eta());
       evt.set(h_Lep_phi, muons->at(i).phi());
       evt.set(h_Lep_E, muons->at(i).energy());
+      evt.set(h_Lep_reliso, muons->at(i).relIso());
     }
   }
   else throw runtime_error("In HHtoWWbbSemiLeptonicModules: region is neither srmu or srele");
@@ -342,6 +354,9 @@ bool Variables_NN::process(uhh2::Event& evt){
   evt.set(h_Ak4_j6_m, -10);
   evt.set(h_Ak4_j6_deepjetbscore, -10);
 
+  evt.set(h_DeltaPhi_j1MET, -10);
+  evt.set(h_DeltaPhi_j2MET, -10);
+  evt.set(h_DeltaPhi_j3MET, -10);
 
   vector<Jet>* Ak4jets = evt.jets;
   int NAk4jets = Ak4jets->size();
@@ -355,6 +370,7 @@ bool Variables_NN::process(uhh2::Event& evt){
       evt.set(h_Ak4_j1_E, Ak4jets->at(i).energy());
       evt.set(h_Ak4_j1_m, Ak4jets->at(i).v4().M());
       evt.set(h_Ak4_j1_deepjetbscore, Ak4jets->at(i).btag_DeepJet());
+      evt.set(h_DeltaPhi_j1MET, deltaPhi(Ak4jets->at(i),evt.met->v4()));
       }
       if(i==1){
       evt.set(h_Ak4_j2_pt, Ak4jets->at(i).pt());
@@ -363,6 +379,7 @@ bool Variables_NN::process(uhh2::Event& evt){
       evt.set(h_Ak4_j2_E, Ak4jets->at(i).energy());
       evt.set(h_Ak4_j2_m, Ak4jets->at(i).v4().M());
       evt.set(h_Ak4_j2_deepjetbscore, Ak4jets->at(i).btag_DeepJet());
+      evt.set(h_DeltaPhi_j2MET, deltaPhi(Ak4jets->at(i),evt.met->v4()));
       }
       if(i==2){
       evt.set(h_Ak4_j3_pt, Ak4jets->at(i).pt());
@@ -371,6 +388,7 @@ bool Variables_NN::process(uhh2::Event& evt){
       evt.set(h_Ak4_j3_E, Ak4jets->at(i).energy());
       evt.set(h_Ak4_j3_m, Ak4jets->at(i).v4().M());
       evt.set(h_Ak4_j3_deepjetbscore, Ak4jets->at(i).btag_DeepJet());
+      evt.set(h_DeltaPhi_j3MET, deltaPhi(Ak4jets->at(i),evt.met->v4()));
       }
       if(i==3){
       evt.set(h_Ak4_j4_pt, Ak4jets->at(i).pt());
@@ -460,6 +478,8 @@ bool Variables_NN::process(uhh2::Event& evt){
     evt.set(h_DeltaEtaqq, jc.q1.eta()-jc.q2.eta());
     evt.set(h_DeltaPhiqq, deltaPhi(jc.q1, jc.q2));
   }
+
+
 
   double HT=0;
   for(const Jet j : *Ak4jets) HT+= j.pt();

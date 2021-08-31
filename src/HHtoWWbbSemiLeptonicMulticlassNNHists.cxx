@@ -2,6 +2,8 @@
 #include "UHH2/core/include/Event.h"
 
 #include "TH1F.h"
+#include "TH2F.h"
+
 #include <iostream>
 
 using namespace std;
@@ -20,17 +22,17 @@ HHtoWWbbSemiLeptonicMulticlassNNHists::HHtoWWbbSemiLeptonicMulticlassNNHists(uhh
 
 void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
 
-  NN_out0 = book<TH1F>("NN_out0", "NN output 0", 40, 0, 1);
-  NN_out1 = book<TH1F>("NN_out1", "NN output 1", 40, 0, 1);
-  NN_out2 = book<TH1F>("NN_out2", "NN output 2", 40, 0, 1);
-  NN_out3 = book<TH1F>("NN_out3", "NN output 3", 40, 0, 1);
-  //NN_out4 = book<TH1F>("NN_out4", "NN output 4", 40, 0, 1);
+  NN_out0 = book<TH1F>("NN_out0", "NN output 0", 1000, 0, 1);
+  NN_out1 = book<TH1F>("NN_out1", "NN output 1", 1000, 0, 1);
+  NN_out2 = book<TH1F>("NN_out2", "NN output 2", 1000, 0, 1);
+  NN_out3 = book<TH1F>("NN_out3", "NN output 3", 1000, 0, 1);
+  NN_out4 = book<TH1F>("NN_out4", "NN output 4", 1000, 0, 1);
 
-  NN_out0_rebin = book<TH1F>("NN_out0_rebin", "NN output 0", 10, 0, 1);
-  NN_out1_rebin = book<TH1F>("NN_out1_rebin", "NN output 1", 10, 0, 1);
-  NN_out2_rebin = book<TH1F>("NN_out2_rebin", "NN output 2", 10, 0, 1);
-  NN_out3_rebin = book<TH1F>("NN_out3_rebin", "NN output 3", 10, 0, 1);
-  //NN_out4_rebin = book<TH1F>("NN_out4_rebin", "NN output 4", 10, 0, 1);
+  NN_out0_rebin = book<TH1F>("NN_out0_rebin", "NN output 0", 20, 0, 1);
+  NN_out1_rebin = book<TH1F>("NN_out1_rebin", "NN output 1", 20, 0, 1);
+  NN_out2_rebin = book<TH1F>("NN_out2_rebin", "NN output 2", 20, 0, 1);
+  NN_out3_rebin = book<TH1F>("NN_out3_rebin", "NN output 3", 20, 0, 1);
+  NN_out4_rebin = book<TH1F>("NN_out4_rebin", "NN output 4", 20, 0, 1);
 
 
   vector<float> limitbins_sr_0 = {0,0.4,0.48,0.56,0.72,0.8,0.84,0.88,0.92,0.95,0.98,1.0};
@@ -56,29 +58,35 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   vector<float> limitbins_wdycr_2 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
   vector<float> limitbins_wdycr_3 = {0,0.35,0.44,0.53,0.62,0.71,0.8,0.9,1.0};
 
+  vector<float> limitbins_qcdcr_0 = {0,0.3,0.38,0.44,0.50,0.56,0.62,0.68,0.74,0.80,0.85,0.90,0.95,1.0};
+  vector<float> limitbins_qcdcr_1 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.80,0.85,0.90,0.95,1.0};
+  vector<float> limitbins_qcdcr_2 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
+  vector<float> limitbins_qcdcr_3 = {0,0.35,0.44,0.53,0.62,0.71,0.8,0.9,1.0};
 
-  vector<float> limitbins_qcdcr_0 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
 
   NN_out0_limits0 = book<TH1F>("NN_out0_limits0", "NN output 0", limitbins_sr_0.size()-1, &limitbins_sr_0[0]);
   NN_out1_limits0 = book<TH1F>("NN_out1_limits0", "NN output 1", limitbins_ttcr_0.size()-1, &limitbins_ttcr_0[0]);
   NN_out2_limits0 = book<TH1F>("NN_out2_limits0", "NN output 2", limitbins_stcr_0.size()-1, &limitbins_stcr_0[0]);
   NN_out3_limits0 = book<TH1F>("NN_out3_limits0", "NN output 3", limitbins_wdycr_0.size()-1, &limitbins_wdycr_0[0]);
-  // NN_out4_limits0 = book<TH1F>("NN_out4_limits0", "NN output 4", limitbins_placeholder_0.size()-1, &limitbins_placeholder[0]);
+  NN_out4_limits0 = book<TH1F>("NN_out4_limits0", "NN output 4", limitbins_qcdcr_0.size()-1, &limitbins_qcdcr_0[0]);
 
   NN_out0_limits1 = book<TH1F>("NN_out0_limits1", "NN output 0", limitbins_sr_1.size()-1, &limitbins_sr_1[0]);
   NN_out1_limits1 = book<TH1F>("NN_out1_limits1", "NN output 1", limitbins_ttcr_1.size()-1, &limitbins_ttcr_1[0]);
   NN_out2_limits1 = book<TH1F>("NN_out2_limits1", "NN output 2", limitbins_stcr_1.size()-1, &limitbins_stcr_1[0]);
   NN_out3_limits1 = book<TH1F>("NN_out3_limits1", "NN output 3", limitbins_wdycr_1.size()-1, &limitbins_wdycr_1[0]);
+  NN_out4_limits1 = book<TH1F>("NN_out4_limits1", "NN output 4", limitbins_qcdcr_3.size()-1, &limitbins_qcdcr_1[0]);
 
   NN_out0_limits2 = book<TH1F>("NN_out0_limits2", "NN output 0", limitbins_sr_2.size()-1, &limitbins_sr_2[0]);
   NN_out1_limits2 = book<TH1F>("NN_out1_limits2", "NN output 1", limitbins_ttcr_2.size()-1, &limitbins_ttcr_2[0]);
   NN_out2_limits2 = book<TH1F>("NN_out2_limits2", "NN output 2", limitbins_stcr_2.size()-1, &limitbins_stcr_2[0]);
   NN_out3_limits2 = book<TH1F>("NN_out3_limits2", "NN output 3", limitbins_wdycr_2.size()-1, &limitbins_wdycr_2[0]);
+  NN_out4_limits2 = book<TH1F>("NN_out4_limits2", "NN output 4", limitbins_qcdcr_2.size()-1, &limitbins_qcdcr_2[0]);
 
   NN_out0_limits3 = book<TH1F>("NN_out0_limits3", "NN output 0", limitbins_sr_3.size()-1, &limitbins_sr_3[0]);
   NN_out1_limits3 = book<TH1F>("NN_out1_limits3", "NN output 1", limitbins_ttcr_3.size()-1, &limitbins_ttcr_3[0]);
   NN_out2_limits3 = book<TH1F>("NN_out2_limits3", "NN output 2", limitbins_stcr_3.size()-1, &limitbins_stcr_3[0]);
   NN_out3_limits3 = book<TH1F>("NN_out3_limits3", "NN output 3", limitbins_wdycr_3.size()-1, &limitbins_wdycr_3[0]);
+  NN_out4_limits3 = book<TH1F>("NN_out4_limits3", "NN output 4", limitbins_qcdcr_3.size()-1, &limitbins_qcdcr_3[0]);
 
 }
 
@@ -95,34 +103,37 @@ NN_out0->Fill(NNoutput0, weight);
 NN_out1->Fill(NNoutput1, weight);
 NN_out2->Fill(NNoutput2, weight);
 NN_out3->Fill(NNoutput3, weight);
-//NN_out4->Fill(NNoutput4, weight);
+NN_out4->Fill(NNoutput4, weight);
 
 NN_out0_rebin->Fill(NNoutput0, weight);
 NN_out1_rebin->Fill(NNoutput1, weight);
 NN_out2_rebin->Fill(NNoutput2, weight);
 NN_out3_rebin->Fill(NNoutput3, weight);
-//NN_out4_rebin->Fill(NNoutput4, weight);
+NN_out4_rebin->Fill(NNoutput4, weight);
 
 NN_out0_limits0->Fill(NNoutput0, weight);
 NN_out1_limits0->Fill(NNoutput1, weight);
 NN_out2_limits0->Fill(NNoutput2, weight);
 NN_out3_limits0->Fill(NNoutput3, weight);
-//NN_out4_limits->Fill(NNoutput4, weight);
+NN_out4_limits0->Fill(NNoutput4, weight);
 
 NN_out0_limits1->Fill(NNoutput0, weight);
 NN_out1_limits1->Fill(NNoutput1, weight);
 NN_out2_limits1->Fill(NNoutput2, weight);
 NN_out3_limits1->Fill(NNoutput3, weight);
+NN_out4_limits1->Fill(NNoutput4, weight);
 
 NN_out0_limits2->Fill(NNoutput0, weight);
 NN_out1_limits2->Fill(NNoutput1, weight);
 NN_out2_limits2->Fill(NNoutput2, weight);
 NN_out3_limits2->Fill(NNoutput3, weight);
+NN_out4_limits2->Fill(NNoutput4, weight);
 
 NN_out0_limits3->Fill(NNoutput0, weight);
 NN_out1_limits3->Fill(NNoutput1, weight);
 NN_out2_limits3->Fill(NNoutput2, weight);
 NN_out3_limits3->Fill(NNoutput3, weight);
+NN_out4_limits3->Fill(NNoutput4, weight);
 
 }
 
@@ -136,7 +147,7 @@ HHtoWWbbSemiLeptonicMulticlassNNHists::~HHtoWWbbSemiLeptonicMulticlassNNHists(){
 
 
 HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInputHists(uhh2::Context& ctx, const std::string& dirname): Hists(ctx, dirname) {
-  cout << "HHtoWWbbSemiLeptonicHists" << endl;
+  cout << "HHtoWWbbSemiLeptonicMulticlassNNInputHists" << endl;
 
 
   // fill the map
@@ -168,6 +179,12 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
   fill_map(ctx, "minDeltaEtajj", NN_minDeltaEtajj, {40,0,3});
   fill_map(ctx, "minDeltaEtab1j", NN_minDeltaEtab1j, {40,0,3});
   fill_map(ctx, "minDeltaEtab2j", NN_minDeltaEtab2j, {40,0,3});
+
+
+  fill_map(ctx, "DeltaPhi_j1MET", DeltaPhi_j1MET, {40,0,3.2});
+  fill_map(ctx, "DeltaPhi_j2MET", DeltaPhi_j2MET, {40,0,3.2});
+  fill_map(ctx, "DeltaPhi_j3MET", DeltaPhi_j3MET, {40,0,3.2});
+
 
   fill_map(ctx, "HT", NN_HT, {60,0,1500});
   fill_map(ctx, "N_BTag", NN_NBTag, {4,-0,5,5,5});
@@ -252,6 +269,9 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::fill_map(uhh2::Context& ctx, st
 void HHtoWWbbSemiLeptonicMulticlassNNInputHists::init(){
   cout << "init" << endl;
   // declare the hists 
+
+  sum_event_weights = book<TH1F>("sum_event_weights", "BinContent = sum(eventweights)", 1, 0.5, 1.5);
+  sum_event_mc = book<TH1F>("sum_event_mc", "BinContent = sum(eventmc)", 1, 0.5, 1.5);
  
   map<string,HHAutoHist>::iterator it;
   for(it=histMap.begin(); it!= histMap.end(); it++){
@@ -270,6 +290,10 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::init(){
 void HHtoWWbbSemiLeptonicMulticlassNNInputHists::fill(const Event & event){
   //cout << "MulticlassNNInputHists::fill" << endl;
   double weight = event.weight;
+
+  sum_event_weights->Fill(1., weight);
+  sum_event_mc->Fill(1.);
+
   // fill the hists
   map<string,HHAutoHist>::iterator it;
   for(it=histMap.begin(); it!= histMap.end(); it++){
@@ -286,3 +310,71 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::fill(const Event & event){
 }
 
 HHtoWWbbSemiLeptonicMulticlassNNInputHists::~HHtoWWbbSemiLeptonicMulticlassNNInputHists(){}
+
+
+
+
+
+
+
+HHtoWWbbSemiLeptonicMulticlassNN2DHists::HHtoWWbbSemiLeptonicMulticlassNN2DHists(uhh2::Context& ctx, const std::string& dirname): Hists(ctx, dirname) {
+  cout << "HHtoWWbbSemiLeptonicMulticlassNN2DHists" << endl;
+
+
+  fill_map(ctx, "MET_pt", "DeltaPhi_j1MET", MET_pt__DeltaPhi_j1MET, {20,0,400, 20,0,3.2});
+  fill_map(ctx, "MET_pt", "DeltaPhi_j2MET", MET_pt__DeltaPhi_j2MET, {20,0,400, 20,0,3.2});
+  fill_map(ctx, "MET_pt", "DeltaPhi_j3MET", MET_pt__DeltaPhi_j3MET, {20,0,400, 20,0,3.2});
+
+  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j2MET", DeltaPhi_j1MET__DeltaPhi_j2MET, {20,0,3.2, 20,0,3.2});
+  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j3MET", DeltaPhi_j1MET__DeltaPhi_j3MET, {20,0,3.2, 20,0,3.2});
+  fill_map(ctx, "DeltaPhi_j2MET", "DeltaPhi_j3MET", DeltaPhi_j2MET__DeltaPhi_j3MET, {20,0,3.2, 20,0,3.2});
+
+  init();
+}
+
+void HHtoWWbbSemiLeptonicMulticlassNN2DHists::fill_map(uhh2::Context& ctx, string id1, string id2, TH2F *hist, vector<float> bins){
+  //cout << "fill_map" << endl;
+  HH2DAutoHist output;
+  output.hist = hist;
+  output.bins = bins;
+  output.h_var1 = ctx.get_handle<float>(id1);
+  output.h_var2 = ctx.get_handle<float>(id2);
+
+  string id = id1+"__"+id2;
+  histMap.insert(pair<string,HH2DAutoHist>(id, output));
+}
+
+
+void HHtoWWbbSemiLeptonicMulticlassNN2DHists::init(){
+  cout << "init" << endl;
+  // declare the hists 
+ 
+  map<string,HH2DAutoHist>::iterator it;
+  for(it=histMap.begin(); it!= histMap.end(); it++){
+    string id = it->first;
+    HH2DAutoHist *output = &(it->second);
+    
+    output->hist = book<TH2F>(id,id, output->bins[0],output->bins[1],output->bins[2], output->bins[3], output->bins[4], output->bins[5]);
+  }
+}
+
+void HHtoWWbbSemiLeptonicMulticlassNN2DHists::fill(const Event & event){
+  //cout << "MulticlassNN2DHists::fill" << endl;
+  double weight = event.weight;
+  // fill the hists
+  map<string,HH2DAutoHist>::iterator it;
+  for(it=histMap.begin(); it!= histMap.end(); it++){
+    string id = it->first;
+    HH2DAutoHist *output = &(it->second);
+    float var1 = event.get(output->h_var1);
+    float var2 = event.get(output->h_var2);
+
+    // cout << "var1: " << var1 << endl;
+    // cout << "var2: " << var2 << endl;
+
+
+    output->hist->Fill(var1, var2, weight);
+  }
+}
+  
+HHtoWWbbSemiLeptonicMulticlassNN2DHists::~HHtoWWbbSemiLeptonicMulticlassNN2DHists(){}

@@ -12,6 +12,13 @@ struct HHAutoHist {
   uhh2::Event::Handle<float> h_var;
 };
 
+struct HH2DAutoHist {
+  TH2F *hist;
+  vector<float> bins;
+  uhh2::Event::Handle<float> h_var1;
+  uhh2::Event::Handle<float> h_var2;
+};
+
 class HHtoWWbbSemiLeptonicMulticlassNNHists: public uhh2::Hists {
 public:
   explicit HHtoWWbbSemiLeptonicMulticlassNNHists(uhh2::Context&, const std::string&);
@@ -20,12 +27,12 @@ public:
  protected:
   void init();
 
-  TH1F *NN_out0, *NN_out1, *NN_out2, *NN_out3/*, *NN_out4*/;
-  TH1F *NN_out0_rebin, *NN_out1_rebin, *NN_out2_rebin, *NN_out3_rebin/*, *NN_out4_rebin*/;
-  TH1F *NN_out0_limits0, *NN_out1_limits0, *NN_out2_limits0, *NN_out3_limits0/*, *NN_out4_limits*/;
-  TH1F *NN_out0_limits1, *NN_out1_limits1, *NN_out2_limits1, *NN_out3_limits1/*, *NN_out4_limits1*/;
-  TH1F *NN_out0_limits2, *NN_out1_limits2, *NN_out2_limits2, *NN_out3_limits2/*, *NN_out4_limits2*/;
-  TH1F *NN_out0_limits3, *NN_out1_limits3, *NN_out2_limits3, *NN_out3_limits3/*, *NN_out4_limits3*/;
+  TH1F *NN_out0, *NN_out1, *NN_out2, *NN_out3, *NN_out4;
+  TH1F *NN_out0_rebin, *NN_out1_rebin, *NN_out2_rebin, *NN_out3_rebin, *NN_out4_rebin;
+  TH1F *NN_out0_limits0, *NN_out1_limits0, *NN_out2_limits0, *NN_out3_limits0, *NN_out4_limits0;
+  TH1F *NN_out0_limits1, *NN_out1_limits1, *NN_out2_limits1, *NN_out3_limits1, *NN_out4_limits1;
+  TH1F *NN_out0_limits2, *NN_out1_limits2, *NN_out2_limits2, *NN_out3_limits2, *NN_out4_limits2;
+  TH1F *NN_out0_limits3, *NN_out1_limits3, *NN_out2_limits3, *NN_out3_limits3, *NN_out4_limits3;
 
   uhh2::Event::Handle<double> h_NNoutput0;
   uhh2::Event::Handle<double> h_NNoutput1;
@@ -45,6 +52,8 @@ public:
   void fill_map(uhh2::Context& ctx, string id, TH1F *hist, vector<float> bins);
   void init();
 
+  TH1F *sum_event_weights, *sum_event_mc;
+
   map<string, HHAutoHist> histMap;
 
 
@@ -61,6 +70,8 @@ public:
   TH1F *NN_minDeltaEtalj, *NN_minDeltaEtajj;
   TH1F *NN_minDeltaPhilj, *NN_minDeltaPhijj;
 
+  TH1F *DeltaPhi_j1MET, *DeltaPhi_j2MET, *DeltaPhi_j3MET;
+
   TH1F *HT_rebin1, *HT_rebin2;
 
   TH1F *NN_Lep_pt, *NN_Lep_eta, *NN_Lep_phi, *NN_Lep_E;
@@ -76,4 +87,22 @@ public:
 
 
   virtual ~HHtoWWbbSemiLeptonicMulticlassNNInputHists();
+};
+
+class HHtoWWbbSemiLeptonicMulticlassNN2DHists: public uhh2::Hists {
+public:
+  explicit HHtoWWbbSemiLeptonicMulticlassNN2DHists(uhh2::Context&, const std::string&);
+  virtual void fill(const uhh2::Event&) override;
+
+ protected:
+  void fill_map(uhh2::Context& ctx, string id1,string id2, TH2F *hist, vector<float> bins);
+  void init();
+
+  map<string, HH2DAutoHist> histMap;
+  
+  TH2F *MET_pt__DeltaPhi_j1MET, *MET_pt__DeltaPhi_j2MET, *MET_pt__DeltaPhi_j3MET;
+  TH2F *DeltaPhi_j1MET__DeltaPhi_j2MET, *DeltaPhi_j1MET__DeltaPhi_j3MET, *DeltaPhi_j2MET__DeltaPhi_j3MET;
+
+
+  virtual ~HHtoWWbbSemiLeptonicMulticlassNN2DHists();
 };
