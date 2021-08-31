@@ -8,34 +8,49 @@ using namespace std;
 // signal: soll flat sein. backgrounds: soll nicht komplett leer sein
 
 
-void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString channel){
-  bool debug = false;
+void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString channel, bool flat_in_background){
+  bool debug = true;
   if(debug) cout << "hello from FindOptimizeBinning :>" << endl;
-  TString infilename_signal = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + signal + "_" + yeartag + ".root"; 
-  TFile* f_signal = new TFile(infilename_signal);
 
-  
+  vector<TH1F*> h_in_vec;
   TString histname = channel_to_histname[channel];
   if(debug) cout << "histname: " << histname << endl;
-  //TString histname_signal = channel + "_DNNoutput" + to_string(region) + "_nominal/NNout" + to_string(region);
-  TH1F* h_signal = (TH1F*) f_signal->Get(histname);
-  double events_per_bin = h_signal->Integral()/N_bins;
+
+  if(flat_in_background) for(TString bckg : backgrounds) {
+      TString infilename_bckg = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + bckg + "_" + yeartag + ".root"; 
+      TFile* f_in = new TFile(infilename_bckg);
+      h_in_vec.push_back((TH1F*)f_in->Get(histname));
+  }
+  else {
+    TString infilename_signal = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + signal + "_" + yeartag + ".root"; 
+      TFile* f_signal = new TFile(infilename_signal);
+      h_in_vec.push_back((TH1F*)f_signal->Get(histname));
+  }
+  
+
+  int N_inputbins = h_in_vec[0]->GetNbinsX();
+  double events_per_bin = 0;
+  for(TH1F* h_in : h_in_vec) events_per_bin+=h_in->Integral();
+ events_per_bin /= N_bins;
+ 
   if(debug) cout << "Events per bin in final result: " << events_per_bin << endl;
   vector<double> bins = {0.};
   int bin_count = 1;
   double N_events = 0;
-  if(debug) cout << "Number of bins in input histogram (should be 1000): "<< h_signal->GetNbinsX() << endl;
-  for(int i=1; i<h_signal->GetNbinsX()+1; i++){
-    //if(debug) cout << "bin count: " << bin_count << endl;
-    if(bin_count==N_bins) break;
-    N_events+= h_signal->GetBinContent(i);
-    //if(debug) cout << "N events: " << N_events << endl;
-    if(N_events >= (double)(events_per_bin*bin_count)) {
-      if(debug) cout << "bin: " << h_signal->GetBinLowEdge(i) << endl;
-      if(debug) cout << "N events: " << N_events << endl;
+  if(debug) cout << "Number of bins in input histogram (should be 1000): "<< N_inputbins << endl;
+  for(int i=1; i<N_inputbins+1; i++){
+    for(TH1F* h_in : h_in_vec) {
+      //if(debug) cout << "bin count: " << bin_count << endl;
+      if(bin_count==N_bins) break;
+      N_events+= h_in->GetBinContent(i);
+      //if(debug) cout << "N events: " << N_events << endl;
+      if(N_events >= (double)(events_per_bin*bin_count)) {
+	if(debug) cout << "bin: " << h_in->GetBinLowEdge(i) << endl;
+	if(debug) cout << "N events: " << N_events << endl;
 
-      bins.push_back(h_signal->GetBinLowEdge(i));
-      bin_count++;
+	bins.push_back(h_in->GetBinLowEdge(i));
+	bin_count++;
+      }
     }
   }
   bins.push_back(1.0);
@@ -45,7 +60,6 @@ void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TStrin
   }
     
   channel_to_bins.insert(pair<TString, vector<double>>(channel, bins));
-  //ApplyOptimizeBinning(h_signal, bins);
 }
 
 // ApplyOptimizeBinning; wendet optimales Binning an

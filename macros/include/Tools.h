@@ -48,7 +48,7 @@ public:
   void ScaleVariationEnvelope();
   void PDFRMS();
 
-  void FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString region);
+  void FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString region, bool flat_in_background);
   TH1F* ApplyOptimizeBinning(TH1F *hist, vector<double> bins);
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN(bool use_data);
