@@ -12,49 +12,34 @@ int main(){
   AnalysisTool Analysis17(2017);
   AnalysisTool Analysis18(2018);
 
+  vector<TString> backgrounds_mu = {"TTbar", "DYJets", "QCDMu", "Diboson", "SingleTop", "TTV", "WJets"};
+  Analysis16.FindOptimizeBinning(15, "HHtoWWbbSL_cHHH1", backgrounds_mu, "srmuch", false); 
+  Analysis16.FindOptimizeBinning(3, "TTbar", backgrounds_mu, "ttcrmuch", true);
+  Analysis16.FindOptimizeBinning(3, "WJets", backgrounds_mu, "wdycrmuch", true);
+  Analysis16.FindOptimizeBinning(3, "SingleTop", backgrounds_mu, "stcrmuch", true);
+  //Analysis16.FindOptimizeBinning(3, "QCDMu", backgrounds_mu, "qcdcrmuch", true);
 
-  // analysis of the Pre-Selection
-
-  TString selection = "Preselection";
-  TString cutsJet10 = "mu24jet10";
-  //TString cutsLep5 = "e05mu05eta5";
-  TString cutsLep5 = "jet30lep5";
-  vector<TString> allProcesses = {"HHtoWWbbSemiLeptonic_SM",/* "DATA_Muon",*/ "TTbar", "DYJets", "QCDMu", "Diboson", "SingleTop", "TTV", "WJets"};
-  // vector<TString> someProcesses = {"HHtoWWbbSemiLeptonic_SM", "TTbar", "DYJets", "QCDMu"};
-  vector<TString> someProcesses = {"HHtoWWbbSemiLeptonic_SM", "TTbar", "DYJets", "WJets", "QCDMu"};
-
-  //Analysis16.Efficiencies(selection, cutsJet10, someProcesses);
-  //Analysis16.ControlPlots(selection, cutsJet10, someProcesses);
-  //Analysis16.ControlPlots(selection, cutsLep5, someProcesses);
-
-
-  //TString plot_ptJet3 = "1MuonCategory_General/pt_jet3";
-  TString plot_ptJet3 = "1MuonCategory_General/pt_jet3";
-  TString plot_ptJet4 = "1MuonCategory_General/pt_jet4";
-  //TString plot_ptMu = "Cleaner_General/pt_mu";
-  //TString plot_ptMu = "3Jets_General/pt_mu";
-  TString plot_ptMu = "1Bjet_General/pt_mu_rebin";
+  vector<TString> backgrounds_ele = {"TTbar", "DYJets", "QCDEle", "Diboson", "SingleTop", "TTV", "WJets"};
+  Analysis16.FindOptimizeBinning(15, "HHtoWWbbSL_cHHH1", backgrounds_ele, "srech", false);
+  Analysis16.FindOptimizeBinning(3, "TTbar", backgrounds_ele, "ttcrech", true);
+  Analysis16.FindOptimizeBinning(3, "WJets", backgrounds_ele, "wdycrech", true);
+  Analysis16.FindOptimizeBinning(3, "SingleTop", backgrounds_ele, "stcrech", true);
+  //Analysis16.FindOptimizeBinning(3, "QCDEle", backgrounds_ele, "qcdcrech", true);
 
 
-  //  Analysis16.SignalToBackground(cutsJet10, plot_ptJet3);
-  //  Analysis16.SignalToBackground(cutsJet10, plot_ptJet3);
-  //  Analysis16.SignalToBackground(cutsLep5, plot_ptMu);
-
-
-  //Analysis16.ScaleVariationEnvelope();
-  //Analysis16.PDFRMS();
-
-  //Analysis16.ProduceCombineHistograms();
-  //Analysis16.ProduceCombineHistogramsNN();
+  // Analysis16.ScaleVariationEnvelope();
+  // Analysis16.PDFRMS();
+ 
+  Analysis16.ProduceCombineHistogramsNN(false);
  
 
-  //Analysis16.PlotSystematicHists();
+  // Analysis16.PlotSystematicHists();
 
 
-  Analysis16.PlotLimitsCombine("comb");
-  //Analysis16.PlotPostfitDistribution();
-  //Analysis16.PlotPostfitDistribution(true);
+  // Analysis16.PlotLimitsCombine("comb");
+  // Analysis16.PlotPostfitDistribution();
+  // Analysis16.PlotPostfitDistribution(true);
 
-
-  cout << "Finished main(). cya." << endl;
+ 
+  cout << "Finished main(). cya." << endl; 
 }
