@@ -81,6 +81,7 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
 
   // infiles
   TString infilename = infolder +"NOMINAL/"+ samplemap[sample];
+  cout << infilename << endl;
   TFile* infile = new TFile(infilename, "READ");
   // cout << "infilename: " << infilename << endl;
   // outfiles
@@ -108,7 +109,7 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
 
         // make dirs without "pdf"
         TString makedirname = name;
-	// cout << "foldername: " << makedirname << endl;
+	cout << "foldername: " << makedirname << endl;
 
         makedirname.ReplaceAll("_pdf", "_pdf_up");
         outfile->mkdir(makedirname);
@@ -121,7 +122,7 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
   // cout << foldernames.size() << endl;
   for(size_t i=0; i<foldernames.size(); i++) {
     TString foldername = foldernames.at(i);
-    // cout << "foldername: " << foldername << endl;
+    cout << "foldername: " << foldername << endl;
     // create list of histogram names (without the _xx tag for the number of the PDF variation)
     infile->cd(foldername);
     dir = gDirectory;
@@ -167,7 +168,6 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
       // cout << "foldername_nom: " << foldername_nom << endl;
       TString histname_nom = histname;
       histname_nom.ReplaceAll("_PDF", "");
-      histname_nom+="_limits"; // quick fix for histname convention
       // cout << "histname_nom: " << histname_nom << endl;
       TString readoutname = foldername_nom + "/" + histname_nom;
       TH1F* h = (TH1F*)infile->Get(readoutname);

@@ -50,11 +50,12 @@ void AnalysisTool::ScaleVariationEnvelope(){
       {"HH", "output0"},
       {"TTbar", "output1"},
       {"SingleTop", "output2"},
-      {"WJets+DYJets", "output3"}
+      {"WJets+DYJets", "output3"},
+      {"QCD", "output4"}
     };
     vector<TString> channel_tags = {"much", "ech"};
     // vector<TString> region_tags = {"catA", "catB"}; // probably not necessary / exchange with cat_tags
-    vector<TString> region_tags = {"DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3"/*, "DNNoutput4"*/};
+    vector<TString> region_tags = {"DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4"};
     
     // check again and implement correctly
     /*
