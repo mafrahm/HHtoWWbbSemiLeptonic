@@ -16,12 +16,12 @@ def write_lines(path, filename, lines):
         outfile.write('\n')
     outfile.close()
 
-def get_lines_datacard_header(category, channel, node):
+def get_lines_datacard_header(channel, node, backgrounds):
     lines = []
-    lines.append('# Datacard for variable %s in channel %s, category %s, for node %s \n' % (variables_per_category[category], channel, category, node))
+    lines.append('# Datacard for channel %s, for node %s \n' % (channel, node))
     lines.append('# HEADER')
     lines.append('imax 1')
-    lines.append('jmax %i' % (len(backgrounds_per_category[category])))
+    lines.append('jmax %i' % (len(backgrounds)))
     lines.append('kmax *')
     return lines
 
@@ -39,33 +39,31 @@ def get_lines_datacard_input(rootfilename, year):
     lines.append('shapes * * %s $CHANNEL__$PROCESS_%s $CHANNEL__$PROCESS_%s__$SYSTEMATIC' % (rootfilename, yeartags[year], yeartags[year]))
     return lines
 
-def get_lines_datacard_processes(category, varcat, node, backgrounds):
+def get_lines_datacard_processes(varcat, node, backgrounds):
     lines = []
     lines.append('# PROCESSES')
 
     line = 'bin        '
-    for i in range(len(backgrounds_per_category[category]) + 1):
+    for i in range(len(backgrounds) + 1):
         line += varcat + '  '
     lines.append(line)
 
     line = 'process    ' + signaltag + '_' + node + '  '
     for bkg in backgrounds:
-        if bkg in backgrounds_per_category[category]:
+        if bkg in backgrounds:
             line += bkg + '  '
     lines.append(line)
 
     line = 'process    0  '
     idx = 1
     for bkg in backgrounds:
-        if bkg in backgrounds_per_category[category]:
-            line += str(idx) + '  '
-            idx += 1
+        line += str(idx) + '  '
+        idx += 1
     lines.append(line)
 
     line = 'rate       -1  '
     for bkg in backgrounds:
-        if bkg in backgrounds_per_category[category]:
-            line += '-1  '
+        line += '-1  '
     lines.append(line)
 
     return lines
@@ -73,7 +71,7 @@ def get_lines_datacard_processes(category, varcat, node, backgrounds):
 
 
 
-def get_lines_datacard_systematics(category, systematics, backgrounds):
+def get_lines_datacard_systematics(systematics, backgrounds):
     lines = []
     lines.append('# SYSTEMATICS')
     for syst in systematics:
@@ -87,7 +85,6 @@ def get_lines_datacard_systematics(category, systematics, backgrounds):
         else:
             line += '-  '
         for bkg in backgrounds:
-            if bkg not in backgrounds_per_category[category]: continue
             if processes_per_systematic[syst] == 'all' or processes_per_systematic[syst] == bkg:
                 line += str(value_per_systematic[syst]) + '  '
             else:
@@ -104,9 +101,8 @@ def get_lines_datacard_statistics():
 
 
 
-def create_datacard(year, node, category, channel, backgrounds, systematics, path_datacards, rootfilename):
-    print 'Creating datacard for node %s and category %s. ' % (node, category)
-
+def create_datacard(year, node, channel, backgrounds, systematics, path_datacards, rootfilename):
+    print 'Creating datacard for node %s in channel %s. ' % (node, channel)
     if not os.path.exists(path_datacards):
         raise RuntimeError('Path %s does not exist.' % (path_datacards))
     # else: print 'Datacard directory: %s' % (path_datacards)
@@ -114,27 +110,20 @@ def create_datacard(year, node, category, channel, backgrounds, systematics, pat
         raise RuntimeError('Rootfile %s does not exist.' % (path_datacards + '/' + rootfilename))
     # else: print 'rootfile containing histograms: %s' % (path_datacards + '/' + rootfilename)
 
-    #filename_datacard = variables_per_category[category] + '_' + channel + '_cat' + category + '_' + node + '.txt' # + '_node_'
-    filename_datacard = channel + '_cat' + category + '_' + node + '.txt' # + '_node_'
+    filename_datacard = channel + '_' + node + '.txt' # + '_node_'
     # print 'filename: %s ' % (filename_datacard)
     # print 'going to create file: %s' % (path_datacards + '/' + filename_datacard)
-    #varcat = variables_per_category[category] + '_' + channel + '_cat' + category
-    varcat = channel + '_cat' + category
+    varcat = channel
     separator = ['-----------------------------\n']
 
 
 
-    lines_header = get_lines_datacard_header(category, channel, node) + separator
+    lines_header = get_lines_datacard_header(channel, node, backgrounds) + separator
     lines_channels = get_lines_datacard_channels(varcat) + separator
     lines_input = get_lines_datacard_input(rootfilename, year)
-    lines_processes = get_lines_datacard_processes(category, varcat, node, backgrounds)
-    lines_systematics = get_lines_datacard_systematics(category, systematics, backgrounds)
+    lines_processes = get_lines_datacard_processes(varcat, node, backgrounds)
+    lines_systematics = get_lines_datacard_systematics(systematics, backgrounds)
     lines_statistics = get_lines_datacard_statistics()
-
-
-
-
-
 
 
 

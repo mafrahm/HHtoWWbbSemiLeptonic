@@ -88,33 +88,8 @@ value_per_systematic = {
 'scale_SingleTop': 1
 }
 
-
-
-backgrounds_per_category = {
-    'A': ['TTbar', 'DYJets', 'SingleTop', 'TTV', 'Diboson', 'WJets', 'QCD'] #'QCDMu'
-    #'A': ['TTbar', 'WJets']
-}
-
-
 #signaltag = 'HHtoWWbbSemiLeptonic'
 signaltag = 'HHtoWWbbSL'
-
-
-variables_per_category = {
-'A': ''
-}
-
-categories_per_channel = {
-'srmuch' : ['A'],
-'ttcrmuch' : ['A'],
-'stcrmuch' : ['A'],
-'wdycrmuch' : ['A'],
-'srech': ['A'],
-'ttcrech' : ['A'],
-'stcrech' : ['A'],
-'wdycrech' : ['A']
-
-}
 
 yeartags = {
 2016: '2016v3',

@@ -14,7 +14,8 @@ backgrounds = ['TTbar', 'DYJets', 'SingleTop', 'WJets', 'Diboson', 'TTV', 'QCD']
 #backgrounds = ['TTbar', 'DYJets', 'SingleTop', 'WJets', 'Diboson', 'TTV']
 #backgrounds = ['QCD']
 
-channels = ['srmuch', 'ttcrmuch', 'stcrmuch', 'wdycrmuch', 'qcdcrmuch', 'srech', 'ttcrech', 'stcrech', 'wdycrech', 'qcdcrech']
+#channels = ['srmuch', 'ttcrmuch', 'stcrmuch', 'wdycrmuch', 'qcdcrmuch', 'srech', 'ttcrech', 'stcrech', 'wdycrech', 'qcdcrech']
+channels = ['srmuch', 'ttcrmuch', 'stcrmuch', 'wdycrmuch', 'srech', 'ttcrech', 'stcrech', 'wdycrech']
 #channels = ['srmuch']
 #channels = ['srmuch', 'ttcrmuch', 'stcrmuch', 'wdycrmuch']
 #channels = ['srech', 'ttcrech', 'stcrech', 'wdycrech']
@@ -25,7 +26,7 @@ nodes = ['cHHH1']
 
 #CombineRunner.CreateDatacards(nodes, channels, backgrounds, systematics, 'NN_combine_histograms_2016.root')
 #CombineRunner.CreateDatacards(nodes, channels, backgrounds, systematics, 'combineInput_limits1bins2016.root')
-CombineRunner.CreateDatacards(nodes, channels, backgrounds, systematics, 'combineInput_PTJet30_NNincl_classes5_fraction050_2016.root')
+CombineRunner.CreateDatacards(nodes, channels, backgrounds, systematics, 'combineInput_PTJet30_NNincl_classes4_fraction050_2016.root')
 
 
 print '-------------------------------------'
