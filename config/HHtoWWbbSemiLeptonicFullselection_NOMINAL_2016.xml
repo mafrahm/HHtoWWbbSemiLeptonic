@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
+
+<!ENTITY RUNFOR          "Fullselection"> <!-- Fullselection, DNNTraining -->
+<!ENTITY TRAININGFRACTION "50"> <!-- not yet used -->
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
 <!ENTITY TargetLumi      "35920">
 <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive_PTJet&PTJET;/NOMINAL">
-<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/&CHANNEL;_PTJet&PTJET;/NOMINAL"> <!-- Inclusive, ech, much -->
+<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/&RUNFOR;/&CHANNEL;_PTJet&PTJET;/NOMINAL"> <!-- Inclusive, ech, much -->
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
@@ -153,7 +156,7 @@
 	<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&SELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
 
 
-
+<!--
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Muon_B;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -293,7 +296,7 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-
+-->
 
 
 
@@ -821,7 +824,8 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_72383.root" />
 <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_66017.root" />
 
-
+<Item Name="RunFor" Value="&RUNFOR;" />
+<Item Name="TrainingFraction" Value="&TRAININGFRACTION;" />
 <Item Name="PTJet" Value="&PTJET;" />
 <Item Name="Channel" Value="&CHANNEL;" />
 

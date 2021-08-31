@@ -3,28 +3,37 @@
 
 
 #include "UHH2/core/include/AnalysisModule.h"
+#include "UHH2/core/include/Selection.h"
+#include "UHH2/core/include/Utils.h"
 #include "UHH2/core/include/Event.h"
-#include "UHH2/common/include/CommonModules.h"
-#include "UHH2/common/include/CleaningModules.h"
-#include "UHH2/common/include/MCWeight.h"
 
-
-//hists_
+#include "UHH2/common/include/EventHists.h"
 #include "UHH2/common/include/ElectronHists.h"
 #include "UHH2/common/include/MuonHists.h"
-#include "UHH2/common/include/JetHists.h"
-#include "UHH2/common/include/LuminosityHists.h"
-#include "UHH2/common/include/EventHists.h"
-//selections
-#include "UHH2/common/include/LumiSelection.h"
-#include "UHH2/common/include/NSelections.h"
-#include "UHH2/common/include/TriggerSelection.h"
-#include "UHH2/common/include/AdditionalSelections.h"
-//IDs
-#include "UHH2/common/include/ElectronIds.h"
 #include "UHH2/common/include/MuonIds.h"
+#include "UHH2/common/include/ElectronIds.h"
+#include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/common/include/JetIds.h"
+#include "UHH2/common/include/JetHists.h"
+#include "UHH2/common/include/JetCorrections.h"
 #include "UHH2/common/include/TopJetIds.h"
+#include "UHH2/common/include/CleaningModules.h"
+#include "UHH2/common/include/CommonModules.h"
+#include "UHH2/common/include/JetCorrections.h"
+#include "UHH2/common/include/MCWeight.h"
+#include "UHH2/common/include/EventVariables.h"
+#include "UHH2/common/include/CleaningModules.h"
+#include "UHH2/common/include/EventVariables.h"
+#include "UHH2/common/include/NSelections.h"
+#include "UHH2/common/include/AdditionalSelections.h"
+#include "UHH2/common/include/LumiSelection.h"
+#include "UHH2/common/include/LuminosityHists.h"
+#include "UHH2/common/include/TriggerSelection.h"
+#include "UHH2/common/include/Utils.h"
+
+#include "UHH2/common/include/NeuralNetworkBase.hpp"
+
+
 // my own classes
 #include "UHH2/HHtoWWbbSemiLeptonic/include/HHtoWWbbSemiLeptonicSelections.h"
 #include "UHH2/HHtoWWbbSemiLeptonic/include/HHtoWWbbSemiLeptonicHists.h"
@@ -83,7 +92,9 @@ namespace uhh2examples {
 
     // NN variables
     unique_ptr<Variables_NN> Variables_module;
-
+    
+    bool forTraining;
+    int trainingfraction;
 
     // mass reco stuff
     uhh2::Event::Handle<bool> h_is_mHH_reconstructed;
@@ -102,14 +113,14 @@ namespace uhh2examples {
     BTag::algo btag_algo;
     BTag::wp wp_btag_loose, wp_btag_medium, wp_btag_tight;
 
-    bool is_mc, do_permutations, do_scale_variations;
+    bool is_mc, do_scale_variations;
     bool is_signal;
-    string s_permutation;
     string channel;
 
     uhh2::Event::Handle<float> h_eventweight_lumi, h_eventweight_final;
 
-
+    // Cleaner
+    std::unique_ptr<AnalysisModule> cl_mu, cl_ele, cl_jets;// cl_genjets;
 
     // systematic uncertainties
     string Sys_EleID, Sys_EleReco;
@@ -288,8 +299,11 @@ namespace uhh2examples {
 
     Variables_module.reset(new Variables_NN(ctx));
 
+    forTraining = (ctx.get("RunFor") == "DNNTraining");
+    trainingfraction = std::stoi(ctx.get("TrainingFraction"));
+
     // Book histograms
-    vector<string> histogram_tags = {"Cleaner", "Trigger", "TriggerSF", "BTag", "mHH_reconstructed"};
+    vector<string> histogram_tags = {"eventTagEven", "eventTagOdd", "Cleaner", "Trigger", "TriggerSF", "BTag", "mHH_reconstructed"};
     book_histograms(ctx, histogram_tags);
 
     h_btageff.reset(new BTagMCEfficiencyHists(ctx, "BTagEff", DeepjetMedium));
@@ -297,6 +311,16 @@ namespace uhh2examples {
     h_NNInputVariables_ech.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_ech"));
     h_NNInputVariables_much.reset(new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx, "NNInputVariables_much"));
 
+
+    // Cleaning
+    MuonId cleanerId_mu = AndId<Muon>(MuonID(Muon::CutBasedIdTight), PtEtaCut(9999,0.1));
+    ElectronId cleanerId_ele = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(9999,0.1));
+    JetId cleanerId_jets = PtEtaCut(9999,0.1);
+
+    cl_mu.reset(new MuonCleaner(cleanerId_mu));
+    cl_ele.reset(new ElectronCleaner(cleanerId_ele));
+    cl_jets.reset(new JetCleaner(ctx, cleanerId_jets));
+    //cl_genjets.reset(new GenJetCleaner(ctx, 9999, 0.1));
 
   }
 
@@ -307,7 +331,6 @@ namespace uhh2examples {
 
     // cout << "dataset_version: "<< dataset_version << endl;
 
-    
 
     if (is_signal){
       HHgenprod->process(event);
@@ -338,6 +361,33 @@ namespace uhh2examples {
 
     bool pass_common = common->process(event);
     if(!pass_common) return false;
+
+
+    // Splitting the dataset into a set for training and a set for stat. analysis
+    // for now: 50/50 splitting
+
+    int eventTag = event.event;
+    
+    if(eventTag%2 == 0) fill_histograms(event, "eventTagEven", region);
+    if(eventTag%2 == 1) fill_histograms(event, "eventTagOdd", region);
+    
+    if(forTraining && eventTag%2 == 0) return false;
+    if(!forTraining && eventTag%2 == 1) return false;
+
+    event.weight = event.weight*2; // is this accurate enough? 
+
+    /*
+    // to allow 10/90, 20/80, ... splitting aswell
+    if(forTraining && eventTag%10 < (int)trainingfraction/10) return false;
+    if(!forTraining && eventTag%10 >= (int)trainingfraction/10) return false;
+
+    // to allow 1/99, 2/98, ... splitting aswell
+    if(forTraining && eventTag%100 < trainingfraction) return false;
+    if(!forTraining && eventTag%100 >= trainingfraction) return false;
+
+    if(forTraining) event.weight = event.weight*100/trainingfraction;
+    if(!forTraining) event.weight = event.weight*100/(100-trainingfraction);
+    */
 
 
     double eventweight_lumi = event.weight;
@@ -425,11 +475,24 @@ namespace uhh2examples {
 
     //if(!njet4_sel->passes(event)) return false; // quick hack to only consider 4 Jet category
     Variables_module->process(event);
+
     h_NNInputVariables_Inclusive->fill(event);
     if(region=="ech")       h_NNInputVariables_ech->fill(event);
     else if(region=="much") h_NNInputVariables_much->fill(event);
+
     event.set(h_eventweight_final, event.weight);
     event.set(h_region, region);
+
+
+    // Cleaning: 
+    // at this point, we have saved (hopefully) everything important in handles
+    // so just get rid of all the collections
+
+    cl_mu->process(event);
+    cl_ele->process(event);
+    cl_jets->process(event);
+    //cl_genjets->process(event);
+
     return true;
   }
 

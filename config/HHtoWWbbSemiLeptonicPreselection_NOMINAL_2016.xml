@@ -787,7 +787,7 @@
 		  <Item Name="MuonCollection" Value="slimmedMuonsUSER" />
 		  <!-- <Item Name="JetCollection" Value="jetsAk4CHS" /> -->
 		  <Item Name="JetCollection" Value="jetsAk4Puppi" />
-		  <!-- <Item Name="GenJetCollection" Value="slimmedGenJets" />  -->
+		  <Item Name="GenJetCollection" Value="slimmedGenJets" />
 		  <!-- <Item Name="METName" Value="slimmedMETs" /> -->
 		  <Item Name="METName" Value="slimmedMETsPuppi" />
 		  <!--  <Item Name="TopJetCollection" Value="patJetsAk8CHSJetsSoftDropPacked_daughters" />  -->
