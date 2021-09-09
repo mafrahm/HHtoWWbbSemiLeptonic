@@ -70,6 +70,8 @@ namespace uhh2examples {
     void fill_histograms(uhh2::Event&, string, string region);
 
   private:
+    
+    bool with_GenParticles = false; // not sure if 'true' would work
 
     std::unique_ptr<CommonModules> common;
 
@@ -114,7 +116,7 @@ namespace uhh2examples {
     BTag::wp wp_btag_loose, wp_btag_medium, wp_btag_tight;
 
     bool is_mc, do_scale_variations;
-    bool is_signal;
+    bool is_signal, is_DNNProcess;
     string channel;
 
     uhh2::Event::Handle<float> h_eventweight_lumi, h_eventweight_final;
@@ -142,18 +144,22 @@ namespace uhh2examples {
       if(channel=="ech" || channel=="Inclusive"){
 	mytag = tag + "_ech" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
-	mytag = tag + "_ech" + "_Signal"; 
-	book_HFolder(mytag, new HHtoWWbbSemiLeptonicGenHists(ctx,mytag));
-	mytag = tag + "_ech" + "_Matched"; 
-	book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
+	if(with_GenParticles) {
+	  mytag = tag + "_ech" + "_Signal"; 
+	  book_HFolder(mytag, new HHtoWWbbSemiLeptonicGenHists(ctx,mytag));
+	  mytag = tag + "_ech" + "_Matched"; 
+	  book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
+	}
       }
       if(channel=="much" || channel=="Inclusive"){
 	mytag = tag + "_much" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
-	mytag = tag + "_much" + "_Signal"; 
-	book_HFolder(mytag, new HHtoWWbbSemiLeptonicGenHists(ctx,mytag));
-	mytag = tag + "_much" + "_Matched"; 
-	book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
+	if(with_GenParticles) {
+	  mytag = tag + "_much" + "_Signal"; 
+	  book_HFolder(mytag, new HHtoWWbbSemiLeptonicGenHists(ctx,mytag));
+	  mytag = tag + "_much" + "_Matched"; 
+	  book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
+	}
       }
     }
   }
@@ -161,7 +167,7 @@ namespace uhh2examples {
   void HHtoWWbbSemiLeptonicFullselectionModule::fill_histograms(uhh2::Event& event, string tag, string region){
     string mytag = tag + "_" + region + "_General";
     HFolder(mytag)->fill(event);
-    if(is_signal){
+    if(is_signal && with_GenParticles) {
       mytag = tag + "_" + region + "_Signal"; 
       HFolder(mytag)->fill(event);
       mytag = tag + "_" + region + "_Matched"; 
@@ -183,13 +189,14 @@ namespace uhh2examples {
     h_eventweight_final = ctx.declare_event_output<float>("eventweight_final");
 
     // Gen level stuff
-    const string HHgen_label("HHgenobjects");
-    HHgenprod.reset(new HHGenObjectsProducer(ctx, HHgen_label, true));
-    h_HHgenobjects = ctx.get_handle<HHGenObjects>(HHgen_label);
-    const string HHgenreco_label("HHgenreco");
-    HHgenrecoprod.reset(new HHGenRecoProducer(ctx, HHgenreco_label, true));
-    h_HHgenreco = ctx.get_handle<HHGenRecoMatching>(HHgenreco_label);
-
+    if(with_GenParticles) {
+      const string HHgen_label("HHgenobjects");
+      HHgenprod.reset(new HHGenObjectsProducer(ctx, HHgen_label, true));
+      h_HHgenobjects = ctx.get_handle<HHGenObjects>(HHgen_label);
+      const string HHgenreco_label("HHgenreco");
+      HHgenrecoprod.reset(new HHGenRecoProducer(ctx, HHgenreco_label, true));
+      h_HHgenreco = ctx.get_handle<HHGenRecoMatching>(HHgenreco_label);
+    }
     // for mass reco
     h_is_mHH_reconstructed = ctx.declare_event_output<bool>("is_mHH_reconstructed");
     h_mHH = ctx.declare_event_output<float>("mHH");
@@ -215,7 +222,9 @@ namespace uhh2examples {
     year = extract_year(ctx);
     dataset_version = ctx.get("dataset_version");
     is_signal = dataset_version.Contains("HHtoWWbb");
-
+    is_DNNProcess = (dataset_version.Contains("HHtoWWbb") || dataset_version.Contains("TTbar") || dataset_version.Contains("ST") || dataset_version.Contains("WJets") || dataset_version.Contains("DYJets"));
+    cout << "dataset_version " << dataset_version << " is used in DNN?: " << std::boolalpha << is_DNNProcess << endl;
+      
     // BTagging
     btag_algo = BTag::DEEPJET;
     wp_btag_loose = BTag::WP_LOOSE;
@@ -303,7 +312,7 @@ namespace uhh2examples {
     trainingfraction = std::stoi(ctx.get("TrainingFraction"));
 
     // Book histograms
-    vector<string> histogram_tags = {"eventTagEven", "eventTagOdd", "Cleaner", "Trigger", "TriggerSF", "BTag", "mHH_reconstructed"};
+    vector<string> histogram_tags = {"forTraining", "forAnalysis", "Cleaner", "Trigger", "TriggerSF", "BTag", "mHH_reconstructed"};
     book_histograms(ctx, histogram_tags);
 
     h_btageff.reset(new BTagMCEfficiencyHists(ctx, "BTagEff", DeepjetMedium));
@@ -331,8 +340,9 @@ namespace uhh2examples {
 
     // cout << "dataset_version: "<< dataset_version << endl;
 
+    // cout << "dataset_version " << dataset_version << " is used in DNN?: " << std::boolalpha << is_DNNProcess << endl;
 
-    if (is_signal){
+    if (is_signal && with_GenParticles){
       HHgenprod->process(event);
       HHgenrecoprod->process(event);
     }
@@ -363,31 +373,27 @@ namespace uhh2examples {
     if(!pass_common) return false;
 
 
-    // Splitting the dataset into a set for training and a set for stat. analysis
-    // for now: 50/50 splitting
-
+    // Splitting the dataset into a set for training and a set for stat. analysis    
     int eventTag = event.event;
-    
-    if(eventTag%2 == 0) fill_histograms(event, "eventTagEven", region);
-    if(eventTag%2 == 1) fill_histograms(event, "eventTagOdd", region);
-    
+    /*
+    // here: 50/50 splitting
+    if(eventTag%2 == 0) fill_histograms(event, "forAnalysis", region);
+    if(eventTag%2 == 1) fill_histograms(event, "forTraining", region);
     if(forTraining && eventTag%2 == 0) return false;
     if(!forTraining && eventTag%2 == 1) return false;
-
-    event.weight = event.weight*2; // is this accurate enough? 
-
-    /*
-    // to allow 10/90, 20/80, ... splitting aswell
-    if(forTraining && eventTag%10 < (int)trainingfraction/10) return false;
-    if(!forTraining && eventTag%10 >= (int)trainingfraction/10) return false;
-
-    // to allow 1/99, 2/98, ... splitting aswell
-    if(forTraining && eventTag%100 < trainingfraction) return false;
-    if(!forTraining && eventTag%100 >= trainingfraction) return false;
-
-    if(forTraining) event.weight = event.weight*100/trainingfraction;
-    if(!forTraining) event.weight = event.weight*100/(100-trainingfraction);
+    event.weight = event.weight*2;
     */
+
+    // to allow 10/90, 20/80, ... splitting aswell
+    if(!is_DNNProcess || eventTag%10 < (int)trainingfraction/10) fill_histograms(event, "forAnalysis", region); 
+    if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10) fill_histograms(event, "forTraining", region);
+
+    if(is_DNNProcess &&  forTraining && eventTag%10 <  (int)trainingfraction/10) return false;
+    if(is_DNNProcess && !forTraining && eventTag%10 >= (int)trainingfraction/10) return false;
+
+    if(is_DNNProcess &&  forTraining) event.weight = event.weight*100/trainingfraction;
+    if(is_DNNProcess && !forTraining) event.weight = event.weight*100/(100-trainingfraction);
+    
 
 
     double eventweight_lumi = event.weight;

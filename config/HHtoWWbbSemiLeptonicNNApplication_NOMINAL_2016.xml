@@ -2,12 +2,13 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 <!ENTITY SYST            "NOMINAL">
+<!ENTITY TRAININGFRACTION "50">
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
-<!ENTITY NNMODEL         "incl_classes4_fraction050"> <!-- 3/4 classes, which variables, dunno man -->
+<!ENTITY NNMODEL         "incl_classes4_TrainOn50"> <!-- 3/4 classes, which variables, dunno man -->
 <!ENTITY NN_CLASSES      "4"> 
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/&CHANNEL;_PTJet&PTJET;/&SYST;">
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/&CHANNEL;_PTJet&PTJET;_TrainOn&TRAININGFRACTION;/&SYST;">
 <!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/NNApplication/&CHANNEL;_PTJet&PTJET;_NN&NNMODEL;/&SYST;">
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
@@ -827,6 +828,7 @@ event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
 <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/data/2016/MyDataPileupHistogram_66017.root" />
 
 <Item Name="Syst" Value="&SYST;" />
+<Item Name="TrainingFraction" Value="&TRAININGFRACTION;" />
 <Item Name="PTJet" Value="&PTJET;" />
 <Item Name="Channel" Value="&CHANNEL;" />
 <Item Name="NNModel" Value="&NNMODEL;" />

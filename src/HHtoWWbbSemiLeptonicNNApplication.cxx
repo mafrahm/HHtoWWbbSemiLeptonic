@@ -91,9 +91,10 @@ private:
   uhh2::Event::Handle<TString> h_region;
 
 
+  int trainingfraction;
 
   bool is_mc, do_permutations;
-  bool is_signal;
+  bool is_signal, is_DNNProcess;
   string s_permutation;
 
   uhh2::Event::Handle<float> h_eventweight_lumi, h_eventweight_final;
@@ -107,6 +108,9 @@ private:
   vector<string> histogramtags_syst, histogramtags_scale, histogramtags_pdf;
   vector<uhh2::Event::Handle<float>> systweight_handles, systweight_scale_handles, scalefactor_handles;
 
+  string syst;
+  bool is_nominal;
+
 };
 
 void HHtoWWbbSemiLeptonicNNApplication::book_histograms(uhh2::Context& ctx, vector<string> tags){
@@ -117,6 +121,8 @@ void HHtoWWbbSemiLeptonicNNApplication::book_histograms(uhh2::Context& ctx, vect
     //book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
     mytag = tag + "_ech" + "_NNInput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx,mytag));
+    mytag = tag + "_ech" + "_NN2DHist";
+    book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNN2DHists(ctx,mytag));
     mytag = tag + "_ech" + "_NNOutput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNHists(ctx,mytag));
 
@@ -124,6 +130,8 @@ void HHtoWWbbSemiLeptonicNNApplication::book_histograms(uhh2::Context& ctx, vect
     //book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
     mytag = tag + "_much" + "_NNInput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNInputHists(ctx,mytag));
+    mytag = tag + "_much" + "_NN2DHist";
+    book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNN2DHists(ctx,mytag));
     mytag = tag + "_much" + "_NNOutput";
     book_HFolder(mytag, new HHtoWWbbSemiLeptonicMulticlassNNHists(ctx,mytag));
   }
@@ -137,6 +145,8 @@ void HHtoWWbbSemiLeptonicNNApplication::fill_histograms(uhh2::Event& event, stri
   //string mytag = tag + "_" + region + "_General";
   //HFolder(mytag)->fill(event);
   mytag = tag + "_" + region + "_NNInput";
+  HFolder(mytag)->fill(event);
+  mytag = tag + "_" + region + "_NN2DHist";
   HFolder(mytag)->fill(event);
   mytag = tag + "_" + region + "_NNOutput";
   HFolder(mytag)->fill(event);
@@ -197,10 +207,16 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   year = extract_year(ctx);
   dataset_version = ctx.get("dataset_version");
   is_signal = dataset_version.Contains("HHtoWWbb");
+  is_DNNProcess = (dataset_version.Contains("HHtoWWbb") || dataset_version.Contains("TTbar") || dataset_version.Contains("ST") || dataset_version.Contains("WJets") || dataset_version.Contains("DYJets"));
+  cout << "dataset_version " << dataset_version << " is used in DNN?: " << std::boolalpha << is_DNNProcess << endl;
 
-
+  syst = ctx.get("Syst");
+  is_nominal = (syst=="NOMINAL");
   // Selections
   //njet4_sel.reset(new NJetSelection(4, -1));
+
+
+  trainingfraction = std::stoi(ctx.get("TrainingFraction"));
 
 
   // NN Stuff
@@ -218,14 +234,11 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   NN_classes = stoi(ctx.get("NN_Classes"));
 
   // Book histograms
-  vector<string> histogram_tags = {"Finalselection", "DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4"};
+  vector<string> histogram_tags = {"Finalselection", "DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4", "NoWeights"};
   book_histograms(ctx, histogram_tags);
 
   //h_xx = ctx.get_handle<float>("xx");
 
-  
-  histogramtags_syst = {};
-  histogramtags_syst.emplace_back("nominal");
 
   // for Systematics
 
@@ -237,63 +250,67 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   systshift = {"up", "down"};
   if(systnames.size() != handlenames.size()) throw runtime_error("In HHtoWWbbSemiLeptonicNNApplication.cxx: Length of systnames and handlenames is not equal.");
 
+
   histogramtags_syst = {};
-  histogramtags_syst.emplace_back("nominal");
+  // for JEC/JER
+  if(!is_nominal) histogramtags_syst.emplace_back(syst);
 
-  for(unsigned int i=0; i<systnames.size(); i++){
-    for(unsigned int j=0; j<systshift.size(); j++){
+  if(is_nominal) {
+    histogramtags_syst.emplace_back("nominal");
+    for(unsigned int i=0; i<systnames.size(); i++){
+      for(unsigned int j=0; j<systshift.size(); j++){
 
-      TString handlename = handlenames[i] + "_" + systshift[j];
-      TString sf_name = handlenames[i];
+	TString handlename = handlenames[i] + "_" + systshift[j];
+	TString sf_name = handlenames[i];
 
-      // PU doesn't exist in data (grr!!). Give it a dummy and never use it again. Doesn't matter on data anyway.
-      if(systnames[i] == "pu" && !is_mc){
-	handlename = "eventweight_final";
-	sf_name = "eventweight_final";
+	// PU doesn't exist in data (grr!!). Give it a dummy and never use it again. Doesn't matter on data anyway.
+	if(systnames[i] == "pu" && !is_mc){
+	  handlename = "eventweight_final";
+	  sf_name = "eventweight_final";
+	}
+
+	// B-tagging uncertainties require a special treatment
+	if(systnames[i] == "btag_bc"){
+	  handlename = handlenames[i] + "_bc_" + systshift[j];
+	}
+	else if(systnames[i] == "btag_udsg"){
+	  handlename = handlenames[i] + "_udsg_" + systshift[j];
+	}
+
+	uhh2::Event::Handle<float> handle1 = ctx.declare_event_output<float>((string)handlename);
+	uhh2::Event::Handle<float> handle2 = ctx.declare_event_output<float>((string)sf_name);
+	systweight_handles.emplace_back(handle1);
+	scalefactor_handles.emplace_back(handle2);
+
+	TString histname = systnames[i] + "_" + systshift[j];
+	histogramtags_syst.emplace_back(histname);
       }
-
-      // B-tagging uncertainties require a special treatment
-      if(systnames[i] == "btag_bc"){
-	handlename = handlenames[i] + "_bc_" + systshift[j];
-      }
-      else if(systnames[i] == "btag_udsg"){
-	handlename = handlenames[i] + "_udsg_" + systshift[j];
-      }
-
-      uhh2::Event::Handle<float> handle1 = ctx.declare_event_output<float>((string)handlename);
-      uhh2::Event::Handle<float> handle2 = ctx.declare_event_output<float>((string)sf_name);
-      systweight_handles.emplace_back(handle1);
-      scalefactor_handles.emplace_back(handle2);
-
-      TString histname = systnames[i] + "_" + systshift[j];
-      histogramtags_syst.emplace_back(histname);
     }
   }
-  
   //book all the histogram folders 
   book_syst_histograms(ctx, histogramtags_syst);
   
   // Scale variation
   histogramtags_scale = {};
-  systshift_scale = {"upup", "upnone", "noneup", "nonedown", "downnone", "downdown"};
-  for(unsigned int i=0; i<systshift_scale.size(); i++){
-    TString handlename = "weight_murmuf_" + systshift_scale[i];
 
-    uhh2::Event::Handle<float> handle = ctx.declare_event_output<float>((string)handlename);
-    systweight_scale_handles.emplace_back(handle);
+  if(is_nominal) {
+    systshift_scale = {"upup", "upnone", "noneup", "nonedown", "downnone", "downdown"};
+    for(unsigned int i=0; i<systshift_scale.size(); i++){
+      TString handlename = "weight_murmuf_" + systshift_scale[i];
 
-    TString histname = "scale_" + systshift_scale[i];
-    histogramtags_scale.emplace_back(histname);
+      uhh2::Event::Handle<float> handle = ctx.declare_event_output<float>((string)handlename);
+      systweight_scale_handles.emplace_back(handle);
+
+      TString histname = "scale_" + systshift_scale[i];
+      histogramtags_scale.emplace_back(histname);
+    }
+
+    book_syst_histograms(ctx, histogramtags_scale);
+  
+    // Separately book one set of PDF hists (each contains the 100 variations for M_Tprime)
+    cout << "Line: " << __LINE__ << endl;
+    book_pdf_histograms(ctx, {"pdf"});
   }
-
-  book_syst_histograms(ctx, histogramtags_scale);
-
-
-
-
-  // Separately book one set of PDF hists (each contains the 100 variations for M_Tprime)
-  cout << "Line: " << __LINE__ << endl;
-  book_pdf_histograms(ctx, {"pdf"});
 
 }
 
@@ -301,12 +318,25 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   //cout << "NNApplication: process" << endl;
 
-
-
-  //double eventweight_lumi = event.weight;
     
 
   string region = (string)event.get(h_region);
+
+  // Read out nominal eventweight
+  float weight_nominal = event.get(h_eventweight_final);
+
+  // For NOMINAL: check if trainingfraction is correct
+  // For JEC/JER: remove trainingevents
+    int eventTag = event.event;
+    if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10){
+      if(is_nominal) throw runtime_error("this should be a training event: something went wrong with the splitting into training and analysis datasets");
+      else return false;
+    }
+
+    // for JEC/JER, we also need to reweight the trainingprocesses
+    if(is_DNNProcess && !is_nominal) weight_nominal=event.weight*100/(100-trainingfraction);
+    event.weight = weight_nominal;
+
 
   // just for running the NJets>=4 category (testing purpose only)
   //if(!njet4_sel->passes(event)) return false;
@@ -355,47 +385,47 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   fill_histograms(event, DNN_hist_tag, region);
 
 
-  // !!! for Systematics
+  event.weight = 1;
+  fill_histograms(event, "NoWeights", region);
 
-  
-  // Read out nominal eventweight
-  float weight_nominal = event.get(h_eventweight_final);
+  // Systematics
 
   // Fill histograms once with nominal weights
   event.weight = weight_nominal;
 
-  fill_syst_histograms(event, DNN_hist_tag, region, "nominal");
+  if(!is_nominal) fill_syst_histograms(event, DNN_hist_tag, region, syst);
 
   // Loop over easy systematics
-  
-  for(unsigned int i=0; i<systnames.size(); i++){    
-    for(unsigned int j=0; j<systshift.size(); j++){
+  if(is_nominal){
+    fill_syst_histograms(event, DNN_hist_tag, region, "nominal");
+    for(unsigned int i=0; i<systnames.size(); i++){    
+      for(unsigned int j=0; j<systshift.size(); j++){
 
-      int idx = 2*i + j;
-      float systweight = event.get(systweight_handles[idx]);
-      float sfweight = event.get(scalefactor_handles[idx]);
-      event.weight = weight_nominal * systweight / sfweight;
-      TString tag = systnames[i] + "_" + systshift[j];
+	int idx = 2*i + j;
+	float systweight = event.get(systweight_handles[idx]);
+	float sfweight = event.get(scalefactor_handles[idx]);
+	event.weight = weight_nominal * systweight / sfweight;
+	TString tag = systnames[i] + "_" + systshift[j];
 
+	fill_syst_histograms(event, DNN_hist_tag, region, (string)tag);
+      }
+    }
+
+    // Loop over scale systematics
+    for(unsigned int j=0; j<systshift_scale.size(); j++){
+
+      float systweight = event.get(systweight_scale_handles[j]);
+      event.weight = weight_nominal * systweight;
+
+      TString tag = "scale_" + systshift_scale[j];      
       fill_syst_histograms(event, DNN_hist_tag, region, (string)tag);
     }
+
+    // Fill PDF histograms
+    event.weight = weight_nominal;
+
+    fill_syst_histograms(event, DNN_hist_tag, region, "pdf");
   }
-
-  // Loop over scale systematics
-  for(unsigned int j=0; j<systshift_scale.size(); j++){
-
-    float systweight = event.get(systweight_scale_handles[j]);
-    event.weight = weight_nominal * systweight;
-
-    TString tag = "scale_" + systshift_scale[j];      
-    fill_syst_histograms(event, DNN_hist_tag, region, (string)tag);
-  }
-
-  // Fill PDF histograms
-  event.weight = weight_nominal;
-
-  fill_syst_histograms(event, DNN_hist_tag, region, "pdf");
-
 
 
   // event.set(h_eventweight_final, event.weight);
