@@ -29,10 +29,9 @@ public:
 
   TH1F *NN_out0, *NN_out1, *NN_out2, *NN_out3, *NN_out4;
   TH1F *NN_out0_rebin, *NN_out1_rebin, *NN_out2_rebin, *NN_out3_rebin, *NN_out4_rebin;
-  TH1F *NN_out0_limits0, *NN_out1_limits0, *NN_out2_limits0, *NN_out3_limits0, *NN_out4_limits0;
+  TH1F *NN_out0_rebin2, *NN_out1_rebin2, *NN_out2_rebin2, *NN_out3_rebin2, *NN_out4_rebin2;
+
   TH1F *NN_out0_limits1, *NN_out1_limits1, *NN_out2_limits1, *NN_out3_limits1, *NN_out4_limits1;
-  TH1F *NN_out0_limits2, *NN_out1_limits2, *NN_out2_limits2, *NN_out3_limits2, *NN_out4_limits2;
-  TH1F *NN_out0_limits3, *NN_out1_limits3, *NN_out2_limits3, *NN_out3_limits3, *NN_out4_limits3;
 
   uhh2::Event::Handle<double> h_NNoutput0;
   uhh2::Event::Handle<double> h_NNoutput1;
