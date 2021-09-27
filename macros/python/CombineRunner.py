@@ -51,18 +51,26 @@ class CombineRunner:
             combcard = self.path_datacards + '/COMB'
             for chan in channels:
                 combcard += '_' + chan
+            rootcard = combcard + '_' + node + '.txt'
             combcard += '_' + node + '.txt'
             name = signaltag + "_" + node
 
-            #command = ['combine', '-n', signaltag, combcard]
+            text2workspace = ['text2workspace.py', combcard, '-m', '125']
+
             command = ['combine', '-n', name, '--run', 'blind', combcard]
-            #command = ['combine', '-n', signaltag, '-M', 'FitDiagnostics', combcard]
+            #command = ['combine', '-n', name, combcard]
             #command = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-5', '--rMax', '5', '--saveShapes', combcard]
             #command = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-10', '--rMax', '10', '--expectSignal', '2', '--saveShapes', combcard]
-            diagnostics = ['combine', '-n', name, '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-200', '--rMax', '200', '--expectSignal', '1', '--saveShapes', '--saveWithUncertainties', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '0', combcard]
+
+            diagnostics = ['combine', '-n', name, '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-80', '--rMax', '80', '--expectSignal', '1', '--saveShapes', '--saveWithUncertainties', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '2', combcard] # '--igonoreCovWarning', '--plots' ?
             #diagnostics = ['combine', '-M', 'FitDiagnostics', '-t', '-1', '--rMin', '-20', '--rMax', '20', '--saveShapes', '--cminDefaultMinimizerTolerance', '1e-2', '--cminDefaultMinimizerStrategy', '0', combcard]
-            processes.append(subprocess.Popen(diagnostics))
+
+            NLLScan = ['combine', '-n', name, '-M', 'MultiDimFit', '-t', '-1', rootcard, '--algo', 'grid', '--rMin', '-50', '--rMax', '50', '--expectSignal', '1', '--cminDefaultMinimizerTolerance', '1e-3', '--cminDefaultMinimizerStrategy', '2', '--points=1000']
+
+            processes.append(subprocess.Popen(text2workspace))
             processes.append(subprocess.Popen(command))
+            processes.append(subprocess.Popen(diagnostics))
+            #processes.append(subprocess.Popen(NLLScan))
 
 
 

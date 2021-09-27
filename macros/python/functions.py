@@ -71,7 +71,7 @@ def get_lines_datacard_processes(varcat, node, backgrounds):
 
 
 
-def get_lines_datacard_systematics(systematics, backgrounds):
+def get_lines_datacard_systematics(systematics, node, backgrounds):
     lines = []
     lines.append('# SYSTEMATICS')
     for syst in systematics:
@@ -80,7 +80,7 @@ def get_lines_datacard_systematics(systematics, backgrounds):
         print 'syst: %s' % (syst)
         line = syst + '  ' + pdf_per_systematic[syst] + '  '
         # first for signal:
-        if processes_per_systematic[syst] == 'all':
+        if processes_per_systematic[syst] == 'all' or processes_per_systematic[syst] == signaltag + '_' + node:
             line += str(value_per_systematic[syst]) + '  '
         else:
             line += '-  '
@@ -122,7 +122,7 @@ def create_datacard(year, node, channel, backgrounds, systematics, path_datacard
     lines_channels = get_lines_datacard_channels(varcat) + separator
     lines_input = get_lines_datacard_input(rootfilename, year)
     lines_processes = get_lines_datacard_processes(varcat, node, backgrounds)
-    lines_systematics = get_lines_datacard_systematics(systematics, backgrounds)
+    lines_systematics = get_lines_datacard_systematics(systematics, node, backgrounds)
     lines_statistics = get_lines_datacard_statistics()
 
 
