@@ -34,7 +34,7 @@ HHPDFHists::HHPDFHists(Context & ctx, const string & dirname): Hists(ctx, dirnam
 
   Year year = extract_year(ctx);
 
-  // take_ntupleweights not for QCD and signal ?
+  // take_ntupleweights not for QCD?
   if(year == Year::is2017v1 || year == Year::is2017v2){
     take_ntupleweights = !(m_oname.Contains("QCD") /*|| m_oname.Contains("HH")*/);
   }
@@ -42,7 +42,7 @@ HHPDFHists::HHPDFHists(Context & ctx, const string & dirname): Hists(ctx, dirnam
     take_ntupleweights = !(m_oname.Contains("QCD") /*|| m_oname.Contains("HH")*/ || m_oname.Contains("DibosonNLO"));
   }
   else{
-    take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("ST_tW")/* || m_oname.Contains("HH") || m_oname.Contains("DibosonNLO_ZZ_2L2Nu_2016v3")*/); // what's up with these specifications?
+    take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("ST_tW") || m_oname.Contains("DibosonNLO_ZZ_2L2Nu_2016v3")); // what's up with these specifications?
   }
 
   cout << m_pdfname << endl;
@@ -91,12 +91,14 @@ void HHPDFHists::fill(const Event & event){
 
 
 
-  //cout << "Number of systweights:"  << event.genInfo->systweights().size() << endl;
+  cout << "Number of systweights:"  << event.genInfo->systweights().size() << endl;
+  /*
   if(event.genInfo->systweights().size() < 110 && take_ntupleweights) {
     noSysweightsCount++;
-    cout << "HHPDFHists: number of events with not enough systweights: " << noSysweightsCount << endl; // couting does not work properly
+    cout << "HHPDFHists: number of events with not enough systweights: " << noSysweightsCount << endl; // counting does not work properly
     return; // just sort out all the events with not enough systweights. Is that allowed?  --> probably not, should be fixed or these events should be return false'd
   }
+*/
   if(event.genInfo->systweights().size() < 100 && take_ntupleweights) throw runtime_error("In HHPDFHists.cxx: Systweights in event.genInfo() is empty but ntupleweights shall be taken. Is this correct? In this case add exception to take_ntupleweights.");
   if(event.genInfo->systweights().size() > 110 && (!take_ntupleweights)) throw runtime_error("In HHPDFHists.cxx: Systweights in event.genInfo() is NOT empty but take_ntupleweights is set to 'false'. Is this correct? In this case Thomas says the genInfo weight should be used. Add this sample to take_ntupleweights");
 
@@ -109,7 +111,7 @@ void HHPDFHists::fill(const Event & event){
 	// what's up with the (i+9) ?
 	double pdf_weight = event.genInfo->systweights().at(i+9);
 	double fillweight = weight * pdf_weight/event.genInfo->originalXWGTUP();
-	
+	//cout << "originalXWGTUP(): " << event.genInfo->originalXWGTUP() << endl;
 	TString name = histo_names[x][i];
 	hist(name)->Fill(NNoutput[x], fillweight);
       }
