@@ -14,10 +14,11 @@ AnalysisTool::AnalysisTool(int year_) {
 
   channel = "Inclusive"; // Inclusive, ech, much
   ptjet = "30";
-  nnmodel = "incl_classes4_fraction050";
+  // TrainOn = "50";
+  nnmodel = "incl_classes4_TrainOn50";
 
   pre_tag = "Preselection/"+channel+"_PTJet"+ptjet+"/";
-  full_tag = "Fullselection/"+channel+"_PTJet"+ptjet+"/";
+  full_tag = "Fullselection/"+channel+"_PTJet"+ptjet+"_TrainOn50/";
   NN_tag = "NNApplication/"+channel+"_PTJet"+ptjet+"_NN"+nnmodel+"/";
 
   year = "";
@@ -28,6 +29,9 @@ AnalysisTool::AnalysisTool(int year_) {
   else if (year == "2018") yeartag = "2018";
   else throw runtime_error("Invalid year_ specified");
 
+  combineInput_name = combine_path + "input/combineInput_PTJet" + ptjet + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
+
+  histsForSyst_name = combine_path + "input/histsForSyst_PTJet" + ptjet + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
 
   // processes
   signal_tag = "HHtoWWbbSemiLeptonic_SM";
@@ -61,7 +65,25 @@ AnalysisTool::AnalysisTool(int year_) {
     //{"qcdcrech", "ech_DNNoutput4_nominal/NN_out4"}
   };
 
+  channel_to_xAxisTitle = {
+    {"srmuch", "Signal Region output node (much)"},
+    {"ttcrmuch", "TTbar CR output node (much)"},
+    {"stcrmuch", "SingleTop CR output node (much)"},
+    {"wdycrmuch", "W+DY CR output node (much)"},
+    {"srech", "Signal Region output node (ech)"},
+    {"ttcrech", "TTbar CR output node (ech)"},
+    {"stcrech", "SingleTop CR output node (ech)"},
+    {"wdycrech", "W+DY CR output node (ech)"}
+  };
 
+  
+  /*
+  channel_to_chNumber = {
+    {"ch1", "srmuch"},
+    {"ch2", "srech"},
+  };
+  */
+  
   channel_to_chNumber = {
     {"ch1", "srmuch"},
     {"ch2", "ttcrmuch"},
@@ -72,7 +94,7 @@ AnalysisTool::AnalysisTool(int year_) {
     {"ch7", "stcrech"},
     {"ch8", "wdycrech"},
   };
-
+  
   /*
   channel_to_chNumber = {
     {"ch1", "srmuch"},

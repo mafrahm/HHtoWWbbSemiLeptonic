@@ -74,8 +74,8 @@ void AnalysisTool::PlotLimitsCombine(TString channel){
       float q = *quantile;
       double rr = *r;
       //rr *= g_theory->Eval(nodes[i]);
-      rr *= HHtheory_xsecs[i];
-      rr /= HHtheory_xsecs[1]; // normalize on node 1
+      // rr *= HHtheory_xsecs[i];
+      // rr /= HHtheory_xsecs[1]; // normalize on node 1
 
       if(q<0.) observed.emplace_back(rr);
       else if(q<0.1) expected_low_95.emplace_back(rr);
@@ -200,9 +200,9 @@ void AnalysisTool::PlotLimitsCombine(TString channel){
   //12) care about axes
   TH1D* h = (TH1D*)g_expected_95->GetHistogram();
   h->GetXaxis()->SetRangeUser(nodes[0], nodes[n_points-1]);
-  h->SetXTitle("#kappa_#lambda");
-  h->SetYTitle("#sigma_{HH#rightarrow bbWW(qql#nu)}/#sigma_{SM}"); // [fb]
-  //h->SetYTitle("limits");
+  h->SetXTitle("#kappa_{#lambda}");
+  //h->SetYTitle("#sigma_{HH#rightarrow bbWW(qql#nu)}/#sigma_{SM}"); // [fb]
+  h->SetYTitle("limits r");
   h->GetYaxis()->SetTitleSize(0.048);
   h->GetYaxis()->SetTitleOffset(1.05);
   h->Draw("AXIS SAME");

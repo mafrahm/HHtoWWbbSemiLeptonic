@@ -3,17 +3,21 @@
 
 using namespace std;
 
-void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
+
+// just a copy of ProduceCombineHistograms, but reading in other hists
+// will only work for JEC/JER: for other systs we only plot the NNOutput (could of course be changed, but that would mean even more histograms)
+void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
   bool debug = true;
+  bool use_data = false;
   if(debug){
-    cout << "ProduceCombinedHistograms:"<< endl;
+    cout << "GetHistogramsForSystHists:"<< endl;
     cout << "year: " << AnalysisTool::yeartag << endl;
     cout << "Line: " << __LINE__ << endl;
   }
 
   //vector<TString> systematics = {"NOMINAL"};
   vector<TString> systematics = {
-    "nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf",
+    "nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg",/* "pdf",*/
     "MuR_TTbar", "MuR_DYJets", "MuR_WJets", "MuR_SingleTop", "MuR_Diboson", "MuR_TTV",
     "MuF_TTbar", "MuF_DYJets", "MuF_WJets", "MuF_SingleTop", "MuF_Diboson", "MuF_TTV",
     "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV",
@@ -24,11 +28,12 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
   vector<TString> syst_shift_combine = {"Up", "Down"};
   vector<TString> channel_tags = {"much", "ech"};
   vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"/*, "qcdcr"*/};
-  vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"};
+  vector<TString> samples_base = {/*"HHtoWWbbSemiLeptonic_SM",*/ "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"};
 
-  TFile* f_out = new TFile(AnalysisTool::combineInput_name, "RECREATE");
+  TFile* f_out = new TFile(AnalysisTool::histsForSyst_name, "RECREATE");
 
   for(unsigned int region = 0; region <region_tags.size(); region++) {
+    if(region!=0) continue; // quick fix, not looping over different regions here, but I don't want to change the code
     for(unsigned int channel=0; channel<channel_tags.size(); channel++) {
       if(debug) cout << "============= Channel: " << channel_tags[channel] << ", Region: " << region_tags[region] << endl;
 
@@ -61,13 +66,12 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 
 	    bool force_nominal = false;
             if(proc.Contains("DATA") && syst != "nominal") force_nominal = true;
-            if(!proc.Contains("TTbar") && syst.Contains("_TTbar")) force_nominal = true;
-            if(!proc.Contains("SingleTop") && syst.Contains("_SingleTop")) force_nominal = true;
-	    if(!proc.Contains("DYJets") && syst.Contains("_DYJets")) force_nominal = true;
-	    if(!proc.Contains("Diboson") && syst.Contains("_Diboson")) force_nominal = true;
-	    if(!proc.Contains("TTV") && syst.Contains("_TTV")) force_nominal = true;
-	    if(!proc.Contains("WJets") && syst.Contains("_WJets")) force_nominal = true;
-	    if(!proc.Contains("HHtoWWbbSL") && syst.Contains("_HHtoWWbbSL")) force_nominal = true;
+            if(!proc.Contains("TTbar") && syst == "scale_TTbar") force_nominal = true;
+            if(!proc.Contains("SingleTop") && syst == "scale_SingleTop") force_nominal = true;
+            if(!proc.Contains("DYJets") && syst == "scale_DYJets") force_nominal = true;
+            if(!proc.Contains("Diboson") && syst == "scale_Diboson") force_nominal = true;
+            if(!proc.Contains("TTV") && syst == "scale_TTV") force_nominal = true;
+            if(!proc.Contains("WJets") && syst == "scale_WJets") force_nominal = true;
 
 	    if(debug) cout << "======= Sample " << proc << endl;
 
@@ -87,8 +91,6 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 	    if(debug) cout << "infilename: " << infilename << endl;
 	    TFile* f_in = new TFile(infilename);
 
-	    //TString histname = histinname_base[channel] + "_";
-
 	    // note: 'region' is an integer from 0 to 3
 	    TString histname = channel_tags[channel] + "_DNNoutput"+to_string(region)+"_";
 	    if(force_nominal || syst=="nominal") histname+="nominal";
@@ -97,14 +99,13 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 	    else if(syst.Contains("MuF")) histname+="MuF_" + syst_shift[j];
 	    else if(syst=="JEC" || syst=="JER") histname+=syst+syst_shift_combine[j];
 	    else histname += syst + "_" + syst_shift[j];
+	    histname += "/" + histname_base;
 
-	    histname+="/NN_out"+to_string(region);
-	    //histname+="/NN_out"+to_string(region) + "_" + histinname_tag[region];
-	    // e.g. histname = much_DNNoutput0_scale_up/NNout0
+	    //TString histname = "Finalselection_"+channel_tags[channel]+"_NNInput/" + histname_base; 
+
 	    if(debug) cout << "histname: " << histname << endl;
 
-	    //TH1F* h_out = (TH1F*) f_in->Get(histname);
-	    TH1F* h_out = AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histname), channel_to_bins[region_tags[region]+channel_tags[channel]]);
+	    TH1F* h_out = (TH1F*) f_in->Get(histname);
 
 
 	    //h_out->Scale(3.8);
@@ -112,7 +113,7 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 	    if(proc.Contains("DATA")) proc = "data_obs";
 	    if(proc.Contains("QCD")) proc = "QCD";
 
-	    TString histname_out = region_tags[region] + channel_tags[channel] + "__" + proc + "_" + AnalysisTool::yeartag;
+	    TString histname_out = region_tags[region] + channel_tags[channel] + "_" + histname_base + "__" + proc + "_" + AnalysisTool::yeartag;
 	    if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
 	    // e.g. histname_out = srmuch_TTbar_2016v3__scale_TTbarUp
 	    if(debug) cout << "histname_out: " << histname_out << endl;

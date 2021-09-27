@@ -20,17 +20,17 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
 
 
   const TString postfix = "";
-  
+
   //const vector<TString> backgrounds = {"QCD"};
   //const vector<TString> backgrounds = {"QCD", "Diboson", "TTV", "DYJets", "WJets", "SingleTop", "TTbar"};
-  const vector<TString> backgrounds = {"SingleTop", "QCD", "Diboson", "TTV", "DYJets", "WJets", "TTbar"};
+  const vector<TString> backgrounds = {"Diboson", "TTV", "DYJets", "WJets", "SingleTop", "QCD", "TTbar"};
 
   map<TString, TString>::iterator it;
-  for(it=channel_to_chNumber.begin(); it!=channel_to_chNumber.end(); it++) {
+  for(it=AnalysisTool::channel_to_chNumber.begin(); it!=AnalysisTool::channel_to_chNumber.end(); it++) {
     TString channel = it->first;
     TString ch_name = it->second;
     // binning
-    vector<double> xbins = channel_to_bins[ch_name];
+    vector<double> xbins = AnalysisTool::channel_to_bins[ch_name];
     /*
     if(ch_name.Contains("sr")) xbins = {0,0.4,0.5,0.6,0.7,0.8,0.9,0.96,1.0};
     else if(ch_name.Contains("wdycr")) xbins = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
@@ -69,6 +69,9 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     TGraphErrors* g_ratio_err_tot = new TGraphErrors(h_err->GetNbinsX());
 
     //int nbins = h_err->GetNbinsX();
+    cout << "hey. "<< h_err->GetBinError(1) << endl;
+    cout << "hey. "<< h_data->GetErrorY(0) << endl;
+
     cout << nbins << endl;
     for (int i = 1; i <= nbins; ++i) {
       // double err_stat = h_stat->GetBinError(i);
@@ -88,13 +91,20 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
       double w = h_err->GetBinWidth(i);
       double ratio_err_tot = err_tot / den;
       double ratio_err_num = err_num / num;
-
+      // to check if error bands exist
+      //ratio_err_tot *=10;
+      //ratio_err_num *=10;
       std::cout << "Error in bin " << i << std::endl;
       cout << h_signal->GetBinError(i) << endl;
       cout << h_err->GetBinError(i) << endl;
-      std::cout << "total: " << ratio_err_tot << std::endl;
-      std::cout << "num: " << ratio_err_num << std::endl;
+      std::cout << "ratio_err_tot: " << ratio_err_tot << std::endl;
+      std::cout << "ratio_err_num: " << ratio_err_num << std::endl;
 
+      cout << "err_tot: " << err_tot << endl;
+      cout << "err_num: " << err_num << endl;
+
+      cout << "den: " << den << endl;
+      cout << "num: " << num << endl;
       g_ratio->SetPoint(i-1, x, num / den);
       g_ratio->SetPointError(i-1,w/2.,ratio_err_num * (num/den));
       // g_ratio_err_stat->SetPoint(i,x,1.);
@@ -185,7 +195,8 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     g_ratio_err_tot->GetYaxis()->SetRangeUser(0.35, 1.65);
     g_ratio_err_tot->GetYaxis()->CenterTitle();
     g_ratio_err_tot->GetYaxis()->SetTitle("data/bkg.");
-    g_ratio_err_tot->GetXaxis()->SetTitle("output node "+ch_name);
+    //g_ratio_err_tot->GetXaxis()->SetTitle("output node "+ch_name);
+    g_ratio_err_tot->GetXaxis()->SetTitle(AnalysisTool::channel_to_xAxisTitle[ch_name]);
     g_ratio_err_tot->GetXaxis()->SetLabelSize(g_ratio_err_tot->GetXaxis()->GetLabelSize()/0.33);
     g_ratio_err_tot->GetYaxis()->SetLabelSize(g_ratio_err_tot->GetYaxis()->GetLabelSize()/0.33);
     g_ratio_err_tot->GetXaxis()->SetTitleSize(g_ratio_err_tot->GetXaxis()->GetTitleSize()/0.33);
@@ -202,8 +213,8 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     TString hist_name = "Plots/Postfit_"+ch_name+"_"+AnalysisTool::year;
     if(do_prefit) hist_name = "Plots/Prefit_"+ch_name+"_"+AnalysisTool::year;
     c->Print(hist_name+".eps");
-    c->Print(hist_name+".png");
-    //c->Print(hist_name+".pdf");
+    //c->Print(hist_name+".png");
+    c->Print(hist_name+".pdf");
     c->Close();
   }
 }

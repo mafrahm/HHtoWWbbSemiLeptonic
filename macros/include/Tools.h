@@ -43,8 +43,13 @@ public:
   void Efficiencies(TString selection, TString cuts, vector<TString> processes);
   void ControlPlots(TString selection, TString cuts, vector<TString> processes);
   void SignalToBackground(TString cuts, TString plotname);
+  void CountBackgroundContributions(TString channel, TString region);
+  void CountBackgroundContributions();
+  void CountBackgroundDistribution();
 
-
+  vector<double> findScaleRescaleValues(TString process);
+  vector<double> findPDFRescaleValues(TString process);
+  void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample);
   void ScaleVariationEnvelope();
   void PDFRMS();
 
@@ -52,8 +57,10 @@ public:
   TH1F* ApplyOptimizeBinning(TH1F *hist, vector<double> bins);
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN(bool use_data);
+  void ProduceCombineHistogramsSimple(bool use_data);
+  void GetHistogramsForSystHists(TString histname_base);
 
-  void PlotSystematicHists();
+  void PlotSystematicHists(bool combine_hist=true);
   
   // only after running NNsteer.py
   void PlotLimitsCombine(TString channel);
@@ -68,17 +75,18 @@ private:
   TString year;
   TString yeartag;
 
+  TString combineInput_name, histsForSyst_name;
+
+
   TString signal_tag;
   vector<TString> backgrounds_tag;
   vector<TString> main_backgrounds_tag;
-
-  //vector<double> srmuch_bins, ttcrmuch_bins, stcrmuch_bins, wdycrmuch_bins, qcdcrmuch_bins, srech_bins, ttcrech_bins, stcrech_bins, wdycrech_bins, qcdcrech_bins;
 
   map<const TString, Color_t> proc_colors;
   map<TString, TString> channel_to_histname;
   map<TString, vector<double>> channel_to_bins;
   map<TString, TString> channel_to_chNumber;
-
+  map<TString,TString> channel_to_xAxisTitle;
 
   // bool debug;
 };

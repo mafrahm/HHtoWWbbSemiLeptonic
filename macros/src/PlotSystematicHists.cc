@@ -23,7 +23,7 @@
 
 using namespace std;
 
-void AnalysisTool::PlotSystematicHists(){
+void AnalysisTool::PlotSystematicHists(bool combine_hist){
   cout << "PlotSystematicHists: " << endl;
   gStyle->SetOptStat(0);
   gErrorIgnoreLevel = 2002;
@@ -35,11 +35,13 @@ void AnalysisTool::PlotSystematicHists(){
 
   // Open File
   // ==========
-  TString infilename = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root";
 
-  cout << "infilename: " << infilename << endl;
-  TFile* infile = new TFile(infilename, "READ");
+  cout << "combineInput_name: " << combineInput_name << endl;
 
+
+
+  TFile* infile = new TFile(AnalysisTool::combineInput_name, "READ");
+  if(combine_hist==false) infile = new TFile(AnalysisTool::histsForSyst_name, "READ");
   // Get histograms (only TH1), tokenize them to get all vars, processes, systs
   // ==========================================================================
 
@@ -132,12 +134,12 @@ void AnalysisTool::PlotSystematicHists(){
 	// don't use plots where no systematics were used
 	if(syst.Contains("scale") && proc.Contains("HHtoWWbb")) continue;
 	//if(syst == "PDF" && proc.Contains("HHtoWWbb"))          continue;
-	if(syst == "scale_DYJets"    && !proc.Contains("DYJets"))    continue;
-	if(syst == "scale_Diboson"   && !proc.Contains("Diboson"))   continue;
-	if(syst == "scale_SingleTop" && !proc.Contains("SingleTop")) continue;
-	if(syst == "scale_TTV"       && !proc.Contains("TTV"))       continue;
-	if(syst == "scale_TTbar"     && !proc.Contains("TTbar"))     continue;
-	if(syst == "scale_WJets"     && !proc.Contains("WJets"))     continue;
+	if(syst.Contains("_DYJets")    && !proc.Contains("DYJets"))    continue;
+	if(syst.Contains("_Diboson")   && !proc.Contains("Diboson"))   continue;
+	if(syst.Contains("_SingleTop") && !proc.Contains("SingleTop")) continue;
+	if(syst.Contains("_TTV")       && !proc.Contains("TTV"))       continue;
+	if(syst.Contains("_TTbar")     && !proc.Contains("TTbar"))     continue;
+	if(syst.Contains("_WJets")     && !proc.Contains("WJets"))     continue;
 
 
         TString histname_nom = var + "__" + proc;
@@ -177,10 +179,9 @@ void AnalysisTool::PlotSystematicHists(){
         TH1F* h_axis = (TH1F*)h_nom->Clone();
         h_axis->GetYaxis()->SetTitle("var / nom");
         h_axis->GetYaxis()->SetLabelSize(12);
-	if(var=="srmu_catA") h_axis->GetXaxis()->SetTitle("srmu output node");
-	if(var=="ttcrmu_catA") h_axis->GetXaxis()->SetTitle("ttcrmu output node");
-	if(var=="stcrmu_catA") h_axis->GetXaxis()->SetTitle("stcrmu output node");
-	if(var=="wdycrmu_catA") h_axis->GetXaxis()->SetTitle("wdycrmu output node");
+	//cout << "var: " << var << endl;
+	h_axis->GetXaxis()->SetTitle(AnalysisTool::channel_to_xAxisTitle[var]);
+
 
         HistCosmetics(h_axis, true);
 
@@ -236,8 +237,14 @@ void AnalysisTool::PlotSystematicHists(){
         text2->SetY(0.98);
         text2->Draw("SAME");
 
-        c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".png");
-        //c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+        //c->SaveAs(outdir + "png_SystematicHists/" + "SysVars_" + var + "_" + proc + "_" + syst + ".png");
+	if(combine_hist) {
+        c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+        c->SaveAs(outdir + "png/SysVars_" + var + "_" + proc + "_" + syst + ".png");
+	}
+	else {
+	  c->SaveAs(outdir + "var/SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+	}
         // delete c_out;
 
 	/*

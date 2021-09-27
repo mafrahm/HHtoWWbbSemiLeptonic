@@ -13,7 +13,9 @@ void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TStrin
   if(debug) cout << "hello from FindOptimizeBinning :>" << endl;
 
   vector<TH1F*> h_in_vec;
-  TString histname = channel_to_histname[channel];
+  cout << __LINE__ << endl;
+  TString histname = AnalysisTool::channel_to_histname[channel];
+  cout << __LINE__ << endl;
   if(debug) cout << "histname: " << histname << endl;
 
   if(flat_in_background) for(TString bckg : backgrounds) {

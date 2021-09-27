@@ -24,7 +24,24 @@
 
 using namespace std;
 
-void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample);
+
+vector<double> AnalysisTool::findPDFRescaleValues(TString process) {
+
+  vector<double> Rescale;
+  for(int i=1; i<101; i++) {
+    TString infolder = AnalysisTool::base_path + AnalysisTool::year + "/CountEvents/uhh2.AnalysisModuleRunner.MC." + process + ".root";
+    TFile* f_in = new TFile(infolder);
+    TH1F* h_nominal = (TH1F*) f_in->Get("Hists/nominal");
+    TString pdf_name = "Hists/PDF_"+to_string(i);
+    TH1F* h_pdf = (TH1F*) f_in->Get(pdf_name);
+  
+    double Rescale_i = h_nominal->Integral()/h_pdf->Integral();
+    Rescale.push_back(Rescale_i);
+    f_in->Close();
+  }
+  return Rescale;
+}
+
 
 void AnalysisTool::PDFRMS() {
   cout << "starting PDFRMS, year: " << yeartag << endl;
@@ -68,12 +85,10 @@ void AnalysisTool::PDFRMS() {
   FindRMS(infolder, samplemap, "HHtoWWbbSL_cHHH2p45_" + yeartag);
   FindRMS(infolder, samplemap, "HHtoWWbbSL_cHHH5_" + yeartag);
 
-
-
 }
 
 
-void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
+void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
   gStyle->SetOptStat(0);
 
   // Open File
@@ -89,6 +104,8 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
   TFile* outfile = new TFile(outfilename, "RECREATE");
 
 
+  // Read out Rescale Values
+  vector<double> Rescale = findPDFRescaleValues(sample);
 
 
   // Loop through the entire file and subtract minor backgrounds from data in every single histogram in the "General"-folder (!)
@@ -146,17 +163,18 @@ void FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
     // go through all PDF variations, there have to be ==100 of them per histogram
     vector<vector<TH1F*>> histograms;
     vector<TH1F*> histograms_nom;
-    // cout << histnames.size() << endl;
+    cout << histnames.size() << endl;
     for(size_t j=0; j<histnames.size(); j++){
       TString histname = histnames[j];
-
 
       // systematic histograms (100)
       vector<TH1F*> hists_thisvar;
       for(size_t k=1; k<101; k++){
+	cout << "Process: " << sample << ", Rescale " << Rescale[k-1] << " for PDF " << k << endl;
         TString readoutname = foldername + "/" + histname + "_";
         readoutname += k;
         TH1F* h = (TH1F*)infile->Get(readoutname);
+	h->Scale(Rescale[k-1]); // Rescale
         hists_thisvar.emplace_back(h);
       }
       histograms.emplace_back(hists_thisvar);
