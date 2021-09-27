@@ -78,7 +78,6 @@ private:
 
   unique_ptr<Hists> h_btageff, h_MulticlassNN_output, h_NNInputVariables;
 
-  std::unique_ptr<Selection> njet4_sel;
 
 
   // NN Stuff
@@ -110,6 +109,10 @@ private:
 
   string syst;
   bool is_nominal;
+
+ 
+  
+  uhh2::Event::Handle<float> h_N_Ak4, h_N_BTag;
 
 };
 
@@ -212,8 +215,6 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 
   syst = ctx.get("Syst");
   is_nominal = (syst=="NOMINAL");
-  // Selections
-  //njet4_sel.reset(new NJetSelection(4, -1));
 
 
   trainingfraction = std::stoi(ctx.get("TrainingFraction"));
@@ -227,6 +228,10 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   h_NNoutput2 = ctx.declare_event_output<double>("NNoutput2");
   h_NNoutput3 = ctx.declare_event_output<double>("NNoutput3");
   h_NNoutput4 = ctx.declare_event_output<double>("NNoutput4");
+
+  h_N_Ak4 = ctx.get_handle<float>("N_Ak4");
+  h_N_BTag = ctx.get_handle<float>("N_BTag");
+
 
   string data_dir = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data//";
   string NNmodel = ctx.get("NNModel");
@@ -327,19 +332,16 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
 
   // For NOMINAL: check if trainingfraction is correct
   // For JEC/JER: remove trainingevents
-    int eventTag = event.event;
-    if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10){
-      if(is_nominal) throw runtime_error("this should be a training event: something went wrong with the splitting into training and analysis datasets");
-      else return false;
-    }
+  int eventTag = event.event;
+  if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10){
+    if(is_nominal) throw runtime_error("this should be a training event: something went wrong with the splitting into training and analysis datasets");
+    else return false;
+  }
 
-    // for JEC/JER, we also need to reweight the trainingprocesses
-    if(is_DNNProcess && !is_nominal) weight_nominal=event.weight*100/(100-trainingfraction);
-    event.weight = weight_nominal;
+  // for JEC/JER, we also need to reweight the trainingprocesses
+  if(is_DNNProcess && !is_nominal) weight_nominal=weight_nominal*100/(100-trainingfraction);
+  event.weight = weight_nominal;
 
-
-  // just for running the NJets>=4 category (testing purpose only)
-  //if(!njet4_sel->passes(event)) return false;
 
 
   //Variables_module->process(event); // (hopefully) not needed anymore :)
@@ -359,11 +361,11 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   vector<double> out_event = {out0,out1,out2,out3,out4};
   if(NN_classes>5)runtime_error("In HHtoWWbbSemiLeptonicNNApplication: max. 5 NN categories are implemented ATM");
   /*
-  cout << "out0= " << out0 << endl;
-  cout << "out1= " << out1 << endl;
-  cout << "out2= " << out2 << endl;
-  cout << "out3= " << out3 << endl;
-  cout << "out4= " << out4 << endl;
+    cout << "out0= " << out0 << endl;
+    cout << "out1= " << out1 << endl;
+    cout << "out2= " << out2 << endl;
+    cout << "out3= " << out3 << endl;
+    cout << "out4= " << out4 << endl;
   */
   event.set(h_NNoutput0, out0);
   event.set(h_NNoutput1, out1);
@@ -377,8 +379,8 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   string max_score_tag = "";
   for (int i = 0; i < NN_classes; i++ ) {
     if ( out_event[i] > max_score) {
-    max_score = out_event[i];
-    max_score_tag = std::to_string(i);
+      max_score = out_event[i];
+      max_score_tag = std::to_string(i);
     }
   }
   string DNN_hist_tag  = "DNNoutput"+max_score_tag;

@@ -141,7 +141,8 @@ namespace uhh2examples {
     for(const auto & tag : tags){
       cout << "booking histograms with tag " << tag << endl;
       string mytag = "";
-      if(channel=="ech" || channel=="Inclusive"){
+      //if(channel=="ech" || channel=="Inclusive"){
+      if(channel!="much"){
 	mytag = tag + "_ech" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
 	if(with_GenParticles) {
@@ -151,7 +152,8 @@ namespace uhh2examples {
 	  book_HFolder(mytag, new HHtoWWbbSemiLeptonicMatchedHists(ctx,mytag));
 	}
       }
-      if(channel=="much" || channel=="Inclusive"){
+      //if(channel=="much" || channel=="Inclusive"){
+      if(channel!="ech"){
 	mytag = tag + "_much" + "_General";
 	book_HFolder(mytag, new HHtoWWbbSemiLeptonicHists(ctx,mytag));
 	if(with_GenParticles) {
@@ -363,7 +365,7 @@ namespace uhh2examples {
     
     if(channel=="much" && region !="much") return false;
     else if(channel=="ech" && region !="ech") return false;
-    else if(channel!="ech" && channel!="much" && channel!="Inclusive") throw runtime_error("In FullselectionModule: channel should be either ech, much or Inclusive");
+    //else if(channel!="ech" && channel!="much" && channel!="Inclusive") throw runtime_error("In FullselectionModule: channel should be either ech, much or Inclusive");
 
 
     mHH_reco->process(event);    
@@ -478,8 +480,9 @@ namespace uhh2examples {
     bool is_mHH_reconstructed = event.get(h_is_mHH_reconstructed);
     // cout << "is_mHH_reconstructed: " << is_mHH_reconstructed << endl;
     if(is_mHH_reconstructed) fill_histograms(event, "mHH_reconstructed", region);
-
     //if(!njet4_sel->passes(event)) return false; // quick hack to only consider 4 Jet category
+    //if(!nbtag2_medium_sel->passes(event)) return false; // quick hack to only consider 2 BTag category
+
     Variables_module->process(event);
 
     h_NNInputVariables_Inclusive->fill(event);
