@@ -25,8 +25,12 @@ public:
   virtual void fill(const uhh2::Event&) override;
 
  protected:
-  void init();
+  void init();  
+  void fill_map(uhh2::Context& ctx, string id, TH1F *hist, vector<float> bins);
+  int NN_classes;
+  map<string, HHAutoHist> histMap;
 
+  TH1F *max_NN_out, *max_NN_out_rebin, *max_NN_out_rebin2;
   TH1F *NN_out0, *NN_out1, *NN_out2, *NN_out3, *NN_out4;
   TH1F *NN_out0_rebin, *NN_out1_rebin, *NN_out2_rebin, *NN_out3_rebin, *NN_out4_rebin;
   TH1F *NN_out0_rebin2, *NN_out1_rebin2, *NN_out2_rebin2, *NN_out3_rebin2, *NN_out4_rebin2;
@@ -38,6 +42,12 @@ public:
   uhh2::Event::Handle<double> h_NNoutput2;
   uhh2::Event::Handle<double> h_NNoutput3;
   uhh2::Event::Handle<double> h_NNoutput4;
+
+
+  TH1F *N_Ak4, *Ak4_j1_pt, *Ak4_j2_pt, *Ak4_j3_pt, *Lep_pt, *HT, *mbb;
+
+  //uhh2::Event::Handle<double> h_N_Ak4, h_Ak4_j1_pt, h_Ak4_j2_pt, h_Ak4_j3_pt, h_Lep_pt, h_HT, h_mbb;
+
 
   virtual ~HHtoWWbbSemiLeptonicMulticlassNNHists();
 };

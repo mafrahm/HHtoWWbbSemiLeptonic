@@ -9,18 +9,51 @@
 using namespace std;
 using namespace uhh2;
 
+void HHtoWWbbSemiLeptonicMulticlassNNHists::fill_map(uhh2::Context& ctx, string id, TH1F *hist, vector<float> bins){
+  //cout << "fill_map" << endl;
+  HHAutoHist output;
+  output.hist = hist;
+  output.bins = bins;
+  output.h_var = ctx.get_handle<float>(id);
+  histMap.insert(pair<string,HHAutoHist>(id, output));
+}
+
+
 HHtoWWbbSemiLeptonicMulticlassNNHists::HHtoWWbbSemiLeptonicMulticlassNNHists(uhh2::Context& ctx, const std::string& dirname): Hists(ctx, dirname) {
 
+  NN_classes = stoi(ctx.get("NN_Classes"));
   h_NNoutput0 = ctx.get_handle<double>("NNoutput0");
   h_NNoutput1 = ctx.get_handle<double>("NNoutput1");
   h_NNoutput2 = ctx.get_handle<double>("NNoutput2");
   h_NNoutput3 = ctx.get_handle<double>("NNoutput3");
   h_NNoutput4 = ctx.get_handle<double>("NNoutput4");
+  /*
+  h_N_Ak4 = ctx.get_handle<double>("N_Ak4");
+  h_Ak4_j1_pt = ctx.get_handle<double>("Ak4_j1_pt");
+  h_Ak4_j2_pt = ctx.get_handle<double>("Ak4_j2_pt");
+  h_Ak4_j3_pt = ctx.get_handle<double>("Ak4_j3_pt");
+  h_Lep_pt = ctx.get_handle<double>("Lep_pt");
+  h_HT = ctx.get_handle<double>("HT");
+  h_mbb = ctx.get_handle<double>("mbb");
+  */
+
+
+  fill_map(ctx, "N_Ak4", N_Ak4, {11,-0.5,10.5});
+  fill_map(ctx, "Ak4_j1_pt", Ak4_j1_pt, {40,0,400});
+  fill_map(ctx, "Ak4_j2_pt", Ak4_j2_pt, {40,0,400});
+  fill_map(ctx, "Ak4_j3_pt", Ak4_j3_pt, {40,0,400});  
+  fill_map(ctx, "Lep_pt", Lep_pt, {40,0,400});
+  fill_map(ctx, "HT", HT, {60,0,1500});
+  fill_map(ctx, "mbb", mbb, {40,0,400});
 
   init();
 }
 
 void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
+
+  max_NN_out = book<TH1F>("max_NN_out", "max(output nodes)", 1000, 0, 1);
+  max_NN_out_rebin = book<TH1F>("max_NN_out_rebin", "max(output nodes)", 20, 0, 1);
+  max_NN_out_rebin2 = book<TH1F>("max_NN_out_rebin2", "max(output nodes)", 40, 0, 1);
 
   NN_out0 = book<TH1F>("NN_out0", "HH output node", 1000, 0, 1);
   NN_out1 = book<TH1F>("NN_out1", "TTbar output node", 1000, 0, 1);
@@ -53,40 +86,73 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   NN_out2_limits1 = book<TH1F>("NN_out2_limits1", "NN output 2", limitbins_stcr_1.size()-1, &limitbins_stcr_1[0]);
   NN_out3_limits1 = book<TH1F>("NN_out3_limits1", "NN output 3", limitbins_wdycr_1.size()-1, &limitbins_wdycr_1[0]);
   NN_out4_limits1 = book<TH1F>("NN_out4_limits1", "NN output 4", limitbins_qcdcr_1.size()-1, &limitbins_qcdcr_1[0]);
+
+  // Declare AutoHists
+  map<string,HHAutoHist>::iterator it;
+  for(it=histMap.begin(); it!= histMap.end(); it++){
+    string id = it->first;
+    HHAutoHist *output = &(it->second);
+    output->hist = book<TH1F>(id,id, output->bins[0],output->bins[1],output->bins[2]);    
+  }
+
 }
 
 void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
 
-double weight = event.weight;
-double NNoutput0 = event.get(h_NNoutput0);
-double NNoutput1 = event.get(h_NNoutput1);
-double NNoutput2 = event.get(h_NNoutput2);
-double NNoutput3 = event.get(h_NNoutput3);
-double NNoutput4 = event.get(h_NNoutput4);
+  double weight = event.weight;
+  double NNoutput0 = event.get(h_NNoutput0);
+  double NNoutput1 = event.get(h_NNoutput1);
+  double NNoutput2 = event.get(h_NNoutput2);
+  double NNoutput3 = event.get(h_NNoutput3);
+  double NNoutput4 = event.get(h_NNoutput4);
 
-NN_out0->Fill(NNoutput0, weight);
-NN_out1->Fill(NNoutput1, weight);
-NN_out2->Fill(NNoutput2, weight);
-NN_out3->Fill(NNoutput3, weight);
-NN_out4->Fill(NNoutput4, weight);
+  vector<double> NNoutput = {NNoutput0,NNoutput1,NNoutput2,NNoutput3,NNoutput4};
+  if(NN_classes>5)runtime_error("In HHtoWWbbSemiLeptonicMulticlassNNHists: max. 5 NN categories are implemented ATM");
 
-NN_out0_rebin->Fill(NNoutput0, weight);
-NN_out1_rebin->Fill(NNoutput1, weight);
-NN_out2_rebin->Fill(NNoutput2, weight);
-NN_out3_rebin->Fill(NNoutput3, weight);
-NN_out4_rebin->Fill(NNoutput4, weight);
+  double max_NNoutput = 0.0;
+  for (int i = 0; i < NN_classes; i++ ) {
+    if (NNoutput[i] > max_NNoutput) {
+    max_NNoutput = NNoutput[i];
+    }
+  }
+  
+  max_NN_out->Fill(max_NNoutput, weight);
+  max_NN_out_rebin->Fill(max_NNoutput, weight);
+  max_NN_out_rebin2->Fill(max_NNoutput, weight);
 
-NN_out0_rebin2->Fill(NNoutput0, weight);
-NN_out1_rebin2->Fill(NNoutput1, weight);
-NN_out2_rebin2->Fill(NNoutput2, weight);
-NN_out3_rebin2->Fill(NNoutput3, weight);
-NN_out4_rebin2->Fill(NNoutput4, weight);
+  NN_out0->Fill(NNoutput0, weight);
+  NN_out1->Fill(NNoutput1, weight);
+  NN_out2->Fill(NNoutput2, weight);
+  NN_out3->Fill(NNoutput3, weight);
+  NN_out4->Fill(NNoutput4, weight);
 
-NN_out0_limits1->Fill(NNoutput0, weight);
-NN_out1_limits1->Fill(NNoutput1, weight);
-NN_out2_limits1->Fill(NNoutput2, weight);
-NN_out3_limits1->Fill(NNoutput3, weight);
-NN_out4_limits1->Fill(NNoutput4, weight);
+  NN_out0_rebin->Fill(NNoutput0, weight);
+  NN_out1_rebin->Fill(NNoutput1, weight);
+  NN_out2_rebin->Fill(NNoutput2, weight);
+  NN_out3_rebin->Fill(NNoutput3, weight);
+  NN_out4_rebin->Fill(NNoutput4, weight);
+
+  NN_out0_rebin2->Fill(NNoutput0, weight);
+  NN_out1_rebin2->Fill(NNoutput1, weight);
+  NN_out2_rebin2->Fill(NNoutput2, weight);
+  NN_out3_rebin2->Fill(NNoutput3, weight);
+  NN_out4_rebin2->Fill(NNoutput4, weight);
+
+  NN_out0_limits1->Fill(NNoutput0, weight);
+  NN_out1_limits1->Fill(NNoutput1, weight);
+  NN_out2_limits1->Fill(NNoutput2, weight);
+  NN_out3_limits1->Fill(NNoutput3, weight);
+  NN_out4_limits1->Fill(NNoutput4, weight);
+
+
+  // fill the AutoHists
+  map<string,HHAutoHist>::iterator it;
+  for(it=histMap.begin(); it!= histMap.end(); it++){
+    string id = it->first;
+    HHAutoHist *output = &(it->second);
+    float var = event.get(output->h_var);
+    output->hist->Fill(var, weight);
+  }
 }
 
 HHtoWWbbSemiLeptonicMulticlassNNHists::~HHtoWWbbSemiLeptonicMulticlassNNHists(){}
@@ -229,9 +295,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::init(){
   for(it=histMap.begin(); it!= histMap.end(); it++){
     string id = it->first;
     HHAutoHist *output = &(it->second);
-    
     output->hist = book<TH1F>(id,id, output->bins[0],output->bins[1],output->bins[2]);    
-    
   }
 
   HT_rebin1 = book<TH1F>("HT_rebin1", "HT_rebin1", 60,0,400);

@@ -21,11 +21,11 @@ HHtoWWbbSemiLeptonicHists::HHtoWWbbSemiLeptonicHists(Context & ctx, const string
 
   N_jets = book<TH1F>("N_jets", "N_{jets}", 16, -0.5, 15.5);  
   N_PU = book<TH1F>("N_PU", "N_{PU}", 100, 0, 100);  
-  pt_jets = book<TH1F>("pt_jets", "p_{T}^{jets}", 40, 10, 250);
-  pt_jet1 = book<TH1F>("pt_jet1", "p_{T}^{jet 1}", 40, 10, 250);
-  pt_jet2 = book<TH1F>("pt_jet2", "p_{T}^{jet 2}", 40, 10, 250);
-  pt_jet3 = book<TH1F>("pt_jet3", "p_{T}^{jet 3}", 40, 10, 250);
-  pt_jet4 = book<TH1F>("pt_jet4", "p_{T}^{jet 4}", 40, 10, 250);
+  pt_jets = book<TH1F>("pt_jets", "p_{T}^{jets} [GeV]", 40, 10, 250);
+  pt_jet1 = book<TH1F>("pt_jet1", "p_{T}^{jet 1} [GeV]", 40, 10, 250);
+  pt_jet2 = book<TH1F>("pt_jet2", "p_{T}^{jet 2} [GeV]", 40, 10, 250);
+  pt_jet3 = book<TH1F>("pt_jet3", "p_{T}^{jet 3} [GeV]", 40, 10, 250);
+  pt_jet4 = book<TH1F>("pt_jet4", "p_{T}^{jet 4} [GeV]", 40, 10, 250);
   eta_jets = book<TH1F>("eta_jets", "#eta^{jets}", 40, -2.5, 2.5);
   eta_jets_rebin = book<TH1F>("eta_jets_rebin", "#eta^{jets}", 60, -5.0, 5.0);
   eta_jet1 = book<TH1F>("eta_jet1", "#eta^{jet 1}", 40, -2.5, 2.5);
@@ -56,7 +56,7 @@ HHtoWWbbSemiLeptonicHists::HHtoWWbbSemiLeptonicHists(Context & ctx, const string
 
   // leptons
   N_mu = book<TH1F>("N_mu", "N^{#mu}", 11, -0.5, 10.5);
-  pt_mu = book<TH1F>("pt_mu", "p_{T}^{#mu} [GeV/c]", 40, 0, 200);
+  pt_mu = book<TH1F>("pt_mu", "p_{T}^{#mu} [GeV]", 40, 0, 200);
   eta_mu = book<TH1F>("eta_mu", "#eta^{#mu}", 40, -2.5, 2.5);
   eta_mu_rebin = book<TH1F>("eta_mu_rebin", "#eta^{#mu}", 60, -5.0, 5.0);
   reliso_mu = book<TH1F>("reliso_mu", "#mu rel. Iso", 40, 0, 0.5);
