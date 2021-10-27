@@ -134,6 +134,10 @@ namespace uhh2examples {
     TString dataset_version;
     Year year;
 
+  
+  uhh2::Event::Handle<float> h_N_Ak4, h_N_BTag;
+  uhh2::Event::Handle<float> h_MTtop_lep_hyp1, h_minDeltaRlj, h_b2_deepjetbscore;
+
   };
 
 
@@ -210,6 +214,18 @@ namespace uhh2examples {
     h_chi2_H_WW = ctx.declare_event_output<float>("chi2_H_WW");
 
     h_region = ctx.declare_event_output<TString>("region");
+
+    h_N_Ak4 = ctx.get_handle<float>("N_Ak4");
+    h_N_BTag = ctx.get_handle<float>("N_BTag");
+    h_MTtop_lep_hyp1 = ctx.get_handle<float>("MTtop_lep_hyp1");
+    h_minDeltaRlj = ctx.get_handle<float>("minDeltaRlj");
+    h_b2_deepjetbscore = ctx.get_handle<float>("b2_deepjetbscore");
+
+
+
+
+
+
     /*
     h_muon_triggerweight = ctx.declare_event_output<float>("weight_sfmu_trigger");
     h_muon_triggerweight_up = ctx.declare_event_output<float>("weight_sfmu_trigger_up");
@@ -314,7 +330,7 @@ namespace uhh2examples {
     trainingfraction = std::stoi(ctx.get("TrainingFraction"));
 
     // Book histograms
-    vector<string> histogram_tags = {"forTraining", "forAnalysis", "Cleaner", "Trigger", "TriggerSF", "BTag", "mHH_reconstructed"};
+    vector<string> histogram_tags = {"forTraining", "forAnalysis", "Cleaner", "Trigger", "TriggerSF", "BTag", "QCDcut1", "QCDcut2", "QCDcut3", "mHH_reconstructed"};
     book_histograms(ctx, histogram_tags);
 
     h_btageff.reset(new BTagMCEfficiencyHists(ctx, "BTagEff", DeepjetMedium));
@@ -387,11 +403,11 @@ namespace uhh2examples {
     */
 
     // to allow 10/90, 20/80, ... splitting aswell
-    if(!is_DNNProcess || eventTag%10 < (int)trainingfraction/10) fill_histograms(event, "forAnalysis", region); 
-    if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10) fill_histograms(event, "forTraining", region);
+    if(!is_DNNProcess || eventTag%10 >= (int)trainingfraction/10) fill_histograms(event, "forAnalysis", region); 
+    if(is_DNNProcess && eventTag%10 < (int)trainingfraction/10) fill_histograms(event, "forTraining", region);
 
-    if(is_DNNProcess &&  forTraining && eventTag%10 <  (int)trainingfraction/10) return false;
-    if(is_DNNProcess && !forTraining && eventTag%10 >= (int)trainingfraction/10) return false;
+    if(is_DNNProcess &&  forTraining && eventTag%10 >=  (int)trainingfraction/10) return false;
+    if(is_DNNProcess && !forTraining && eventTag%10 < (int)trainingfraction/10) return false;
 
     if(is_DNNProcess &&  forTraining) event.weight = event.weight*100/trainingfraction;
     if(is_DNNProcess && !forTraining) event.weight = event.weight*100/(100-trainingfraction);
@@ -484,6 +500,23 @@ namespace uhh2examples {
     //if(!nbtag2_medium_sel->passes(event)) return false; // quick hack to only consider 2 BTag category
 
     Variables_module->process(event);
+    
+    // QCD remover
+    double minDeltaRlj = event.get(h_minDeltaRlj);
+    if(minDeltaRlj<0.2) return false;
+    fill_histograms(event, "QCDcut1", region);
+
+    double MTtop_lep_hyp1 = event.get(h_MTtop_lep_hyp1);
+    if(MTtop_lep_hyp1<60) return false;
+    fill_histograms(event, "QCDcut2", region);
+
+    double b2_deepjetbscore = event.get(h_b2_deepjetbscore);
+    if(b2_deepjetbscore<0.1) return false;
+    fill_histograms(event, "QCDcut3", region);
+    
+
+
+
 
     h_NNInputVariables_Inclusive->fill(event);
     if(region=="ech")       h_NNInputVariables_ech->fill(event);

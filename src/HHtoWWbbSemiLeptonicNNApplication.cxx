@@ -113,6 +113,8 @@ private:
  
   
   uhh2::Event::Handle<float> h_N_Ak4, h_N_BTag;
+  uhh2::Event::Handle<float> h_MTtop_lep_hyp1, h_minDeltaRlj, h_b2_deepjetbscore;
+
 
 };
 
@@ -181,7 +183,6 @@ void HHtoWWbbSemiLeptonicNNApplication::book_pdf_histograms(uhh2::Context& ctx, 
       book_HFolder(mytag, new HHPDFHists(ctx,mytag));
       mytag = "ech_" + tag + "_" + systtag;
       book_HFolder(mytag, new HHPDFHists(ctx,mytag));
-
     }
   }
 }
@@ -197,7 +198,6 @@ void HHtoWWbbSemiLeptonicNNApplication::fill_syst_histograms(uhh2::Event& event,
 
 
 HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & ctx){
-  
   for(auto & kv : ctx.get_all()){
     cout << " " << kv.first << " = " << kv.second << endl;
   }
@@ -231,7 +231,9 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 
   h_N_Ak4 = ctx.get_handle<float>("N_Ak4");
   h_N_BTag = ctx.get_handle<float>("N_BTag");
-
+  h_MTtop_lep_hyp1 = ctx.get_handle<float>("MTtop_lep_hyp1");
+  h_minDeltaRlj = ctx.get_handle<float>("minDeltaRlj");
+  h_b2_deepjetbscore = ctx.get_handle<float>("b2_deepjetbscore");
 
   string data_dir = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data//";
   string NNmodel = ctx.get("NNModel");
@@ -239,7 +241,7 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
   NN_classes = stoi(ctx.get("NN_Classes"));
 
   // Book histograms
-  vector<string> histogram_tags = {"Finalselection", "DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4", "NoWeights"};
+  vector<string> histogram_tags = {"QCDcut0", "QCDcut1", "QCDcut2", "QCDcut3", "Finalselection", "DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4", "NoWeights"};
   book_histograms(ctx, histogram_tags);
 
   //h_xx = ctx.get_handle<float>("xx");
@@ -321,27 +323,27 @@ HHtoWWbbSemiLeptonicNNApplication::HHtoWWbbSemiLeptonicNNApplication(Context & c
 
 
 bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
-  //cout << "NNApplication: process" << endl;
+  bool debug = false;
+  //if(debug) cout << "NNApplication: process" << endl;
 
     
 
   string region = (string)event.get(h_region);
-
+  if(debug) cout << event.weight << endl;
   // Read out nominal eventweight
   float weight_nominal = event.get(h_eventweight_final);
+  if(debug) cout << "nominal weight before scaling for training: " << weight_nominal << endl;
 
-  // For NOMINAL: check if trainingfraction is correct
-  // For JEC/JER: remove trainingevents
+  // remove trainingevents
   int eventTag = event.event;
-  if(is_DNNProcess && eventTag%10 >= (int)trainingfraction/10){
-    if(is_nominal) throw runtime_error("this should be a training event: something went wrong with the splitting into training and analysis datasets");
-    else return false;
+  if(is_DNNProcess && eventTag%10 < (int)trainingfraction/10){
+    return false;
   }
 
-  // for JEC/JER, we also need to reweight the trainingprocesses
-  if(is_DNNProcess && !is_nominal) weight_nominal=weight_nominal*100/(100-trainingfraction);
+  // we need to reweight the trainingprocesses
+  if(is_DNNProcess) weight_nominal=weight_nominal*100/(100-trainingfraction);
   event.weight = weight_nominal;
-
+  if(debug) cout << "nominal weight after: "<< event.weight << " (should be doubled if JEC/JEC, DNNprocess and 50% fraction)" << endl;
 
 
   //Variables_module->process(event); // (hopefully) not needed anymore :)
@@ -361,17 +363,34 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   vector<double> out_event = {out0,out1,out2,out3,out4};
   if(NN_classes>5)runtime_error("In HHtoWWbbSemiLeptonicNNApplication: max. 5 NN categories are implemented ATM");
   /*
-    cout << "out0= " << out0 << endl;
-    cout << "out1= " << out1 << endl;
-    cout << "out2= " << out2 << endl;
-    cout << "out3= " << out3 << endl;
-    cout << "out4= " << out4 << endl;
+    if(debug) cout << "out0= " << out0 << endl;
+    if(debug) cout << "out1= " << out1 << endl;
+    if(debug) cout << "out2= " << out2 << endl;
+    if(debug) cout << "out3= " << out3 << endl;
+    if(debug) cout << "out4= " << out4 << endl;
   */
   event.set(h_NNoutput0, out0);
   event.set(h_NNoutput1, out1);
   event.set(h_NNoutput2, out2);
   event.set(h_NNoutput3, out3);
   event.set(h_NNoutput4, out4);
+
+  fill_histograms(event, "QCDcut0", region);
+  
+  // cuts to reduce QCD impact (only needed for JEC/JER)
+  double minDeltaRlj = event.get(h_minDeltaRlj);
+  if(minDeltaRlj<0.2) return false;
+  fill_histograms(event, "QCDcut1", region);
+
+  double MTtop_lep_hyp1 = event.get(h_MTtop_lep_hyp1);
+  if(MTtop_lep_hyp1<60) return false;
+  fill_histograms(event, "QCDcut2", region);
+
+  double b2_deepjetbscore = event.get(h_b2_deepjetbscore);
+  if(b2_deepjetbscore<0.1) return false;
+  fill_histograms(event, "QCDcut3", region);
+  
+
   fill_histograms(event, "Finalselection", region);
 
   // Categorization using NN output
@@ -385,7 +404,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
   }
   string DNN_hist_tag  = "DNNoutput"+max_score_tag;
   fill_histograms(event, DNN_hist_tag, region);
-
+  if(debug) cout << "before: " << event.weight << endl;
 
   event.weight = 1;
   fill_histograms(event, "NoWeights", region);
@@ -394,6 +413,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
 
   // Fill histograms once with nominal weights
   event.weight = weight_nominal;
+  if(debug) cout << "after: " << event.weight << endl;
 
   if(!is_nominal) fill_syst_histograms(event, DNN_hist_tag, region, syst);
 
