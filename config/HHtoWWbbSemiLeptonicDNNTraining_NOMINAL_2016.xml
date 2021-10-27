@@ -3,7 +3,7 @@
 
 
 <!ENTITY RUNFOR          "DNNTraining"> <!-- Fullselection, DNNTraining -->
-<!ENTITY TRAININGFRACTION "50"> <!-- not yet used -->
+<!ENTITY TRAININGFRACTION "30">
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
 <!ENTITY TargetLumi      "35920">

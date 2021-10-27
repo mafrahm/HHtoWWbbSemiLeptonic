@@ -3,12 +3,12 @@
 
 
 <!ENTITY RUNFOR          "Fullselection"> <!-- Fullselection, DNNTraining -->
-<!ENTITY TRAININGFRACTION "50">
+<!ENTITY TRAININGFRACTION "0"> <!-- remove trainingevents in NNApplication -->
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
 <!ENTITY TargetLumi      "35920">
 <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive_PTJet&PTJET;/NOMINAL">
-<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/&RUNFOR;/&CHANNEL;_PTJet&PTJET;_TrainOn&TRAININGFRACTION;/NOMINAL"> <!-- Inclusive, ech, much -->
+<!ENTITY SELdir          "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/&RUNFOR;/&CHANNEL;_PTJet&PTJET;/NOMINAL"> <!-- Inclusive, ech, much -->
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
