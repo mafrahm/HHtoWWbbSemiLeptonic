@@ -21,7 +21,8 @@ void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
     "MuR_TTbar", "MuR_DYJets", "MuR_WJets", "MuR_SingleTop", "MuR_Diboson", "MuR_TTV",
     "MuF_TTbar", "MuF_DYJets", "MuF_WJets", "MuF_SingleTop", "MuF_Diboson", "MuF_TTV",
     "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV",
-    "scale_HHtoWWbbSL_cHHH0", "scale_HHtoWWbbSL_cHHH1", "scale_HHtoWWbbSL_cHHH2p45", "scale_HHtoWWbbSL_cHHH5",
+    //"pdf_TTbar", "pdf_DYJets", "pdf_WJets", "pdf_SingleTop", "pdf_Diboson", "pdf_TTV", // pdf hists only include DNN output nodes :(
+    "MuR_HH", "MuF_HH", "scale_HH", //"pdf_HH",
     "JEC", "JER"
   };
   vector<TString> syst_shift = {"up", "down"};
@@ -33,7 +34,7 @@ void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
   TFile* f_out = new TFile(AnalysisTool::histsForSyst_name, "RECREATE");
 
   for(unsigned int region = 0; region <region_tags.size(); region++) {
-    if(region!=0) continue; // quick fix, not looping over different regions here, but I don't want to change the code
+    if(region!=0) continue; // for only getting srmuch,srech hists
     for(unsigned int channel=0; channel<channel_tags.size(); channel++) {
       if(debug) cout << "============= Channel: " << channel_tags[channel] << ", Region: " << region_tags[region] << endl;
 
@@ -72,12 +73,13 @@ void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
             if(!proc.Contains("Diboson") && syst == "scale_Diboson") force_nominal = true;
             if(!proc.Contains("TTV") && syst == "scale_TTV") force_nominal = true;
             if(!proc.Contains("WJets") && syst == "scale_WJets") force_nominal = true;
+	    if(!proc.Contains("HHtoWWbbSL") && syst.Contains("_HH")) force_nominal = true;
 
 	    if(debug) cout << "======= Sample " << proc << endl;
 
 	    TString infilename = infilename_base;
 	    if((syst.Contains("scale") || syst.Contains("MuR") || syst.Contains("MuF")) && !force_nominal) infilename += "scale/";
-	    else if(syst=="pdf"       && !force_nominal) infilename += "pdf/";
+	    else if(syst.Contains("pdf") && !force_nominal) infilename += "pdf/";
 	    else if((syst=="JEC" || syst =="JER") && !force_nominal) infilename+= syst + syst_shift_combine[j] + "/uhh2.AnalysisModuleRunner."+tag;
 	    else infilename += "NOMINAL/uhh2.AnalysisModuleRunner."+tag;
 	    infilename += proc + "_" + yeartag + ".root";
@@ -97,6 +99,7 @@ void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
 	    else if(syst.Contains("scale")) histname+="scale_" + syst_shift[j];
 	    else if(syst.Contains("MuR")) histname+="MuR_" + syst_shift[j];
 	    else if(syst.Contains("MuF")) histname+="MuF_" + syst_shift[j];
+	    else if(syst.Contains("pdf_")) histname+="pdf_" + syst_shift[j];
 	    else if(syst=="JEC" || syst=="JER") histname+=syst+syst_shift_combine[j];
 	    else histname += syst + "_" + syst_shift[j];
 	    histname += "/" + histname_base;
@@ -112,8 +115,11 @@ void AnalysisTool::GetHistogramsForSystHists(TString histname_base){
 	    // change data and qcd to the required output name
 	    if(proc.Contains("DATA")) proc = "data_obs";
 	    if(proc.Contains("QCD")) proc = "QCD";
-
-	    TString histname_out = region_tags[region] + channel_tags[channel] + "_" + histname_base + "__" + proc + "_" + AnalysisTool::yeartag;
+	    if(proc.Contains("HHtoWWbbSL")){ // for inference: change HH names
+	      proc.ReplaceAll("HHtoWWbbSL_cHHH", "ggHH_kl_");
+	      proc += "_kt_1_hbbhww";
+	    }
+	    TString histname_out = histname_base + "_" + region_tags[region] + channel_tags[channel] + "__" + proc + "_" + AnalysisTool::yeartag;
 	    if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
 	    // e.g. histname_out = srmuch_TTbar_2016v3__scale_TTbarUp
 	    if(debug) cout << "histname_out: " << histname_out << endl;

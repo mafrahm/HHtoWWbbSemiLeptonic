@@ -8,10 +8,11 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
   cout << "postFitPlot:" << endl;
   cout << "Line: " << __LINE__ << endl;
 
-  const TString signaltag = "HHtoWWbbSL_cHHH1";
+  const TString signaltag = "HH_1";
+  const TString signalname = "ggHH_kl_1_kt_1_hbbhww";
 
-
-  const TString file_name_shapes = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root";
+  const TString file_name_shapes = AnalysisTool::combineInputName_rateShape;
+  //const TString file_name_shapes = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root";
   const TString file_name_postfit = AnalysisTool::combine_path + "output/fitDiagnostics" + signaltag + ".root";
   cout << file_name_postfit << endl;
 
@@ -31,26 +32,25 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     TString ch_name = it->second;
     // binning
     vector<double> xbins = AnalysisTool::channel_to_bins[ch_name];
-    /*
-    if(ch_name.Contains("sr")) xbins = {0,0.4,0.5,0.6,0.7,0.8,0.9,0.96,1.0};
-    else if(ch_name.Contains("wdycr")) xbins = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,0.85,0.9,1.0};
-    else if(ch_name.Contains("ttcr") || ch_name.Contains("stcr")) xbins = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.8,1.0};
-    else throw runtime_error("error in PlotPostfitDistribution: ch_name not known");
-    */
     int nbins = xbins.size()-1;
+    cout << "Line: " << __LINE__ << endl;
     
     vector<TH1F*> h_backgrounds; 
 
     TFile *fpostfit = new TFile(file_name_postfit);
     cout << prefix+channel+postfix << endl;
     TGraphAsymmErrors *h_data = (TGraphAsymmErrors*) fpostfit->Get(prefix + channel + postfix + "/data")->Clone();
-    TH1F *h_signal = (TH1F*) fpostfit->Get("shapes_fit_s/" + channel + postfix + "/" + signaltag)->Clone();
+    cout << "Line: " << __LINE__ << endl;
+    TH1F *h_signal = (TH1F*) fpostfit->Get("shapes_fit_s/" + channel + postfix + "/" + signalname)->Clone();
+    cout << "Line: " << __LINE__ << endl;
     h_signal->SetDirectory(0);
     h_signal->SetBins(nbins, &xbins[0]);
-    h_signal->Scale(((TH1F*)fpostfit->Get("shapes_prefit/" + channel + postfix + "/" + signaltag))->Integral()/h_signal->Integral());
+    h_signal->Scale(((TH1F*)fpostfit->Get("shapes_prefit/" + channel + postfix + "/" + signalname))->Integral()/h_signal->Integral());
     TH1F *h_err =  (TH1F*) fpostfit->Get(prefix + channel + postfix + "/total_background")->Clone();
+    cout << "Line: " << __LINE__ << endl;
     h_err->SetDirectory(0);
     h_err->SetBins(nbins, &xbins[0]);
+    cout << "Line: " << __LINE__ << endl;
 
     for(unsigned int i=0; i<backgrounds.size(); i++){
       TH1F *h_bckg = (TH1F*) fpostfit->Get(prefix + channel + postfix + "/" + backgrounds[i])->Clone();
@@ -61,6 +61,7 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     fpostfit->Close();
     delete fpostfit;
 
+    cout << "Line: " << __LINE__ << endl;
 
 
 

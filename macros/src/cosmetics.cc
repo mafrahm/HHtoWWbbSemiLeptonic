@@ -128,7 +128,8 @@ void HistCosmetics(TH1* hist, bool ratio) {
     hist->GetXaxis()->SetTickSize(0.07);
     hist->GetYaxis()->SetTitleSize(15);
     hist->GetYaxis()->CenterTitle();
-    hist->GetYaxis()->SetRangeUser(0.3, 1.7);
+    //hist->GetYaxis()->SetRangeUser(0.3, 1.7);
+    hist->GetYaxis()->SetRangeUser(0.5, 1.5);
     hist->GetYaxis()->SetLabelSize(14);
   }
   else

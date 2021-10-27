@@ -36,11 +36,11 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
   // Open File
   // ==========
 
-  cout << "combineInput_name: " << combineInput_name << endl;
+  cout << "combineInput_name: " << combineInputName_rateShape << endl;
 
 
-
-  TFile* infile = new TFile(AnalysisTool::combineInput_name, "READ");
+  TFile* infile = new TFile(AnalysisTool::combineInputName_allShape, "READ");
+  //TFile* infile = new TFile(AnalysisTool::combineInputName_rateShape, "READ");
   if(combine_hist==false) infile = new TFile(AnalysisTool::histsForSyst_name, "READ");
   // Get histograms (only TH1), tokenize them to get all vars, processes, systs
   // ==========================================================================
@@ -132,7 +132,7 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
 
 
 	// don't use plots where no systematics were used
-	if(syst.Contains("scale") && proc.Contains("HHtoWWbb")) continue;
+	//if(syst.Contains("scale") && proc.Contains("HHtoWWbb")) continue;
 	//if(syst == "PDF" && proc.Contains("HHtoWWbb"))          continue;
 	if(syst.Contains("_DYJets")    && !proc.Contains("DYJets"))    continue;
 	if(syst.Contains("_Diboson")   && !proc.Contains("Diboson"))   continue;
@@ -140,6 +140,7 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
 	if(syst.Contains("_TTV")       && !proc.Contains("TTV"))       continue;
 	if(syst.Contains("_TTbar")     && !proc.Contains("TTbar"))     continue;
 	if(syst.Contains("_WJets")     && !proc.Contains("WJets"))     continue;
+	if(syst.Contains("_HH")        && !proc.Contains("HH"))        continue;
 
 
         TString histname_nom = var + "__" + proc;
@@ -178,12 +179,28 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
         h_nom->GetYaxis()->SetTitle("Events / bin");
         TH1F* h_axis = (TH1F*)h_nom->Clone();
         h_axis->GetYaxis()->SetTitle("var / nom");
-        h_axis->GetYaxis()->SetLabelSize(12);
+	h_axis->GetYaxis()->SetLabelSize(12);
 	//cout << "var: " << var << endl;
 	h_axis->GetXaxis()->SetTitle(AnalysisTool::channel_to_xAxisTitle[var]);
 
 
         HistCosmetics(h_axis, true);
+
+	// some custom Range settings
+	double range = .25; // Range is always set symmetric
+
+	
+	if(syst=="JEC" || syst.Contains("scale") || syst=="btag_bc" || syst=="eleid") range=.10;
+	if(syst.Contains("MuR") || syst.Contains("MuF") || syst.Contains("pdf") || syst=="btag_udsg" || syst=="elereco") range=.05;
+	if(syst.Contains("JER") || syst=="muid" || syst=="muiso" || syst=="pu") range=.02;
+
+	if(syst=="JER" && proc.Contains("QCD")) range =.05;
+	if(syst=="MuR_WJets" || syst=="MuF_WJets" || syst=="MuF_DYJets") range =.1;
+	if(syst=="scale_WJets") range =.2;
+	if(syst=="pdf_HH") range=.001;
+	if(syst=="eleid" && proc.Contains("QCD")) range =.2;
+	//if(syst=="pu" && (proc.Contains("Diboson") || proc.Contains("QCD"))) range =.2;
+	h_axis->GetYaxis()->SetRangeUser(1-range,1+range);
 
         TCanvas* c = new TCanvas("c", "systematic plots", 400, 400);
         TPad* pad_top = SetupRatioPadTop();
@@ -228,6 +245,13 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
         text1->Draw("SAME");
 
         TString sampletext = proc;
+	if(proc.Contains("HH")) {
+	  TString node=proc;
+	  node=node.ReplaceAll("ggHH_kl_","");
+	  node=node.ReplaceAll("_kt_1_hbbhww","");
+	  sampletext = "HH #kappa#lambda="+node;
+	}
+	sampletext.ReplaceAll("_2016v3","");
         TLatex *text2 = new TLatex(3.5, 24, sampletext);
         text2->SetNDC();
         text2->SetTextAlign(33);
@@ -239,13 +263,16 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
 
         //c->SaveAs(outdir + "png_SystematicHists/" + "SysVars_" + var + "_" + proc + "_" + syst + ".png");
 	if(combine_hist) {
-        c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
-        c->SaveAs(outdir + "png/SysVars_" + var + "_" + proc + "_" + syst + ".png");
+	  //c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+	  c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".pdf");
+	  c->SaveAs(outdir + "png/SysVars_" + var + "_" + proc + "_" + syst + ".png");
 	}
 	else {
-	  c->SaveAs(outdir + "var/SysVars_" + var + "_" + proc + "_" + syst + ".eps");
+	  //c->SaveAs(outdir + "var/" + var + "_" + proc + "_" + syst + ".eps");
+	  c->SaveAs(outdir + "var/" + var + "_" + proc + "_" + syst + ".pdf");
+
 	}
-        // delete c_out;
+        delete c;
 
 	/*
         delete h_axis;
