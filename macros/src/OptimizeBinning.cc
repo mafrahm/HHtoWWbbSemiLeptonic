@@ -9,7 +9,7 @@ using namespace std;
 
 
 void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString channel, bool flat_in_background){
-  bool debug = true;
+  bool debug = false;
   if(debug) cout << "hello from FindOptimizeBinning :>" << endl;
 
   vector<TH1F*> h_in_vec;
@@ -68,31 +68,34 @@ void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TStrin
 
 TH1F* AnalysisTool::ApplyOptimizeBinning(TH1F *hist, vector<double> bins){
   bool debug = false;
-  // if(debug) cout << "Hello from ApplyOptimizeBinning :)" << endl;
-  
-  TH1F* h_out = dynamic_cast<TH1F*>(hist->Rebin(bins.size()-1, "hnew", &bins[0]));
+  //if(debug) cout << "Hello from ApplyOptimizeBinning :)" << endl;
+  TString histname = hist->GetName();
+  TH1F* h_out = dynamic_cast<TH1F*>(hist->Rebin(bins.size()-1, histname, &bins[0]));
+  return h_out;
+}
 
+TH1F* AnalysisTool::ApplyOptimizeBinning(TH1F *hist, TString channel, TString proc){
+  bool debug = false;
+  //if(debug) cout << "Hello from ApplyOptimizeBinning :)" << endl;
+  TString histname = hist->GetName();
+  vector<double> bins = channel_to_bins[channel];
+  TH1F* h_out = dynamic_cast<TH1F*>(hist->Rebin(bins.size()-1, histname, &bins[0]));
+  
   if(debug) cout << "ApplyOptimizeBinning: Number of bins in output hist: " << h_out->GetNbinsX() << endl;
   for(int i=1; i<h_out->GetNbinsX()+1; i++){
     if(h_out->Integral() < 100.) break; // quick hack to not consider HH here
     if(h_out->GetBinContent(i)<1){
-      TCanvas* c1 = new TCanvas("c1", "c1", 600, 600);
-      c1->cd();
-      h_out->Draw("HIST");
-      c1->SaveAs(uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/test.eps");
-      c1->Close();
+      cout << "ApplyOptimizeBinning: " << proc << ", " << channel << ", bin " << i << endl;
+      /*
+	TCanvas* c1 = new TCanvas("c1", "c1", 600, 600);
+	c1->cd();
+	h_out->Draw("HIST");
+	c1->SaveAs(uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/test.eps");
+	c1->Close();
+      */
       //throw runtime_error("not enough events in this hist in bin "+to_string(i));
     }
     //if(h_out->GetBinError(i)>10) throw runtime_error("BinError is too large in bin "+to_string(i));
-    }
-
-  /*
-  TCanvas* c2 = new TCanvas("c1", "c1", 600, 600);
-  c2->cd();
-  h_out->Draw("HIST");
-  c2->SaveAs(uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/test.eps");
-  c2->Close/();
-  */
-
+  }
   return h_out;
 }

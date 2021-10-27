@@ -1,4 +1,4 @@
- #include <TString.h>
+#include <TString.h>
 #include <TFile.h>
 #include <iostream>
 
@@ -12,14 +12,16 @@ AnalysisTool::AnalysisTool(int year_) {
   //combine_path ="../data/datacards/";
   combine_path = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/data/datacards/";
 
-  channel = "Inclusive"; // Inclusive, ech, much
+  channel = "Inclusive";
+  NN_channel = "Inclusive";
+  //NN_channel = "Inclusive";
   ptjet = "30";
   // TrainOn = "50";
-  nnmodel = "incl_classes4_TrainOn50";
+  nnmodel = "bkgweightX8_removeQCD_classes4_TrainOn30";
 
   pre_tag = "Preselection/"+channel+"_PTJet"+ptjet+"/";
-  full_tag = "Fullselection/"+channel+"_PTJet"+ptjet+"_TrainOn50/";
-  NN_tag = "NNApplication/"+channel+"_PTJet"+ptjet+"_NN"+nnmodel+"/";
+  full_tag = "Fullselection/"+channel+"_PTJet"+ptjet; //+"_TrainOn50/";
+  NN_tag = "NNApplication/"+NN_channel+"_PTJet"+ptjet+"_NN"+nnmodel+"/";
 
   year = "";
   year += year_;
@@ -29,7 +31,8 @@ AnalysisTool::AnalysisTool(int year_) {
   else if (year == "2018") yeartag = "2018";
   else throw runtime_error("Invalid year_ specified");
 
-  combineInput_name = combine_path + "input/combineInput_PTJet" + ptjet + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
+  combineInputName_allShape = combine_path + "input/combineAllShape_" + NN_channel + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
+  combineInputName_rateShape = combine_path + "input/combineRateShape_" + NN_channel + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
 
   histsForSyst_name = combine_path + "input/histsForSyst_PTJet" + ptjet + "_NN" + nnmodel + "_" + AnalysisTool::year + ".root";
 
@@ -41,10 +44,15 @@ AnalysisTool::AnalysisTool(int year_) {
   //colors
   proc_colors = {
     {"HHtoWWbbSemiLeptonic_SM", 1},
+    {"HHtoWWbbSL_cHHH0", 319},
+    {"HHtoWWbbSL_cHHH1", 1},
+    {"HHtoWWbbSL_cHHH2p45", 901},
+    {"HHtoWWbbSL_cHHH5", 956},
     {"DATA_Muon", 1},
     {"TTbar", 810},
     {"DYJets", 798},
     {"QCDMu", 867},
+    {"QCDEle", 867},
     {"QCD", 867},
     {"Diboson", 860},
     {"SingleTop", 801},
@@ -52,6 +60,7 @@ AnalysisTool::AnalysisTool(int year_) {
     {"WJets", 613}
   };
 
+  /*
   channel_to_histname = {
     {"srmuch", "much_DNNoutput0_nominal/NN_out0"},
     {"ttcrmuch", "much_DNNoutput1_nominal/NN_out1"},
@@ -64,6 +73,32 @@ AnalysisTool::AnalysisTool(int year_) {
     {"wdycrech", "ech_DNNoutput3_nominal/NN_out3"},
     //{"qcdcrech", "ech_DNNoutput4_nominal/NN_out4"}
   };
+  */
+  channel_to_histname = {
+    {"srmuch", "much_DNNoutput0_nominal/max_NN_out"},
+    {"ttcrmuch", "much_DNNoutput1_nominal/max_NN_out"},
+    {"stcrmuch", "much_DNNoutput2_nominal/max_NN_out"},
+    {"wdycrmuch", "much_DNNoutput3_nominal/max_NN_out"},
+    //{"qcdcrmuch", "much_DNNoutput4_nominal/max_NN_out"},
+    {"srech", "ech_DNNoutput0_nominal/max_NN_out"},
+    {"ttcrech", "ech_DNNoutput1_nominal/max_NN_out"},
+    {"stcrech", "ech_DNNoutput2_nominal/max_NN_out"},
+    {"wdycrech", "ech_DNNoutput3_nominal/max_NN_out"},
+    //{"qcdcrech", "ech_DNNoutput4_nominal/max_NN_out"}
+  };
+
+  channel_to_node = {
+    {"srmuch", "much_DNNoutput0"},
+    {"ttcrmuch", "much_DNNoutput1"},
+    {"stcrmuch", "much_DNNoutput2"},
+    {"wdycrmuch", "much_DNNoutput3"},
+    {"qcdcrmuch", "much_DNNoutput4"},
+    {"srech", "ech_DNNoutput0"},
+    {"ttcrech", "ech_DNNoutput1"},
+    {"stcrech", "ech_DNNoutput2"},
+    {"wdycrech", "ech_DNNoutput3"},
+    {"qcdcrech", "ech_DNNoutput4"}
+};
 
   channel_to_xAxisTitle = {
     {"srmuch", "Signal Region output node (much)"},

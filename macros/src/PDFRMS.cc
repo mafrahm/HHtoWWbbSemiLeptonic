@@ -26,7 +26,8 @@ using namespace std;
 
 
 vector<double> AnalysisTool::findPDFRescaleValues(TString process) {
-
+  bool debug = false;
+  if(debug) cout << "hello World from findPDFRescaleValues" << endl;
   vector<double> Rescale;
   for(int i=1; i<101; i++) {
     TString infolder = AnalysisTool::base_path + AnalysisTool::year + "/CountEvents/uhh2.AnalysisModuleRunner.MC." + process + ".root";
@@ -71,6 +72,7 @@ void AnalysisTool::PDFRMS() {
 
   TString infolder = AnalysisTool::base_path + AnalysisTool::year + "/" + AnalysisTool::NN_tag;
   cout << infolder << endl;
+  
   FindRMS(infolder, samplemap, "TTbar_" + yeartag);
   FindRMS(infolder, samplemap, "DYJets_" + yeartag);
   FindRMS(infolder, samplemap, "Diboson_" + yeartag);
@@ -89,6 +91,8 @@ void AnalysisTool::PDFRMS() {
 
 
 void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TString sample){
+  bool debug = false;
+
   gStyle->SetOptStat(0);
 
   // Open File
@@ -96,9 +100,8 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
 
   // infiles
   TString infilename = infolder +"NOMINAL/"+ samplemap[sample];
-  cout << infilename << endl;
   TFile* infile = new TFile(infilename, "READ");
-  // cout << "infilename: " << infilename << endl;
+  cout << "infilename: " << infilename << endl;
   // outfiles
   TString outfilename = infolder + "pdf/" + sample + ".root";
   TFile* outfile = new TFile(outfilename, "RECREATE");
@@ -126,7 +129,7 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
 
         // make dirs without "pdf"
         TString makedirname = name;
-	cout << "foldername: " << makedirname << endl;
+	if(debug) cout << "foldername: " << makedirname << endl;
 
         makedirname.ReplaceAll("_pdf", "_pdf_up");
         outfile->mkdir(makedirname);
@@ -136,10 +139,28 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
     }
   }
 
-  // cout << foldernames.size() << endl;
+  // if(debug) cout << foldernames.size() << endl;
   for(size_t i=0; i<foldernames.size(); i++) {
     TString foldername = foldernames.at(i);
     cout << "foldername: " << foldername << endl;
+    map<TString,TString> foldername_to_channel = {
+      {"much_DNNoutput0_pdf", "srmuch"},
+      {"much_DNNoutput1_pdf", "ttcrmuch"},
+      {"much_DNNoutput2_pdf", "stcrmuch"},
+      {"much_DNNoutput3_pdf", "wdycrmuch"},
+      {"much_DNNoutput4_pdf", "qcdcrmuch"},
+      {"ech_DNNoutput0_pdf", "srech"},
+      {"ech_DNNoutput1_pdf", "ttcrech"},
+      {"ech_DNNoutput2_pdf", "stcrech"},
+      {"ech_DNNoutput3_pdf", "wdycrech"},
+      {"ech_DNNoutput4_pdf", "qcdcrech"},
+    };
+    TString channel = foldername_to_channel[foldername];
+    if(debug) cout << "channel: " << channel << endl;
+    vector<double> bins;
+    if(channel.Contains("qcd")) bins = {0.,1.}; // quick fix for qcd channels
+    else bins = channel_to_bins[channel];
+
     // create list of histogram names (without the _xx tag for the number of the PDF variation)
     infile->cd(foldername);
     dir = gDirectory;
@@ -163,17 +184,18 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
     // go through all PDF variations, there have to be ==100 of them per histogram
     vector<vector<TH1F*>> histograms;
     vector<TH1F*> histograms_nom;
-    cout << histnames.size() << endl;
+    if(debug) cout << histnames.size() << endl;
     for(size_t j=0; j<histnames.size(); j++){
       TString histname = histnames[j];
 
       // systematic histograms (100)
       vector<TH1F*> hists_thisvar;
       for(size_t k=1; k<101; k++){
-	cout << "Process: " << sample << ", Rescale " << Rescale[k-1] << " for PDF " << k << endl;
+	//if(debug) cout << "Process: " << sample << ", Rescale " << Rescale[k-1] << " for PDF " << k << endl;
         TString readoutname = foldername + "/" + histname + "_";
         readoutname += k;
-        TH1F* h = (TH1F*)infile->Get(readoutname);
+        //TH1F* h = (TH1F*)infile->Get(readoutname);
+	TH1F* h = AnalysisTool::ApplyOptimizeBinning((TH1F*)infile->Get(readoutname), bins);
 	h->Scale(Rescale[k-1]); // Rescale
         hists_thisvar.emplace_back(h);
       }
@@ -183,12 +205,13 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
       // nominal histograms (1)
       TString foldername_nom = foldername;
       foldername_nom.ReplaceAll("_pdf", "_nominal");
-      // cout << "foldername_nom: " << foldername_nom << endl;
+      // if(debug) cout << "foldername_nom: " << foldername_nom << endl;
       TString histname_nom = histname;
       histname_nom.ReplaceAll("_PDF", "");
-      // cout << "histname_nom: " << histname_nom << endl;
+      // if(debug) cout << "histname_nom: " << histname_nom << endl;
       TString readoutname = foldername_nom + "/" + histname_nom;
-      TH1F* h = (TH1F*)infile->Get(readoutname);
+      //TH1F* h = (TH1F*)infile->Get(readoutname);
+      TH1F* h = AnalysisTool::ApplyOptimizeBinning((TH1F*)infile->Get(readoutname), bins);
       histograms_nom.emplace_back(h);
     }
 
@@ -206,17 +229,17 @@ void AnalysisTool::FindRMS(TString infolder, map<TString, TString> samplemap, TS
       // loop through bins
       for(int k=1; k<histograms_nom[j]->GetNbinsX()+1; k++){
         float nom = histograms_nom[j]->GetBinContent(k);
-
+	if(debug) cout << "bin " << k << endl;
         // loop through 100 PDF histograms
         float rms = 0.;
         for(size_t l=0; l<histograms[j].size(); l++){
-          if (sample.Contains("LQto") && k==1) histograms[j][l]->Scale(histograms_nom[j]->Integral()/histograms[j][l]->Integral());
+	  if(debug) cout << "PDF no. " << l << " bin content: " << histograms[j][l]->GetBinContent(k) << endl;
           rms += pow(histograms[j][l]->GetBinContent(k) - nom, 2);
         }
         rms /= histograms[j].size()-1; // evtl. die "-1" weglassen
         rms = sqrt(rms);
-	//cout << "rms: " << rms << endl;
-	//cout << "nom: " << nom << endl;
+	if(debug) cout << "rms: " << rms << endl;
+	if(debug) cout << "nom: " << nom << endl;
         h_up->SetBinContent(k, nom + rms);
         h_down->SetBinContent(k, max((float)0., nom - rms));
 

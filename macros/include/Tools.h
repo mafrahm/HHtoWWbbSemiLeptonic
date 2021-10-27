@@ -31,7 +31,7 @@ using namespace std;
 
 class AnalysisTool {
 
-public:
+ public:
 
   // Constructors, destructor
   AnalysisTool(int year_);
@@ -40,7 +40,7 @@ public:
   ~AnalysisTool() = default;
 
   // Main functions
-  void Efficiencies(TString selection, TString cuts, vector<TString> processes);
+  void Efficiencies(TString channel);
   void ControlPlots(TString selection, TString cuts, vector<TString> processes);
   void SignalToBackground(TString cuts, TString plotname);
   void CountBackgroundContributions(TString channel, TString region);
@@ -53,12 +53,18 @@ public:
   void ScaleVariationEnvelope();
   void PDFRMS();
 
+  
+
   void FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString region, bool flat_in_background);
+  TH1F* ApplyOptimizeBinning(TH1F *hist, TString channel, TString proc);
   TH1F* ApplyOptimizeBinning(TH1F *hist, vector<double> bins);
   void ProduceCombineHistograms();
   void ProduceCombineHistogramsNN(bool use_data);
   void ProduceCombineHistogramsSimple(bool use_data);
   void GetHistogramsForSystHists(TString histname_base);
+  void ConvertShapeToRate();
+
+  void CombineHistogramsRMS();
 
   void PlotSystematicHists(bool combine_hist=true);
   
@@ -68,14 +74,14 @@ public:
 
 
 
-private:
+ private:
   TString base_path, uhh2_path, combine_path;
   TString pre_tag, full_tag, NN_tag;
-  TString channel, ptjet, nnmodel;
+  TString channel, NN_channel, ptjet, nnmodel;
   TString year;
   TString yeartag;
 
-  TString combineInput_name, histsForSyst_name;
+  TString combineInputName_allShape, combineInputName_rateShape, histsForSyst_name;
 
 
   TString signal_tag;
@@ -84,6 +90,7 @@ private:
 
   map<const TString, Color_t> proc_colors;
   map<TString, TString> channel_to_histname;
+  map<TString, TString> channel_to_node;
   map<TString, vector<double>> channel_to_bins;
   map<TString, TString> channel_to_chNumber;
   map<TString,TString> channel_to_xAxisTitle;

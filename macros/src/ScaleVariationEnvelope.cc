@@ -32,7 +32,8 @@
 using namespace std;
 
 vector<double> AnalysisTool::findScaleRescaleValues(TString process) {
-  
+  bool debug = false;
+  if(debug) cout << "Hello World from findScaleRescaleValues, proc: " << process << endl;
   TString infolder = AnalysisTool::base_path + AnalysisTool::year + "/CountEvents/uhh2.AnalysisModuleRunner.MC." + process + ".root";
   TFile* f_in = new TFile(infolder);
   TH1F* h_uu = (TH1F*) f_in->Get("Hists/murmuf_upup");
@@ -51,6 +52,7 @@ vector<double> AnalysisTool::findScaleRescaleValues(TString process) {
   Rescale.push_back(nom/h_nd->Integral());
   Rescale.push_back(nom/h_dn->Integral());
   Rescale.push_back(nom/h_dd->Integral());
+  if(debug) for(double scale: Rescale) cout << scale << endl;
   return Rescale;
 }
 
@@ -67,33 +69,13 @@ void AnalysisTool::ScaleVariationEnvelope(){
     TString process =  processes[aa];
 
   // Read out Rescale Values
-  vector<double> Rescale = findPDFRescaleValues(process);
+  vector<double> Rescale = findScaleRescaleValues(process);
 
     f_in.reset (new TFile(path + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + process  + ".root","READ"));
 
-    vector<TString> histfolders = {""};
     
-    // check again and implement correctly
-    map<TString, TString> cat_tags = {
-      {"HH", "output0"},
-      {"TTbar", "output1"},
-      {"SingleTop", "output2"},
-      {"WJets+DYJets", "output3"},
-      {"QCD", "output4"}
-    };
     vector<TString> channel_tags = {"much", "ech"};
-    // vector<TString> region_tags = {"catA", "catB"}; // probably not necessary / exchange with cat_tags
-    vector<TString> region_tags = {"DNNoutput0", "DNNoutput1", "DNNoutput2", "DNNoutput3", "DNNoutput4"};
-    
-    // check again and implement correctly
-    /*
-    map<TString, TString> region_tags = {
-      {"HH", "output0"},
-      {"TTbar", "output1"},
-      {"SingleTop", "output2"},
-      {"WJets+DYJets", "output3"}
-    }
-    */
+    vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"};
 
     unique_ptr<TFile> f_out;
     f_out.reset(new TFile(path + "scale/" + process  + ".root","RECREATE"));
@@ -101,8 +83,8 @@ void AnalysisTool::ScaleVariationEnvelope(){
     for(unsigned int i=0; i<channel_tags.size(); i++){
       for(unsigned int j=0; j<region_tags.size(); j++){
 
-	// change to correct foldername
-	TString histfolder = channel_tags[i] + "_" + region_tags[j];
+	//TString histfolder = channel_tags[i] + "_" + region_tags[j];
+	TString histfolder = channel_tags[i] + "_DNNoutput" + to_string(j);
 
 	f_out->mkdir(histfolder + "_scale_up");
 	f_out->mkdir(histfolder + "_scale_down");
@@ -125,14 +107,27 @@ void AnalysisTool::ScaleVariationEnvelope(){
 	  h = (TH1F*)key->ReadObj();
 	  histname = h->GetName();
 	  std::cout<<"histname  "<<histname<<std::endl;
-	  h_uu.reset((TH1F*)f_in->Get(histfolder + "_scale_upup/" + histname));
-	  h_un.reset((TH1F*)f_in->Get(histfolder + "_scale_upnone/" + histname));
-	  h_nu.reset((TH1F*)f_in->Get(histfolder + "_scale_noneup/" + histname));
-	  h_nd.reset((TH1F*)f_in->Get(histfolder + "_scale_nonedown/" + histname));
-	  h_dn.reset((TH1F*)f_in->Get(histfolder + "_scale_downnone/" + histname));
-	  h_dd.reset((TH1F*)f_in->Get(histfolder + "_scale_downdown/" + histname));
-	  h_nom.reset((TH1F*)f_in->Get(histfolder + "_nominal/" + histname));
 
+	  //if(h->GetNbinsX()==1000) { // apply binning before doing scale
+	  if(histname=="max_NN_out") { // apply binning before doing scale
+	    vector<double> bins = channel_to_bins[region_tags[j]+channel_tags[i]];
+	    h_uu.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_upup/"     + histname), bins));
+	    h_un.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_upnone/"   + histname), bins));
+	    h_nu.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_noneup/"   + histname), bins));
+	    h_nd.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_nonedown/" + histname), bins));
+	    h_dn.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_downnone/" + histname), bins));
+	    h_dd.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_scale_downdown/" + histname), bins));
+	    h_nom.reset(AnalysisTool::ApplyOptimizeBinning((TH1F*)f_in->Get(histfolder + "_nominal/"       + histname), bins));
+	  }
+	  else {
+	    h_uu.reset((TH1F*)f_in->Get(histfolder + "_scale_upup/" + histname));
+	    h_un.reset((TH1F*)f_in->Get(histfolder + "_scale_upnone/" + histname));
+	    h_nu.reset((TH1F*)f_in->Get(histfolder + "_scale_noneup/" + histname));
+	    h_nd.reset((TH1F*)f_in->Get(histfolder + "_scale_nonedown/" + histname));
+	    h_dn.reset((TH1F*)f_in->Get(histfolder + "_scale_downnone/" + histname));
+	    h_dd.reset((TH1F*)f_in->Get(histfolder + "_scale_downdown/" + histname));
+	    h_nom.reset((TH1F*)f_in->Get(histfolder + "_nominal/" + histname));
+	  }
 	  // Rescale
 	  h_uu->Scale(Rescale[0]);
 	  h_un->Scale(Rescale[1]);
@@ -140,6 +135,8 @@ void AnalysisTool::ScaleVariationEnvelope(){
 	  h_nd->Scale(Rescale[3]);
 	  h_dn->Scale(Rescale[4]);
 	  h_dd->Scale(Rescale[5]);
+	  
+	  // cout << "Line: " << __LINE__ << endl;
 
 	  // Write out rescaled MuR and MuF
 	  f_out->cd(histfolder + "_MuR_up");

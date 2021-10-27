@@ -13,6 +13,7 @@ int main(){
   AnalysisTool Analysis17(2017);
   AnalysisTool Analysis18(2018);
 
+
   
   vector<TString> backgrounds_mu = {"TTbar", "DYJets", "QCDMu", "Diboson", "SingleTop", "TTV", "WJets"};
   Analysis16.FindOptimizeBinning(15, "HHtoWWbbSL_cHHH1", backgrounds_mu, "srmuch", false); 
@@ -27,25 +28,31 @@ int main(){
   Analysis16.FindOptimizeBinning(3, "WJets", backgrounds_ele, "wdycrech", true);
   Analysis16.FindOptimizeBinning(3, "SingleTop", backgrounds_ele, "stcrech", true);
   //Analysis16.FindOptimizeBinning(3, "QCDEle", backgrounds_ele, "qcdcrech", true);
-
-  //Analysis16.ScaleVariationEnvelope();
-  //Analysis16.PDFRMS();
- 
-  //Analysis16.ProduceCombineHistogramsNN(false); // true = using real data
-
+  
+  //Analysis16.Efficiencies("ech");
+  //Analysis16.Efficiencies("much");
+  
+  // Re-run all 4 modules after changing binning
+  Analysis16.ScaleVariationEnvelope();
+  Analysis16.PDFRMS();
+  Analysis16.ProduceCombineHistogramsNN(false); // true = using real data
+  Analysis16.ConvertShapeToRate();
+  
   //Analysis16.PlotSystematicHists();
 
   // Get systematic variation hists for different variables
-  //Analysis16.GetHistogramsForSystHists("Ak4_j1_pt"); // "N_Ak4", "Ak4_j1_pt", "Lep_pt", "HT", "mbb", ...
+  //Analysis16.GetHistogramsForSystHists("HT"); // "N_Ak4", "Ak4_j1_pt", "Lep_pt", "HT", "mbb", ...
   //Analysis16.PlotSystematicHists(false);
 
+
+  // Analysis16.CombineHistogramsRMS();
 
 
   // only after running combine
 
   //Analysis16.PlotLimitsCombine("comb"); // the "comb" tag has no meaning
-  Analysis16.PlotPostfitDistribution(true); // Prefit
-  Analysis16.PlotPostfitDistribution();     // Postfit
+  //Analysis16.PlotPostfitDistribution(true); // Prefit
+  // Analysis16.PlotPostfitDistribution();     // Postfit
 
   //Analysis16.CountBackgroundContributions();
   //Analysis16.CountBackgroundDistribution();
