@@ -81,9 +81,11 @@ public:
 
   TH1F *DeltaPhi_j1MET, *DeltaPhi_j2MET, *DeltaPhi_j3MET;
 
-  TH1F *HT_rebin1, *HT_rebin2;
+  TH1F *HT_rebin1, *HT_rebin2, *HT_rebin3;
+  TH1F *MH_bb_rebin1, *MH_bb_rebin2;
+  TH1F *mbb_rebin1, *mbb_rebin2;
 
-  TH1F *NN_Lep_pt, *NN_Lep_eta, *NN_Lep_phi, *NN_Lep_E;
+  TH1F *NN_Lep_pt, *NN_Lep_eta, *NN_Lep_phi, *NN_Lep_E, *NN_Lep_reliso;
   TH1F *NN_MET_pt, *NN_MET_phi;
   TH1F *NN_deepjetbmean_3jets, *NN_deepjetbmean_4jets, *NN_deepjetbmean;
   TH1F *NN_b1_pt, *NN_b2_pt, *NN_b1_deepjetbscore, *NN_b2_deepjetbscore;
@@ -108,6 +110,8 @@ public:
   void init();
 
   map<string, HH2DAutoHist> histMap;
+  
+  TH2F *MTtop_lep_hyp1__DeltaPhi_j1MET, *MTtop_lep_hyp1__DeltaPhi_j2MET, *MTtop_lep_hyp1__DeltaPhi_j3MET;
   
   TH2F *MET_pt__DeltaPhi_j1MET, *MET_pt__DeltaPhi_j2MET, *MET_pt__DeltaPhi_j3MET;
   TH2F *DeltaPhi_j1MET__DeltaPhi_j2MET, *DeltaPhi_j1MET__DeltaPhi_j3MET, *DeltaPhi_j2MET__DeltaPhi_j3MET;

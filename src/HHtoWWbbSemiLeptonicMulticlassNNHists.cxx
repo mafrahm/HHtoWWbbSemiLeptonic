@@ -43,7 +43,7 @@ HHtoWWbbSemiLeptonicMulticlassNNHists::HHtoWWbbSemiLeptonicMulticlassNNHists(uhh
   fill_map(ctx, "Ak4_j2_pt", Ak4_j2_pt, {40,0,400});
   fill_map(ctx, "Ak4_j3_pt", Ak4_j3_pt, {40,0,400});  
   fill_map(ctx, "Lep_pt", Lep_pt, {40,0,400});
-  fill_map(ctx, "HT", HT, {60,0,1500});
+  fill_map(ctx, "HT", HT, {40,0,1500});
   fill_map(ctx, "mbb", mbb, {40,0,400});
 
   init();
@@ -54,7 +54,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   max_NN_out = book<TH1F>("max_NN_out", "max(output nodes)", 1000, 0, 1);
   max_NN_out_rebin = book<TH1F>("max_NN_out_rebin", "max(output nodes)", 20, 0, 1);
   max_NN_out_rebin2 = book<TH1F>("max_NN_out_rebin2", "max(output nodes)", 40, 0, 1);
-
+  /*
   NN_out0 = book<TH1F>("NN_out0", "HH output node", 1000, 0, 1);
   NN_out1 = book<TH1F>("NN_out1", "TTbar output node", 1000, 0, 1);
   NN_out2 = book<TH1F>("NN_out2", "SingleTop output node", 1000, 0, 1);
@@ -72,9 +72,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   NN_out2_rebin2 = book<TH1F>("NN_out2_rebin2", "SingleTop output node", 40, 0, 1);
   NN_out3_rebin2 = book<TH1F>("NN_out3_rebin2", "WJets+DYJets output node", 40, 0, 1);
   NN_out4_rebin2 = book<TH1F>("NN_out4_rebin2", "QCD output node", 40, 0, 1);
-
-
-
+  
   vector<float> limitbins_sr_1 = {0,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.93,0.96,0.98,1.0};
   vector<float> limitbins_ttcr_1 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.80,1.0};
   vector<float> limitbins_stcr_1 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.80,0.90,1.0};
@@ -86,7 +84,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   NN_out2_limits1 = book<TH1F>("NN_out2_limits1", "NN output 2", limitbins_stcr_1.size()-1, &limitbins_stcr_1[0]);
   NN_out3_limits1 = book<TH1F>("NN_out3_limits1", "NN output 3", limitbins_wdycr_1.size()-1, &limitbins_wdycr_1[0]);
   NN_out4_limits1 = book<TH1F>("NN_out4_limits1", "NN output 4", limitbins_qcdcr_1.size()-1, &limitbins_qcdcr_1[0]);
-
+  */
   // Declare AutoHists
   map<string,HHAutoHist>::iterator it;
   for(it=histMap.begin(); it!= histMap.end(); it++){
@@ -100,6 +98,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
 void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
 
   double weight = event.weight;
+  //cout << "MulticlassNNHists: weight: " << weight << endl;
   double NNoutput0 = event.get(h_NNoutput0);
   double NNoutput1 = event.get(h_NNoutput1);
   double NNoutput2 = event.get(h_NNoutput2);
@@ -119,7 +118,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
   max_NN_out->Fill(max_NNoutput, weight);
   max_NN_out_rebin->Fill(max_NNoutput, weight);
   max_NN_out_rebin2->Fill(max_NNoutput, weight);
-
+  /*
   NN_out0->Fill(NNoutput0, weight);
   NN_out1->Fill(NNoutput1, weight);
   NN_out2->Fill(NNoutput2, weight);
@@ -143,7 +142,7 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
   NN_out2_limits1->Fill(NNoutput2, weight);
   NN_out3_limits1->Fill(NNoutput3, weight);
   NN_out4_limits1->Fill(NNoutput4, weight);
-
+  */
 
   // fill the AutoHists
   map<string,HHAutoHist>::iterator it;
@@ -204,8 +203,8 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
   fill_map(ctx, "DeltaPhi_j3MET", DeltaPhi_j3MET, {40,0,3.2});
 
 
-  fill_map(ctx, "HT", NN_HT, {60,0,1500});
-  fill_map(ctx, "N_BTag", NN_NBTag, {4,-0,5,5,5});
+  fill_map(ctx, "HT", NN_HT, {40,0,1500});
+  fill_map(ctx, "N_BTag", NN_NBTag, {7,-0,5,6,5});
   fill_map(ctx, "N_Ak4", NN_NAk4, {11,-0.5,10.5});
   fill_map(ctx, "mtop_lep_hyp1", NN_mtop_lep1, {40,0,800});
   fill_map(ctx, "mtop_lep_hyp2", NN_mtop_lep2, {40,0,800});
@@ -220,6 +219,7 @@ HHtoWWbbSemiLeptonicMulticlassNNInputHists::HHtoWWbbSemiLeptonicMulticlassNNInpu
   fill_map(ctx, "Lep_eta", NN_Lep_eta, {40,-2.5,2.5});
   fill_map(ctx, "Lep_phi", NN_Lep_phi, {40,-4,4});
   fill_map(ctx, "Lep_E", NN_Lep_E, {40,0,200});
+  fill_map(ctx, "Lep_reliso", NN_Lep_E, {40,0,0.2});
   fill_map(ctx, "MET_pt", NN_MET_pt, {40,0,400});
   fill_map(ctx, "MET_phi", NN_MET_phi, {40,-4,4});
 
@@ -298,8 +298,21 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::init(){
     output->hist = book<TH1F>(id,id, output->bins[0],output->bins[1],output->bins[2]);    
   }
 
-  HT_rebin1 = book<TH1F>("HT_rebin1", "HT_rebin1", 60,0,400);
-  HT_rebin2 = book<TH1F>("HT_rebin2", "HT_rebin2", 60,0,4000);
+  HT_rebin1 = book<TH1F>("HT_rebin1", "HT_rebin1 (overflow-bins)", 60,0,600);
+  HT_rebin2 = book<TH1F>("HT_rebin2", "HT_rebin2 (overflow-bins)", 60,0,1000);
+  HT_rebin3 = book<TH1F>("HT_rebin3", "HT_rebin3 (overflow-bins)", 60,0,2000);
+
+  vector<float> bins_MH_bb_1 = {-20,0,70,80,90,100,110,120,130,140,150,250};
+  MH_bb_rebin1 = book<TH1F>("MH_bb_rebin1", "MH_bb_rebin1 (overflow-bins)", bins_MH_bb_1.size()-1, &bins_MH_bb_1[0]);
+  vector<float> bins_MH_bb_2 = {-20,0,60,70,80,90,100,110,120,130,140,150,160,170,180,190,250};
+  MH_bb_rebin2 = book<TH1F>("MH_bb_rebin2", "MH_bb_rebin2 (overflow-bins)", bins_MH_bb_2.size()-1, &bins_MH_bb_2[0]);
+  
+
+
+  vector<float> bins_mbb_1 = {0,70,80,90,100,110,120,130,140,150,250};
+  vector<float> bins_mbb_2 = {0,60,70,80,90,100,110,120,130,140,150,160,170,180,190,250};
+  mbb_rebin1 = book<TH1F>("mbb_rebin1", "mbb_rebin1 (overflow-bins)", bins_mbb_1.size()-1, &bins_mbb_1[0]);
+  mbb_rebin2 = book<TH1F>("mbb_rebin2", "mbb_rebin2 (overflow-bins)", bins_mbb_2.size()-1, &bins_mbb_2[0]);
 
 }
 
@@ -318,11 +331,34 @@ void HHtoWWbbSemiLeptonicMulticlassNNInputHists::fill(const Event & event){
     float var = event.get(output->h_var);
     output->hist->Fill(var, weight);
     if(id=="HT"){
-      HT_rebin1->Fill(var, weight);
-      HT_rebin2->Fill(var, weight);
+      if(var<599) HT_rebin1->Fill(var, weight);
+      else HT_rebin1->Fill(599., weight);
+      if(var<999)HT_rebin2->Fill(var, weight);
+      else HT_rebin2->Fill(999., weight);
+      if(var<1999)HT_rebin3->Fill(var, weight);
+      else HT_rebin3->Fill(1999., weight);
+    }
+    else if(id=="MH_bb"){
+      if(var<249) {
+	MH_bb_rebin1->Fill(var, weight);
+	MH_bb_rebin2->Fill(var, weight);
+      }
+      else{
+	MH_bb_rebin1->Fill(249., weight);
+	MH_bb_rebin2->Fill(249., weight);
+      }
+    }
+    else if(id=="mbb"){
+      if(var<249) {
+	mbb_rebin1->Fill(var, weight);
+	mbb_rebin2->Fill(var, weight);
+      }
+      else{
+	mbb_rebin1->Fill(249., weight);
+	mbb_rebin2->Fill(249., weight);
+      }
     }
   }
-  
 }
 
 HHtoWWbbSemiLeptonicMulticlassNNInputHists::~HHtoWWbbSemiLeptonicMulticlassNNInputHists(){}
@@ -337,13 +373,17 @@ HHtoWWbbSemiLeptonicMulticlassNN2DHists::HHtoWWbbSemiLeptonicMulticlassNN2DHists
   cout << "HHtoWWbbSemiLeptonicMulticlassNN2DHists" << endl;
 
 
-  fill_map(ctx, "MET_pt", "DeltaPhi_j1MET", MET_pt__DeltaPhi_j1MET, {20,0,400, 20,0,3.2});
-  fill_map(ctx, "MET_pt", "DeltaPhi_j2MET", MET_pt__DeltaPhi_j2MET, {20,0,400, 20,0,3.2});
-  fill_map(ctx, "MET_pt", "DeltaPhi_j3MET", MET_pt__DeltaPhi_j3MET, {20,0,400, 20,0,3.2});
+  fill_map(ctx, "MTtop_lep_hyp1", "DeltaPhi_j1MET", MTtop_lep_hyp1__DeltaPhi_j1MET, {40,0,140, 40,0,3.2});
+  fill_map(ctx, "MTtop_lep_hyp1", "DeltaPhi_j2MET", MTtop_lep_hyp1__DeltaPhi_j2MET, {40,0,140, 40,0,3.2});
+  fill_map(ctx, "MTtop_lep_hyp1", "DeltaPhi_j3MET", MTtop_lep_hyp1__DeltaPhi_j3MET, {40,0,140, 40,0,3.2});
 
-  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j2MET", DeltaPhi_j1MET__DeltaPhi_j2MET, {20,0,3.2, 20,0,3.2});
-  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j3MET", DeltaPhi_j1MET__DeltaPhi_j3MET, {20,0,3.2, 20,0,3.2});
-  fill_map(ctx, "DeltaPhi_j2MET", "DeltaPhi_j3MET", DeltaPhi_j2MET__DeltaPhi_j3MET, {20,0,3.2, 20,0,3.2});
+  fill_map(ctx, "MET_pt", "DeltaPhi_j1MET", MET_pt__DeltaPhi_j1MET, {40,0,400, 40,0,3.2});
+  fill_map(ctx, "MET_pt", "DeltaPhi_j2MET", MET_pt__DeltaPhi_j2MET, {40,0,400, 40,0,3.2});
+  fill_map(ctx, "MET_pt", "DeltaPhi_j3MET", MET_pt__DeltaPhi_j3MET, {40,0,400, 40,0,3.2});
+
+  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j2MET", DeltaPhi_j1MET__DeltaPhi_j2MET, {40,0,3.2, 40,0,3.2});
+  fill_map(ctx, "DeltaPhi_j1MET", "DeltaPhi_j3MET", DeltaPhi_j1MET__DeltaPhi_j3MET, {40,0,3.2, 40,0,3.2});
+  fill_map(ctx, "DeltaPhi_j2MET", "DeltaPhi_j3MET", DeltaPhi_j2MET__DeltaPhi_j3MET, {40,0,3.2, 40,0,3.2});
 
   init();
 }

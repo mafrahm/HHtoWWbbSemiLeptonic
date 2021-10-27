@@ -27,9 +27,10 @@ namespace uhh2examples {
 
     int noSysweightsCount=0;
   protected:
-    vector<vector<TString>> histo_names;
-    std::vector<TString> histo_names0, histo_names1, histo_names2, histo_names3, hist_names4;
+    //vector<vector<TString>> histo_names;
+    vector<TString> histo_names;
 
+    int NN_classes;
     uhh2::Event::Handle<double> h_NNoutput0;
     uhh2::Event::Handle<double> h_NNoutput1;
     uhh2::Event::Handle<double> h_NNoutput2;
