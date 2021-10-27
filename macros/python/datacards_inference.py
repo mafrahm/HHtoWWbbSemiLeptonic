@@ -16,12 +16,12 @@ def write_lines(path, filename, lines):
         outfile.write('\n')
     outfile.close()
 
-def get_lines_datacard_header(channel, node, backgrounds):
+def get_lines_datacard_header(channel, nodes, backgrounds):
     lines = []
-    lines.append('# Datacard for channel %s, for node %s \n' % (channel, node))
+    lines.append('# Datacard for channel %s, for %i nodes \n' % (channel, len(nodes)))
     lines.append('# HEADER')
     lines.append('imax 1')
-    lines.append('jmax %i' % (len(backgrounds)))
+    lines.append('jmax %i' %(len(backgrounds)+len(nodes)-1))
     lines.append('kmax *')
     return lines
 
@@ -39,30 +39,36 @@ def get_lines_datacard_input(rootfilename, year):
     lines.append('shapes * * %s $CHANNEL__$PROCESS_%s $CHANNEL__$PROCESS_%s__$SYSTEMATIC' % (rootfilename, yeartags[year], yeartags[year]))
     return lines
 
-def get_lines_datacard_processes(varcat, node, backgrounds):
+def get_lines_datacard_processes(varcat, nodes, backgrounds):
     lines = []
     lines.append('# PROCESSES')
 
     line = 'bin        '
-    for i in range(len(backgrounds) + 1):
+    for i in range(len(backgrounds) + len(nodes)):
         line += varcat + '  '
     lines.append(line)
 
-    #line = 'process    ' + signaltag + '_' + node + '  '
-    line = 'process    ' + signaltag.replace('X', node) + '  '
+    line = 'process    '
+    for node in nodes:
+        line += signaltag.replace('X', node) + '  '
     for bkg in backgrounds:
         if bkg in backgrounds:
             line += bkg + '  '
     lines.append(line)
 
-    line = 'process    0  '
-    idx = 1
+    line = 'process    '
+    idx = 1 - len(nodes)
+    for node in nodes:
+        line += str(idx) + '  '
+        idx += 1
     for bkg in backgrounds:
         line += str(idx) + '  '
         idx += 1
     lines.append(line)
 
-    line = 'rate       -1  '
+    line = 'rate       '
+    for node in nodes:
+        line += '-1  '
     for bkg in backgrounds:
         line += '-1  '
     lines.append(line)
@@ -72,9 +78,7 @@ def get_lines_datacard_processes(varcat, node, backgrounds):
 
 
 
-def get_lines_datacard_systematics(systematics, node, backgrounds):
-    signal = signaltag.replace('X', node)
-    print 'signal: %s' %(signal)
+def get_lines_datacard_systematics(systematics, nodes, backgrounds):
     lines = []
     lines.append('# SYSTEMATICS')
     for syst in systematics:
@@ -83,20 +87,24 @@ def get_lines_datacard_systematics(systematics, node, backgrounds):
         print 'syst: %s' % (syst)
         line = syst + '  ' + pdf_per_systematic[syst] + '  '
         # first for signal:
-        #if processes_per_systematic[syst] == 'all' or processes_per_systematic[syst] == signaltag + '_' + node:
-        if processes_per_systematic[syst] == 'all':
-            line += str(value_per_systematic_and_process[syst,'all']) + '  '
-        elif signal in processes_per_systematic[syst]:
-            line += str(value_per_systematic_and_process[syst,signal]) + '  '
-        else:
-            line += '-  '
-        for bkg in backgrounds:
+        for node in nodes:
+            signal = signaltag.replace('X', node)
+            print 'signal: %s' %(signal)
+            #if processes_per_systematic[syst] == 'all' or processes_per_systematic[syst] == signaltag.replace('X', node):
             if processes_per_systematic[syst] == 'all':
                 line += str(value_per_systematic_and_process[syst,'all']) + '  '
-            elif bkg in processes_per_systematic[syst]:
-                line += str(value_per_systematic_and_process[syst,bkg]) + '  '
+            elif signal in processes_per_systematic[syst]:
+                line += str(value_per_systematic_and_process[syst,signal]) + '  '
             else:
                 line += '-  '
+            for bkg in backgrounds:
+                if processes_per_systematic[syst] == 'all':
+                    line += str(value_per_systematic_and_process[syst,'all']) + '  '
+                elif bkg in processes_per_systematic[syst]:
+                    line += str(value_per_systematic_and_process[syst,bkg]) + '  '
+                else:
+                    line += '-  '
+
         lines.append(line)
 
     return lines
@@ -109,8 +117,8 @@ def get_lines_datacard_statistics():
 
 
 
-def create_datacard(year, node, channel, backgrounds, systematics, path_datacards, rootfilename, AutoMCStats):
-    print 'Creating datacard for node %s in channel %s. ' % (node, channel)
+def create_datacard_inference(year, nodes, channel, backgrounds, systematics, path_datacards, rootfilename, AutoMCStats):
+    print 'Creating datacard for %i nodes in channel %s. ' % (len(nodes), channel)
     if not os.path.exists(path_datacards):
         raise RuntimeError('Path %s does not exist.' % (path_datacards))
     # else: print 'Datacard directory: %s' % (path_datacards)
@@ -118,23 +126,22 @@ def create_datacard(year, node, channel, backgrounds, systematics, path_datacard
         raise RuntimeError('Rootfile %s does not exist.' % (path_datacards + '/' + rootfilename))
     # else: print 'rootfile containing histograms: %s' % (path_datacards + '/' + rootfilename)
 
-    filename_datacard = channel + '_' + node + '.txt' # + '_node_'
-    #filename_datacard = channel + '_' + signaltag.replace('X', node) + '.txt' # + '_node_'
-    print 'filename: %s ' % (filename_datacard)
-    print 'going to create file: %s' % (path_datacards + '/' + filename_datacard)
+    filename_datacard = channel + '_allNodes' + '.txt' # + '_node_'
+    # print 'filename: %s ' % (filename_datacard)
+    # print 'going to create file: %s' % (path_datacards + '/' + filename_datacard)
     varcat = channel
     separator = ['-----------------------------\n']
 
 
 
-    lines_header = get_lines_datacard_header(channel, node, backgrounds) + separator
+    lines_header = get_lines_datacard_header(channel, nodes, backgrounds) + separator
     lines_channels = get_lines_datacard_channels(varcat) + separator
     lines_input = get_lines_datacard_input(rootfilename, year)
-    lines_processes = get_lines_datacard_processes(varcat, node, backgrounds)
-    lines_systematics = get_lines_datacard_systematics(systematics, node, backgrounds)
+    lines_processes = get_lines_datacard_processes(varcat, nodes, backgrounds)
+    lines_systematics = get_lines_datacard_systematics(systematics, nodes, backgrounds)
     lines_statistics = get_lines_datacard_statistics()
 
-
+    
     lines = lines_header + lines_channels + lines_input + lines_processes + lines_systematics
     if AutoMCStats:
         lines  += lines_statistics
