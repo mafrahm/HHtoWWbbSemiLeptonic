@@ -58,9 +58,9 @@
 <!ENTITY DYJetsToLL_HT-70to100 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_DYJetsToLL_M-50_HT-70to100.xml">
 <!ENTITY DYJetsToLL_HT-100to200 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-100to200.xml">
 <!ENTITY DYJetsToLL_HT-200to400 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-200to400.xml">
-<!ENTITY DYJetsToLL_HT-400to600_v2 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v2.xml">
-<!ENTITY DYJetsToLL_HT-400to600_v3 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v3.xml">
-<!ENTITY DYJetsToLL_HT-400to600_v4 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v4.xml">
+<!-- <!ENTITY DYJetsToLL_HT-400to600_v2 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v2.xml">
+     <!ENTITY DYJetsToLL_HT-400to600_v3 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v3.xml">
+     <!ENTITY DYJetsToLL_HT-400to600_v4 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v4.xml"> -->
 <!ENTITY DYJetsToLL_HT-400to600_v7 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-400to600_v7.xml">
 <!ENTITY DYJetsToLL_HT-600to800 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-600to800.xml">
 <!ENTITY DYJetsToLL_HT-800to1200 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_DYJetsToLL_M-50_HT-800to1200.xml">
@@ -100,6 +100,14 @@
 <!ENTITY QCD_EM_PT120to170 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_QCD_Pt-120to170_EMEnriched.xml">
 <!ENTITY QCD_EM_PT170to300 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_QCD_Pt-170to300_EMEnriched.xml">
 <!ENTITY QCD_EM_PT300toInf SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2018/MC_QCD_Pt-300toInf_EMEnriched.xml">
+
+
+<!ENTITY QCD_bcE_PT15to20 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v2.xml">
+<!ENTITY QCD_bcE_PT20to30 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v2.xml">
+<!ENTITY QCD_bcE_PT30to80 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v1.xml">
+<!ENTITY QCD_bcE_PT80to170 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v1.xml">
+<!ENTITY QCD_bcE_PT170to250 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v1.xml">
+<!ENTITY QCD_bcE_PT250toInf SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2018/MC_QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8_Autumn18_v1.xml">
 
 
 ]>
@@ -177,13 +185,13 @@
                 <!-- Signal -->
 
 
-		<InputData Lumi="1337791.909" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2018" Cacheable="&b_Cacheable;">
+		<InputData Lumi="3080550.88" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2018" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSL_cHHH0;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="6982581.995" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2018" Cacheable="&b_Cacheable;">
+		<InputData Lumi="3040446.434" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2018" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSL_cHHH1;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
@@ -203,16 +211,13 @@
 
 
 
-		<!--  Background  -->
 
 
-		<InputData Lumi="110354799.3" NEventsMax="&NEVT;" Type="MC" Version="TTbar_hadronic_2018" Cacheable="&b_Cacheable;">
-			&TTbar_hadronic;
-			<InputTree Name="AnalysisTree" />
-			<OutputTree Name="AnalysisTree" />
-		</InputData>
+<!-- Background -->
 
-		<InputData Lumi="83703610.93" NEventsMax="&NEVT;" Type="MC" Version="TTbar_semileptonic_2018" Cacheable="&b_Cacheable;">
+<!-- Ntuple_15.root removed; Lumi=83703610.93*6769/6770=83691247.03 -->
+<!--
+		<InputData Lumi="83691247.03" NEventsMax="&NEVT;" Type="MC" Version="TTbar_semileptonic_2018" Cacheable="&b_Cacheable;">
 			&TTbar_semileptonic;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
@@ -223,6 +228,13 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+
+		<InputData Lumi="110354799.3" NEventsMax="&NEVT;" Type="MC" Version="TTbar_hadronic_2018" Cacheable="&b_Cacheable;">
+			&TTbar_hadronic;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
 
 
 
@@ -332,25 +344,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-<!--
-		<InputData Lumi="1349968.786" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_v2_2018" Cacheable="&b_Cacheable;">
-			&DYJetsToLL_HT-400to600_v2;
-			<InputTree Name="AnalysisTree" />
-			<OutputTree Name="AnalysisTree" />
-		</InputData>
 
-		<InputData Lumi="1409013.537" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_v3_2018" Cacheable="&b_Cacheable;">
-			&DYJetsToLL_HT-400to600_v3;
-			<InputTree Name="AnalysisTree" />
-			<OutputTree Name="AnalysisTree" />
-		</InputData>
-
-		<InputData Lumi="1105241.168" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_v4_2018" Cacheable="&b_Cacheable;">
-			&DYJetsToLL_HT-400to600_v4;
-			<InputTree Name="AnalysisTree" />
-			<OutputTree Name="AnalysisTree" />
-		</InputData>
--->
 		<InputData Lumi="1388485.296" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_v7_2018" Cacheable="&b_Cacheable;">
 			&DYJetsToLL_HT-400to600_v7;
 			<InputTree Name="AnalysisTree" />
@@ -408,7 +402,7 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<!-- WW, WZ, ZZ -->
+
 
 		<InputData Lumi="103401.8972" NEventsMax="&NEVT;" Type="MC" Version="DibosonNLO_WW_2018" Cacheable="&b_Cacheable;">
 			&WW;
@@ -553,9 +547,46 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+-->
 
 
 
+
+		<InputData Lumi="23.18173158" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-15to20_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT15to20;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="31.43511897" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-20to30_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT20to30;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="41.649238" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-30to80_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT30to80;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="427.2795794" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-80to170_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT80to170;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="4235.194365" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-170to250_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT170to250;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="16531.38122" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-250toInf_2018" Cacheable="&b_Cacheable;">
+			&QCD_bcE_PT250toInf;
+			<InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>
 
 
 

@@ -8,13 +8,8 @@
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
 
-<!-- Signal still missing -->
 
-<!-- data, backgrounds taken from LQ analysis -->
-
-
-
-<!-- Signal Samples (check path as soon as they are ready) -->
+<!-- Signal -->
 
 
 <!ENTITY HHtoWWbbSL_cHHH0 SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v2/2017/DiHiggs/GluGluToHHTo2B2VLNu2J_node_cHHH0_2017.xml">
@@ -28,7 +23,9 @@
 <!-- Background: TTbar, WJets, DYJets, SingleTop, Diboson, TTV, QCD -->
 
 
-<!ENTITY TTbar_hadronic SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2017/MC_TTToHadronic_TuneCP5_13TeV-powheg-pythia8.xml">
+<!-- <!ENTITY TTbar_hadronic SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2017/MC_TTToHadronic_TuneCP5_13TeV-powheg-pythia8.xml"> -->
+
+<!ENTITY TTbar_hadronic SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2017/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8_Fall17_v1.xml">
 <!ENTITY TTbar_semileptonic SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2017/MC_TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8.xml">
 <!ENTITY TTbar_dileptonic SYSTEM "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/common/UHH2-datasets/RunII_102X_v1/2017/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8.xml">
 
@@ -134,7 +131,7 @@
 ]>
 
 <!--
-<ConfigParse NEventsBreak="0" FileSplit="30" AutoResubmit="5"/>
+<ConfigParse NEventsBreak="0" FileSplit="20" AutoResubmit="5"/>
 <ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_Preselection_NOMINAL_2017"/>
 -->
 
@@ -251,7 +248,8 @@
 -->
 
 
-                <!-- Signal -->
+
+
 
 		<InputData Lumi="3023521.045" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH0_2017v2" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSL_cHHH0;
@@ -259,7 +257,7 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="8841616.381" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2017v2" Cacheable="&b_Cacheable;">
+		<InputData Lumi="3099185.291" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSL_cHHH1_2017v2" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSL_cHHH1;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
@@ -280,9 +278,9 @@
 
 
 
-
-
-		<InputData Lumi="109490.4712" NEventsMax="&NEVT;" Type="MC" Version="TTbar_hadronic_2017v2" Cacheable="&b_Cacheable;">
+                <!-- Lumi=109490.4712 for the other sample -->
+<!--
+		<InputData Lumi="107535632.91" NEventsMax="&NEVT;" Type="MC" Version="TTbar_hadronic_2017v2" Cacheable="&b_Cacheable;">
 			&TTbar_hadronic;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
@@ -621,7 +619,7 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<!-- only 80 % of crab jobs finished -->
+
 		<InputData Lumi="168.5759471" NEventsMax="&NEVT;" Type="MC" Version="QCD_EM_Pt-170to300_2017v2" Cacheable="&b_Cacheable;">
 		 	&QCD_EM_PT170to300;
 		 	<InputTree Name="AnalysisTree" />
@@ -659,7 +657,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
+-->
 		<InputData Lumi="35459.60533" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-250toInf_2017v2" Cacheable="&b_Cacheable;">
 			&QCD_bcE_PT250toInf;
 			<InputTree Name="AnalysisTree" />

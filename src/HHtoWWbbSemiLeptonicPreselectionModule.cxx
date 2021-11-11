@@ -71,7 +71,7 @@ namespace uhh2examples {
 
     bool is_mc;
     bool is_signal;
-
+    TString dataset_version;
   };
 
   void HHtoWWbbSemiLeptonicPreselectionModule::book_histograms(uhh2::Context& ctx, vector<string> tags){
@@ -146,7 +146,7 @@ HHtoWWbbSemiLeptonicPreselectionModule::HHtoWWbbSemiLeptonicPreselectionModule(C
     is_mc = ctx.get("dataset_type") == "MC";
 
 
-    TString dataset_version = ctx.get("dataset_version");
+    dataset_version = ctx.get("dataset_version");
     cout << "dataset version: " << dataset_version << endl;
     is_signal = dataset_version.Contains("HHtoWWbb");
     cout << "is_signal: " << is_signal << endl;
@@ -210,7 +210,12 @@ HHtoWWbbSemiLeptonicPreselectionModule::HHtoWWbbSemiLeptonicPreselectionModule(C
 
   bool HHtoWWbbSemiLeptonicPreselectionModule::process(Event & event) {
     //cout << "HHtoWWbbSemiLeptonicModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
-    
+    //if(event.weight>0.05) cout << "weight: " << event.weight << "eventid: " << event.event << endl;
+    if(dataset_version=="HHtoWWbbSL_cHHH1_2017v2" && event.event == 204438){
+      cout << "event.weight: " << event.weight << ", this will be removed and the Lumiweight is changed correspondingly." << endl;
+      return false;
+    }
+
     if(is_signal){
       HHgenprod->process(event);
       //HHgenrecoprod->process(event);
