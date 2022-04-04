@@ -314,8 +314,6 @@
 
 <!-- SIGNAL  -->
 
-
-
 		<InputData Lumi="86978575.16" NEventsMax="&NEVT;" Type="MC" Version="HHtoWWbbSemiLeptonic_SM_2016v3" Cacheable="&b_Cacheable;">
 			&HHtoWWbbSemiLeptonic_SM;
 			<InputTree Name="AnalysisTree" />
@@ -350,8 +348,6 @@
 
 
 
-
-<!-- BACKGROUND -->
 
 
                 <InputData Lumi="92260.16399" NEventsMax="&NEVT;" Type="MC" Version="TTbar_2016v3" Cacheable="&b_Cacheable;">

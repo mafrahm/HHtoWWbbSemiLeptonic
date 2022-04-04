@@ -3,7 +3,10 @@
 
 <!ENTITY PTJET           "30">
 <!ENTITY TargetLumi      "35920">
-<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive_PTJet&PTJET;/NOMINAL">
+<!-- <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/Inclusive_PTJet&PTJET;/NOMINAL"> -->
+<!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Preselection/PTLep05_looseWP_PTJet&PTJET;/NOMINAL">
+
+
 <!ENTITY b_Cacheable     "False">
 <!ENTITY NEVT            "-1">
 <!ENTITY PROOFdir        "/nfs/dust/cms/user/frahmmat/.proof2">
@@ -147,7 +150,7 @@
 ]>
 
 <!--
-<ConfigParse NEventsBreak="0" FileSplit="15" AutoResubmit="5"/>
+<ConfigParse NEventsBreak="0" FileSplit="20" AutoResubmit="5"/>
 <ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_Preselection_NOMINAL_2016"/>
 -->
 
@@ -350,7 +353,6 @@
 
 <!-- BACKGROUND -->
 
-
                 <InputData Lumi="92260.16399" NEventsMax="&NEVT;" Type="MC" Version="TTbar_2016v3" Cacheable="&b_Cacheable;">
 			&TTbar;
 			<InputTree Name="AnalysisTree" />
@@ -408,8 +410,6 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
-
 
 
 
@@ -766,7 +766,6 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
 
 
 

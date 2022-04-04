@@ -3,10 +3,10 @@
 
 
 <!ENTITY SYST            "JECUp">
-<!ENTITY TRAININGFRACTION "50">
+<!ENTITY TRAININGFRACTION "30">
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
-<!ENTITY NNMODEL         "incl_classes4_TrainOn50"> <!-- 3/4 classes, which variables, dunno man -->
+<!ENTITY NNMODEL         "bkgweightX8_removeQCD_classes4_TrainOn&TRAININGFRACTION;"> <!-- 3/4 classes, which variables, dunno man -->
 <!ENTITY NN_CLASSES      "4"> 
 <!ENTITY TargetLumi      "35920">
 <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/&CHANNEL;_PTJet&PTJET;/&SYST;">
@@ -142,7 +142,7 @@
 
 
 <!--
-<ConfigParse NEventsBreak="25000" FileSplit="0" AutoResubmit="5"/>
+<ConfigParse NEventsBreak="50000" FileSplit="0" AutoResubmit="5"/>
 <ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_NNApplication_JECUp_2016"/>
 -->
 
@@ -341,7 +341,6 @@
 
 
 
-<!-- BACKGROUND -->
 
 
 		<InputData Lumi="92260.16399" NEventsMax="&NEVT;" Type="MC" Version="TTbar_2016v3" Cacheable="&b_Cacheable;">
@@ -592,7 +591,7 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-<!--
+
 
 		<InputData Lumi="1.084219166" NEventsMax="&NEVT;" Type="MC" Version="QCD_Mu_Pt-15to20_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&QCD_Mu_Pt-15to20;" Lumi="0.0"/>
@@ -605,7 +604,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
--->
+
 		<InputData Lumi="18.03933848" NEventsMax="&NEVT;" Type="MC" Version="QCD_Mu_Pt-30to50_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&QCD_Mu_Pt-30to50;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />

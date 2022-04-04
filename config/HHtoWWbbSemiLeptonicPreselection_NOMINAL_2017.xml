@@ -279,7 +279,6 @@
 
 
                 <!-- Lumi=109490.4712 for the other sample -->
-<!--
 		<InputData Lumi="107535632.91" NEventsMax="&NEVT;" Type="MC" Version="TTbar_hadronic_2017v2" Cacheable="&b_Cacheable;">
 			&TTbar_hadronic;
 			<InputTree Name="AnalysisTree" />
@@ -657,7 +656,7 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
--->
+
 		<InputData Lumi="35459.60533" NEventsMax="&NEVT;" Type="MC" Version="QCD_bcE_Pt-250toInf_2017v2" Cacheable="&b_Cacheable;">
 			&QCD_bcE_PT250toInf;
 			<InputTree Name="AnalysisTree" />

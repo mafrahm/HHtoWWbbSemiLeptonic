@@ -5,7 +5,7 @@
 <!ENTITY TRAININGFRACTION "30"> <!-- has to be equal to NNModel! -->
 <!ENTITY PTJET           "30">
 <!ENTITY CHANNEL         "Inclusive"> <!-- Inclusive, ech, much -->
-<!ENTITY NNMODEL         "bkgweightX8_removeQCD_classes4_TrainOn&TRAININGFRACTION;"> <!-- 3/4 classes, etc.-->
+<!ENTITY NNMODEL         "bkgweightX8_removeQCD_classes4_TrainOn&TRAININGFRACTION;"> 
 <!ENTITY NN_CLASSES      "4"> 
 <!ENTITY TargetLumi      "35920">
 <!ENTITY PRESELdir       "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/2016/Fullselection/Inclusive_PTJet&PTJET;/&SYST;">
@@ -141,7 +141,7 @@
 
 
 <!--
-<ConfigParse NEventsBreak="25000" FileSplit="0" AutoResubmit="5"/>
+<ConfigParse NEventsBreak="60000" FileSplit="0" AutoResubmit="5"/>
 <ConfigSGE RAM="2" DISK="1" Mail="mathis.frahm@desy.de" Notification="as" Workdir="workdir_NNApplication_NOMINAL_2016"/>
 -->
 
@@ -154,8 +154,8 @@
 
 	<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&SELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
 
-<!--
 
+<!--
 		<InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_Muon_B_2016v3" Cacheable="&b_Cacheable;">
 			<In FileName="&DATA_Muon_B;" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -296,9 +296,8 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
-
 -->
+
 
 
 <!-- SIGNAL -->

@@ -773,7 +773,7 @@
 	<!-- <Item Name="GenJetCollection" Value="slimmedGenJets" />  -->
 	<!--  <Item Name="TopJetCollection" Value="patJetsAk8CHSJetsSoftDropPacked_daughters" />  --> 
 	<!-- <Item Name="TopJetCollection" Value="jetsAk8PuppiSubstructure_SoftDropPuppi" />  -->
-	<Item Name="GenParticleCollection" Value="GenParticles" />
+	<!-- <Item Name="GenParticleCollection" Value="GenParticles" /> -->
 	<Item Name="GenInfoName" Value="genInfo" />
 
 

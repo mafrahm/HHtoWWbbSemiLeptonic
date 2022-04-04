@@ -351,7 +351,6 @@
 
 
 
-<!-- BACKGROUND -->
 
 
                 <InputData Lumi="92260.16399" NEventsMax="&NEVT;" Type="MC" Version="TTbar_2016v3" Cacheable="&b_Cacheable;">
@@ -410,7 +409,6 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
 
 
 
@@ -768,9 +766,6 @@
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
-
-
-
 
 
 
