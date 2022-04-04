@@ -66,13 +66,13 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::init(){
   NN_out2_rebin = book<TH1F>("NN_out2_rebin", "SingleTop output node", 20, 0, 1);
   NN_out3_rebin = book<TH1F>("NN_out3_rebin", "WJets+DYJets output node", 20, 0, 1);
   NN_out4_rebin = book<TH1F>("NN_out4_rebin", "QCD output node", 20, 0, 1);
-
-  NN_out0_rebin2 = book<TH1F>("NN_out0_rebin2", "HH output node", 40, 0, 1);
-  NN_out1_rebin2 = book<TH1F>("NN_out1_rebin2", "TTbar output node", 40, 0, 1);
-  NN_out2_rebin2 = book<TH1F>("NN_out2_rebin2", "SingleTop output node", 40, 0, 1);
-  NN_out3_rebin2 = book<TH1F>("NN_out3_rebin2", "WJets+DYJets output node", 40, 0, 1);
+  */
+  NN_out0_rebin2 = book<TH1F>("NN_out0_rebin2", "Signal Region output node", 40, 0, 1);
+  NN_out1_rebin2 = book<TH1F>("NN_out1_rebin2", "TTbar CR output node", 40, 0, 1);
+  NN_out2_rebin2 = book<TH1F>("NN_out2_rebin2", "SingleTop CR output node", 40, 0, 1);
+  NN_out3_rebin2 = book<TH1F>("NN_out3_rebin2", "W+DY CR output node", 40, 0, 1);
   NN_out4_rebin2 = book<TH1F>("NN_out4_rebin2", "QCD output node", 40, 0, 1);
-  
+  /*
   vector<float> limitbins_sr_1 = {0,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.93,0.96,0.98,1.0};
   vector<float> limitbins_ttcr_1 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.80,1.0};
   vector<float> limitbins_stcr_1 = {0,0.3,0.4,0.48,0.56,0.64,0.72,0.80,0.90,1.0};
@@ -130,13 +130,13 @@ void HHtoWWbbSemiLeptonicMulticlassNNHists::fill(const Event & event){
   NN_out2_rebin->Fill(NNoutput2, weight);
   NN_out3_rebin->Fill(NNoutput3, weight);
   NN_out4_rebin->Fill(NNoutput4, weight);
-
+  */
   NN_out0_rebin2->Fill(NNoutput0, weight);
   NN_out1_rebin2->Fill(NNoutput1, weight);
   NN_out2_rebin2->Fill(NNoutput2, weight);
   NN_out3_rebin2->Fill(NNoutput3, weight);
   NN_out4_rebin2->Fill(NNoutput4, weight);
-
+  /*
   NN_out0_limits1->Fill(NNoutput0, weight);
   NN_out1_limits1->Fill(NNoutput1, weight);
   NN_out2_limits1->Fill(NNoutput2, weight);
