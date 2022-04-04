@@ -43,6 +43,9 @@ class AnalysisTool {
   void Efficiencies(TString channel);
   void ControlPlots(TString selection, TString cuts, vector<TString> processes);
   void SignalToBackground(TString cuts, TString plotname);
+  void SignalToBackgroundPTMu();  
+  void SignalToBackgroundPTJet();
+
   void CountBackgroundContributions(TString channel, TString region);
   void CountBackgroundContributions();
   void CountBackgroundDistribution();
@@ -66,12 +69,13 @@ class AnalysisTool {
 
   void CombineHistogramsRMS();
 
-  void PlotSystematicHists(bool combine_hist=true);
+  void PlotSystematicHists(bool rateShape, bool combine_hist=true);
   
   // only after running NNsteer.py
   void PlotLimitsCombine(TString channel);
   void PlotPostfitDistribution(bool do_prefit=false, bool scale_to_width=false);
 
+  map<TString, vector<double>> channel_to_bins;
 
 
  private:
@@ -91,7 +95,6 @@ class AnalysisTool {
   map<const TString, Color_t> proc_colors;
   map<TString, TString> channel_to_histname;
   map<TString, TString> channel_to_node;
-  map<TString, vector<double>> channel_to_bins;
   map<TString, TString> channel_to_chNumber;
   map<TString,TString> channel_to_xAxisTitle;
 

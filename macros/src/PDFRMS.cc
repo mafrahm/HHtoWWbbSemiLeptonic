@@ -76,12 +76,12 @@ void AnalysisTool::PDFRMS() {
   FindRMS(infolder, samplemap, "TTbar_" + yeartag);
   FindRMS(infolder, samplemap, "DYJets_" + yeartag);
   FindRMS(infolder, samplemap, "Diboson_" + yeartag);
-  FindRMS(infolder, samplemap, "QCDMu_" + yeartag);
-  FindRMS(infolder, samplemap, "QCDEle_" + yeartag);
+  //FindRMS(infolder, samplemap, "QCDMu_" + yeartag);
+  //FindRMS(infolder, samplemap, "QCDEle_" + yeartag);
   FindRMS(infolder, samplemap, "TTV_" + yeartag);
   FindRMS(infolder, samplemap, "WJets_" + yeartag);
-  FindRMS(infolder, samplemap, "SingleTop_" + yeartag);
-  FindRMS(infolder, samplemap, "HHtoWWbbSemiLeptonic_SM_" + yeartag);
+  if(AnalysisTool::year=="2016") FindRMS(infolder, samplemap, "SingleTop_" + yeartag);
+  //FindRMS(infolder, samplemap, "HHtoWWbbSemiLeptonic_SM_" + yeartag);
   FindRMS(infolder, samplemap, "HHtoWWbbSL_cHHH0_" + yeartag);
   FindRMS(infolder, samplemap, "HHtoWWbbSL_cHHH1_" + yeartag);
   FindRMS(infolder, samplemap, "HHtoWWbbSL_cHHH2p45_" + yeartag);

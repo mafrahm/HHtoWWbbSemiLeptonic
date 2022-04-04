@@ -62,12 +62,13 @@ void AnalysisTool::ScaleVariationEnvelope(){
   //Files & histograms for other processes
   TString path = AnalysisTool::base_path + AnalysisTool::year + "/" + AnalysisTool::NN_tag; // Finalselection == NNApplied
   cout << path << endl;
-  vector<TString> processes = {"TTbar_" + AnalysisTool::yeartag,"SingleTop_" + AnalysisTool::yeartag, "DYJets_" + AnalysisTool::yeartag, "Diboson_" + AnalysisTool::yeartag, "TTV_" + AnalysisTool::yeartag, "WJets_" + AnalysisTool::yeartag, "QCDMu_" + AnalysisTool::yeartag, "QCDEle_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH0_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH1_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH2p45_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH5_" + AnalysisTool::yeartag};
+  vector<TString> processes = {"TTbar_" + AnalysisTool::yeartag, "DYJets_" + AnalysisTool::yeartag, "Diboson_" + AnalysisTool::yeartag, "TTV_" + AnalysisTool::yeartag, "WJets_" + AnalysisTool::yeartag, /*"QCDMu_" + AnalysisTool::yeartag, "QCDEle_" + AnalysisTool::yeartag,*/ "HHtoWWbbSL_cHHH0_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH1_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH2p45_" + AnalysisTool::yeartag, "HHtoWWbbSL_cHHH5_" + AnalysisTool::yeartag};
+  if(AnalysisTool::year=="2016") processes.push_back("SingleTop_"+AnalysisTool::yeartag);
   unique_ptr<TFile> f_in;
 
   for(unsigned int aa=0; aa< processes.size();aa++){
     TString process =  processes[aa];
-
+    cout << "process: " << process << endl;
   // Read out Rescale Values
   vector<double> Rescale = findScaleRescaleValues(process);
 
@@ -197,7 +198,7 @@ void AnalysisTool::ScaleVariationEnvelope(){
 	}
       }
     }
-
     f_out->Close();
   }
+  cout << "ScaleVariationEnvelope: finished!" << endl;
 }

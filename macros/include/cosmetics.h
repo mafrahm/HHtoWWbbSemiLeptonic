@@ -5,6 +5,7 @@
 #include <TH1D.h>
 #include <TGraph.h>
 
+void DrawCMSText(bool bottom=false);
 
 TPad* SetupPad();
 TPad* SetupRatioPad();

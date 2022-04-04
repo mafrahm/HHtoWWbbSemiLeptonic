@@ -3,9 +3,61 @@
 #include <TH1D.h>
 #include <TGraph.h>
 #include <TStyle.h>
+#include <TLatex.h>
 #include "../include/cosmetics.h"
 
 
+void DrawCMSText(bool bottom) {
+  // Lumi text
+  TString infotext = "35.9 fb^{-1} (13 TeV)";
+  TLatex *text1 = new TLatex(3.5, 24, infotext);
+  text1->SetNDC();
+  text1->SetTextAlign(33);
+  text1->SetX(0.90);
+  text1->SetTextFont(42);
+  text1->SetTextSize(0.045);
+  text1->SetY(0.95);
+  text1->Draw("SAME");
+  // CMS Text
+  bool right = false; // CMS text on the right side
+  TLatex *text2 = new TLatex(3.5, 24, "CMS");
+  text2->SetNDC();
+  text2->SetTextAlign(13);
+  text2->SetX(0.22);
+  if(right) text2->SetX(0.7);
+  text2->SetTextFont(62);
+  text2->SetTextSize(0.05);
+  text2->SetY(0.77);
+  if(bottom) text2->SetY(0.37);
+  //text2->SetY(0.92);
+  text2->Draw();
+
+  TLatex *text3 = new TLatex(3.5, 24, "Work in progress");
+  //TLatex *text3 = new TLatex(3.5, 24, "Private work");
+  text3->SetNDC();
+  text3->SetTextAlign(13);
+  text3->SetX(0.22);
+  if(right) text3->SetX(0.7);
+  text3->SetTextFont(52);
+  text3->SetTextSize(0.035);
+  text3->SetY(0.68);
+  if(bottom) text3->SetY(0.28);
+  //text3->SetY(0.83);
+  text3->Draw();
+
+  // Simulation:
+  TLatex *text4 = new TLatex(3.5, 24, "Simulation");
+  text4->SetNDC();
+  text4->SetTextAlign(13);
+  text4->SetX(0.22);
+  if(right) text4->SetX(0.7);
+  text4->SetTextFont(52);
+  text4->SetTextSize(0.035);
+  text4->SetY(0.72);
+  if(bottom) text4->SetY(0.32);
+  //text4->SetY(0.87);
+  text4->Draw();
+}
 
 TPad* SetupPad() {
   Float_t yplot = 0.65;

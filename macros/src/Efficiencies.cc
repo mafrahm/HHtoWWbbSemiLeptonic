@@ -20,48 +20,72 @@
 #include <TLatex.h>
 #include <TClass.h>
 #include <fstream>
-
+#include "../include/cosmetics.h"
 using namespace std;
 
 void AnalysisTool::Efficiencies(TString channel) {
   // vector<TString> processes = {"HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "QCDMu", "WJets"};
-
+  bool qcd_cuts = true; 
   
-  vector<TString> processes = {"HHtoWWbbSL_cHHH1", "SingleTop", "TTbar", "DYJets", "WJets"};
-  if(channel=="ech") processes.push_back("QCDEle");
-  if(channel=="much") processes.push_back("QCDMu");
+  vector<TString> processes = {"HHtoWWbbSL_cHHH1","TTbar", "WJets", "SingleTop", "DYJets"};
+  if(channel=="ech" && qcd_cuts) processes.push_back("QCDEle");
+  if(channel=="much" && qcd_cuts) processes.push_back("QCDMu");
   TString channel_tag = "srmu";
   if(channel=="ech") channel_tag = "srele";
- 
+  TString lep_name = "#mu";
+  if(channel=="ech") lep_name = "e";
 
-  vector<vector<TString>> label_histname_module= {
-    /*
-    {"Cleaner", "Cleaner_General/", "Pre"},
-    {"N_{lep}=1", "1Lepton_General/", "Pre"},
-    {"N_{#mu}=1", "1Lepton_"+channel_tag+"_General/", "Pre"}, 
-    {"N_{Jets} #geq 3", "3Jets_"+channel_tag+"_General/", "Pre"},
-    {"Cleaner_Full", "Cleaner_"+channel+"_General/", "Full"},
-    {"Trigger", "Trigger_"+channel+"_General/", "Full"},
-    {"N_{BTag} #geq 1", "BTag_"+channel+"_General/", "Full"},
-    */
-    {"Fullselection", "QCDcut0_"+channel+"_NNInput/", "NNAppl"},
-    {"Min #Delta R (Lep,Jet)>0.2", "QCDcut1_"+channel+"_NNInput/", "NNAppl"},
-    {"M_{T}^{top,lep}>60 GeV", "QCDcut2_"+channel+"_NNInput/", "NNAppl"},
-    {"B2 deepjetscore>0.1", "QCDcut3_"+channel+"_NNInput/", "NNAppl"}
-  }; 
+  vector<vector<TString>> label_histname_module;
+  if(!qcd_cuts) label_histname_module = {
+      {"Cleaner", "Cleaner_General/", "Pre"},
+      {"N_{lep}=1", "1Lepton_General/", "Pre"},
+      {"N_{"+lep_name+"}=1", "1Lepton_"+channel_tag+"_General/", "Pre"}, 
+      {"N_{Jets} #geq 3", "3Jets_"+channel_tag+"_General/", "Pre"},
+      {lep_name+" Scale Factors", "Cleaner_"+channel+"_General/", "Full"},
+      {"Trigger", "Trigger_"+channel+"_General/", "Full"},
+      {"N_{BTag} #geq 1", "BTag_"+channel+"_General/", "Full"},
+    };
+  else label_histname_module = {
+      {"Previous selections", "BTag_"+channel+"_General/", "Full"},
+      {"min #DeltaR(l,j)>0.2", "QCDcut1_"+channel+"_General/", "Full"},
+      {"M_{T}(l+E_{T}^{miss}+b_{lep})>60 GeV", "QCDcut2_"+channel+"_General/", "Full"},
+      {"b2 b-score>0.1", "QCDcut3_"+channel+"_General/", "Full"}
+      /*
+	{"Fullselection", "QCDcut0_"+channel+"_NNInput/", "NNAppl"},
+	{"Min #Delta R (Lep,Jet)>0.2", "QCDcut1_"+channel+"_NNInput/", "NNAppl"},
+	{"M_{T}^{top,lep}>60 GeV", "QCDcut2_"+channel+"_NNInput/", "NNAppl"},
+	{"B2 deepjetscore>0.1", "QCDcut3_"+channel+"_NNInput/", "NNAppl"}
+      */
+    };
   int N_hists = label_histname_module.size();
 
   // Setup the histogram
   TCanvas* c1 = new TCanvas("c1", "c1", 600, 600);
-  TH1F* h_base = new TH1F("Efficiencies", "Selection steps", N_hists, 0.5, N_hists+0.5);
+  TH1F* h_base = new TH1F("Efficiencies", "", N_hists, 0.5, N_hists+0.5);
+  h_base->GetXaxis()->SetLabelSize(.05);
+  h_base->GetYaxis()->SetTitleSize(.045);
+  h_base->GetXaxis()->SetTitleSize(.05);
+  h_base->GetXaxis()->SetTitleOffset(1.55);
+  if(qcd_cuts) h_base->GetXaxis()->SetTitleOffset(2.1);
   for(unsigned int j=0; j<label_histname_module.size();j++){
     h_base->GetXaxis()->SetBinLabel(j+1, label_histname_module[j][0].Data());
   }
   cout << "Line: " << __LINE__ << endl;
-  h_base->SetMaximum(1.1);
-  h_base->SetMinimum(0);
+  h_base->SetMaximum(2);
+  h_base->SetMinimum(1e-3);
+  if(qcd_cuts) {
+    h_base->SetMaximum(1.05);
+    h_base->SetMinimum(0);
+  }
+  //h_base->GetYaxis()->SetTitleSize(.6);
+  h_base->SetYTitle("Selection efficiency");
+  h_base->SetXTitle("Selection steps");
+  //h_base->SetLineWidth(3.);
+  h_base->SetStats(0);
   h_base->Draw("HIST");
-  TLegend *leg = new TLegend(0.25,0.67,0.95,0.91,"");
+  TLegend *leg;
+  if(qcd_cuts) leg = new TLegend(0.22,0.27,0.54,0.50,"");
+  else leg = new TLegend(0.46,0.65,0.88,0.88,"");
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   leg->SetLineColor(1);
@@ -82,9 +106,9 @@ void AnalysisTool::Efficiencies(TString channel) {
 
     TFile* infile_pre = new TFile(infilename_pre);
     TFile* infile_full = new TFile(infilename_full);
-    TFile* infile_NN = new TFile(infilename_NN);
+    //TFile* infile_NN = new TFile(infilename_NN);
 
-    TH1F* h_out = new TH1F("efficiencies", "Selection steps", N_hists, 0.5, N_hists+0.5);
+    TH1F* h_out = new TH1F("efficiencies", "", N_hists, 0.5, N_hists+0.5);
    
     double norm = 1;
     for(unsigned int j=0; j<label_histname_module.size(); j++) {
@@ -94,24 +118,36 @@ void AnalysisTool::Efficiencies(TString channel) {
       TH1F* h_in_j;
       if(module=="Pre") h_in_j = (TH1F*)infile_pre->Get(histname);
       if(module=="Full") h_in_j = (TH1F*)infile_full->Get(histname);
-      if(module=="NNAppl") h_in_j = (TH1F*)infile_NN->Get(histname);
+      //if(module=="NNAppl") h_in_j = (TH1F*)infile_NN->Get(histname);
       cout << "Number of events after " << j << " cuts: " << h_in_j->Integral() << endl;
-      cout << "number of events after " << j << " cuts: " << h_in_j->GetBinContent(1) << endl;
+      //cout << "number of events after " << j << " cuts: " << h_in_j->GetBinContent(1) << endl;
       
       if(j==0) norm = h_in_j->Integral();
 
       h_out->SetBinContent(j+1, h_in_j->Integral()/norm);
+      if(proc.Contains("QCD")) cout << proc << " has efficiency of " << h_in_j->Integral()/norm << " after cut " << label_histname_module[j][0] << endl;
     }
     cout << "Line: " << __LINE__ << endl;
     cout << proc_colors[proc] << endl;
     h_out->SetLineColor(proc_colors[proc]);
+    h_out->SetLineWidth(2.);
     h_out->Draw("SAME");
-    leg->AddEntry(h_out, proc,"L");
+    if(proc.Contains("HHtoWWbb")) leg->AddEntry(h_out, "HH #rightarrow bbWW(qql#nu), #kappa#lambda=1", "L");
+    else leg->AddEntry(h_out, proc,"L");
   }
   leg->Draw();
-  //c1->SetLogy();
-  c1->SaveAs("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/efficiencies_" + channel + "_" + year + ".eps");
-  //c1->SaveAs("/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/efficiencies_" + year + "_" + selection + "_" + cuts + ".pdf");
+  DrawCMSText(!qcd_cuts);
+  c1->SetLeftMargin(0.14);
+  c1->SetBottomMargin(0.16);
+  if(qcd_cuts){
+    c1->SetRightMargin(0.1);
+    c1->SetBottomMargin(0.2);
+  }
+  if(!qcd_cuts) c1->SetLogy();
+
+  TString outfilename = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/macros/Plots/efficiencies_fullselection_" + channel + "_" + year + ".pdf";
+  if(qcd_cuts) outfilename.ReplaceAll("fullselection","QCDcuts");
+  c1->SaveAs(outfilename);
   delete c1;
 
 } // end of script

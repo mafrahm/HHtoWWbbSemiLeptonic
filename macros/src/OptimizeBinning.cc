@@ -9,7 +9,7 @@ using namespace std;
 
 
 void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TString> backgrounds, TString channel, bool flat_in_background){
-  bool debug = false;
+  bool debug = true;
   if(debug) cout << "hello from FindOptimizeBinning :>" << endl;
 
   vector<TH1F*> h_in_vec;
@@ -20,13 +20,15 @@ void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TStrin
 
   if(flat_in_background) for(TString bckg : backgrounds) {
       TString infilename_bckg = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + bckg + "_" + yeartag + ".root"; 
+      //TString infilename_bckg = "/nfs/dust/cms/user/tutusayl/HHtoWWbbSemiLeptonic/2016/NNApplication/NOMINAL/uhh2.AnalysisModuleRunner.MC." + bckg + "_" + yeartag + ".root";  // AYLA
       TFile* f_in = new TFile(infilename_bckg);
       h_in_vec.push_back((TH1F*)f_in->Get(histname));
-  }
+    }
   else {
-    TString infilename_signal = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + signal + "_" + yeartag + ".root"; 
-      TFile* f_signal = new TFile(infilename_signal);
-      h_in_vec.push_back((TH1F*)f_signal->Get(histname));
+    TString infilename_signal = AnalysisTool::base_path  + AnalysisTool::year + "/" + AnalysisTool::NN_tag + "NOMINAL/uhh2.AnalysisModuleRunner.MC." + signal + "_" + yeartag + ".root";
+    //TString infilename_signal = "/nfs/dust/cms/user/tutusayl/HHtoWWbbSemiLeptonic/2016/NNApplication/NOMINAL/uhh2.AnalysisModuleRunner.MC." + signal + "_" + yeartag + ".root";  // AYLA 
+    TFile* f_signal = new TFile(infilename_signal);
+    h_in_vec.push_back((TH1F*)f_signal->Get(histname));
   }
   
 
@@ -56,9 +58,9 @@ void AnalysisTool::FindOptimizeBinning(int N_bins, TString signal, vector<TStrin
     }
   }
   bins.push_back(1.0);
-  //if(debug) cout << "number of bins: " << bins.size()-1 << endl;
+  if(debug) cout << "number of bins: " << bins.size()-1 << endl;
   for(unsigned int i=0; i<bins.size(); i++){
-    //if(debug) cout << "binEdge at " << i << ": " << bins.at(i) << endl;
+    if(debug) cout << "binEdge at " << i << ": " << bins.at(i) << endl;
   }
     
   channel_to_bins.insert(pair<TString, vector<double>>(channel, bins));
