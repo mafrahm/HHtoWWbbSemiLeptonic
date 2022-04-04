@@ -402,6 +402,13 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
       max_score_tag = std::to_string(i);
     }
   }
+  if(max_score_tag=="0" && dataset_version.Contains("QCD")){ //remove QCD events in SR with too large stat uncert. (up to Pt-50to80)
+    if(dataset_version.Contains("20to30") || dataset_version.Contains("30to50") || dataset_version.Contains("50to80")) {
+      cout << "removing event from dataset_version " << dataset_version << "in region DNNoutput" << max_score_tag << endl;
+      return false;
+    }
+  }
+
   string DNN_hist_tag  = "DNNoutput"+max_score_tag;
   fill_histograms(event, DNN_hist_tag, region);
   if(debug) cout << "before: " << event.weight << endl;
@@ -428,7 +435,7 @@ bool HHtoWWbbSemiLeptonicNNApplication::process(Event & event) {
 	float sfweight = event.get(scalefactor_handles[idx]);
 	event.weight = weight_nominal * systweight / sfweight;
 	TString tag = systnames[i] + "_" + systshift[j];
-
+	//if(systnames[i]=="pu" && (event.weight>1 || event.weight<0.0001)) cout << event.weight << endl;
 	fill_syst_histograms(event, DNN_hist_tag, region, (string)tag);
       }
     }
