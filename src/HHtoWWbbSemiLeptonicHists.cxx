@@ -96,14 +96,23 @@ HHtoWWbbSemiLeptonicHists::HHtoWWbbSemiLeptonicHists(Context & ctx, const string
   MH_bb_rebin = book<TH1F>("MH_bb_rebin", "M_{bb}^{#chi2} [GeV]", 40, 0, 200);
   MH_WW_rebin = book<TH1F>("MH_WW_rebin", "M_{T,WW}^{#chi2} [GeV]", 40, 0, 200);
 
+  MH_bb_lessbins = book<TH1F>("MH_bb_lessbins", "M_{bb}^{#chi2} [GeV]", 50, 0, 500);
+  MH_WW_lessbins = book<TH1F>("MH_WW_lessbins", "M_{T,WW}^{#chi2} [GeV]", 50, 0, 500);
 
 
   MH_bb_simple = book<TH1F>("MH_bb_simple", "M_{bb}^{highest-pt} [GeV]", 100, 0, 500);
   MH_bb_simple_rebin = book<TH1F>("MH_bb_simple_rebin", "M_{bb}^{highest-pt} [GeV]", 40, 0, 200);
 
 
+
   MH_WW_simple = book<TH1F>("MH_WW_simple", "M_{T,WW}^{highest-pt} [GeV]", 100, 0, 500);
   MH_WW_simple_rebin = book<TH1F>("MH_WW_simple_rebin", "M_{T,WW}^{highest-pt} [GeV]", 40, 0, 200);
+
+  MH_bb_simple_rebin2 = book<TH1F>("MH_bb_simple_rebin2", "M_{bb}^{highest-pt} [GeV]", 50, 0, 300);
+  MH_WW_simple_rebin2 = book<TH1F>("MH_WW_simple_rebin2", "M_{T,WW}^{highest-pt} [GeV]", 50, 0, 300);
+  MH_bb_rebin2 = book<TH1F>("MH_bb_rebin2", "M_{bb}^{highest-pt} [GeV]", 50, 0, 300);
+  MH_WW_rebin2 = book<TH1F>("MH_WW_rebin2", "M_{T,WW}^{highest-pt} [GeV]", 50, 0, 300);
+
 
   //vector<double> bins_Mbb = {0,65,75,85,90,95,100,105,110,115,120,125,130,135,140,150,170,200};
   //vector<double> bins_MWW = {0,80,100,120,140,160,180,200,220,245,270,300,340,380,440,500};
@@ -308,6 +317,7 @@ void HHtoWWbbSemiLeptonicHists::fill(const Event & event){
   if(Ndeepjet_med >= 2) {
     MH_bb_simple->Fill(mbb, weight);
     MH_bb_simple_rebin->Fill(mbb, weight);
+    MH_bb_simple_rebin2->Fill(mbb, weight);
     if(mbb < 190) MH_bb_limits->Fill(mbb, weight);
     else          MH_bb_limits->Fill(190., weight);
 
@@ -335,6 +345,7 @@ void HHtoWWbbSemiLeptonicHists::fill(const Event & event){
 
     MH_WW_simple->Fill(mtWW_high, weight);
     MH_WW_simple_rebin->Fill(mtWW_high, weight);
+    MH_WW_simple_rebin2->Fill(mtWW_high, weight);
     if(mtWW_high < 490) MH_WW_limits->Fill(mtWW_high, weight);
     else           MH_WW_limits->Fill(490., weight);
     
@@ -369,7 +380,9 @@ void HHtoWWbbSemiLeptonicHists::fill(const Event & event){
    
     CHI2_H_bb->Fill(chi2_H_bb, weight);
     MH_bb->Fill(mH_bb, weight); 
-    MH_bb_rebin->Fill(mH_bb, weight); 
+    MH_bb_rebin->Fill(mH_bb, weight);
+    MH_bb_rebin2->Fill(mH_bb, weight); 
+    MH_bb_lessbins->Fill(mH_bb, weight);  
 
     double chi2_H_WW = event.get(h_chi2_H_WW);
     double mH_WW = event.get(h_mH_WW);
@@ -378,6 +391,8 @@ void HHtoWWbbSemiLeptonicHists::fill(const Event & event){
     CHI2_H_WW->Fill(chi2_H_WW, weight);
     MH_WW->Fill(mH_WW, weight); 
     MH_WW_rebin->Fill(mH_WW, weight); 
+    MH_WW_rebin2->Fill(mH_WW, weight); 
+    MH_WW_lessbins->Fill(mH_WW, weight); 
 
     Mbb_vs_MWW_limits->Fill(mH_bb,mH_WW,weight);
 

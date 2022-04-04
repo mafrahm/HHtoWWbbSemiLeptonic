@@ -373,106 +373,106 @@ void HHtoWWbbSemiLeptonicMatchedHists::fill(const Event & event) {
     hist("deltaEta qq")->Fill(deta_Q, weight);
   }
 
-    hist("M_WLep")->Fill(WLep.M(), weight);
-    hist("MT_WLep")->Fill(MT_WLep, weight);    
-    hist("MT_WLep_gen")->Fill(MT_WLep_gen, weight);
+  hist("M_WLep")->Fill(WLep.M(), weight);
+  hist("MT_WLep")->Fill(MT_WLep, weight);    
+  hist("MT_WLep_gen")->Fill(MT_WLep_gen, weight);
 
-    hist("M_WLep_genN")->Fill(WLep_genN.M(), weight);
-    hist("M_WLep_gen")->Fill(WLep_gen.M(), weight);
-    if(WLep_gen.M()<50) hist("MT_WLep_offshell")->Fill(MT_WLep, weight);
-    if(WLep_gen.M()>70 && WLep_gen.M()<90) hist("MT_WLep_onshell")->Fill(MT_WLep, weight);
-    hist("pt_WLep")->Fill(WLep.pt(), weight);
-    hist("eta_WLep")->Fill(WLep.eta(), weight);
+  hist("M_WLep_genN")->Fill(WLep_genN.M(), weight);
+  hist("M_WLep_gen")->Fill(WLep_gen.M(), weight);
+  if(WLep_gen.M()<50) hist("MT_WLep_offshell")->Fill(MT_WLep, weight);
+  if(WLep_gen.M()>70 && WLep_gen.M()<90) hist("MT_WLep_onshell")->Fill(MT_WLep, weight);
+  hist("pt_WLep")->Fill(WLep.pt(), weight);
+  hist("eta_WLep")->Fill(WLep.eta(), weight);
 
-    hist("pt_l")->Fill(L.pt(),weight);
-    hist("pt_n")->Fill(N.pt(),weight);
+  hist("pt_l")->Fill(L.pt(),weight);
+  hist("pt_n")->Fill(N.pt(),weight);
 
-    hist("eta_l")->Fill(L.eta(),weight);
-    hist("eta_n")->Fill(N.eta(),weight);
-
-
-    if(Q1_match.matched && Q2_match.matched && B1_match.matched && B2_match.matched) {
-      pt_H1_vs_pt_H2->Fill((B1+B2).pt(), (WHad+WLep).pt(), weight);
-      M_H1_vs_M_H2->Fill((B1+B2).M(), MT_H_W, weight);
-
-      hist("pt_diff_H")->Fill((B1+B2).pt()-(WHad+WLep).M(), weight);
-      hist("M_diff_H")->Fill((B1+B2).M()-MT_H_W, weight);
-
-    }
+  hist("eta_l")->Fill(L.eta(),weight);
+  hist("eta_n")->Fill(N.eta(),weight);
 
 
+  if(Q1_match.matched && Q2_match.matched && B1_match.matched && B2_match.matched) {
+    pt_H1_vs_pt_H2->Fill((B1+B2).pt(), (WHad+WLep).pt(), weight);
+    M_H1_vs_M_H2->Fill((B1+B2).M(), MT_H_W, weight);
+
+    hist("pt_diff_H")->Fill((B1+B2).pt()-(WHad+WLep).M(), weight);
+    hist("M_diff_H")->Fill((B1+B2).M()-MT_H_W, weight);
+
+  }
 
 
-    // correct reco efficiency
-
-    // true matching
-    int B1_id_true = B1_match.jet_index;
-    int B2_id_true = B2_match.jet_index;
-    int Q1_id_true = Q1_match.jet_index;
-    int Q2_id_true = Q2_match.jet_index;
 
 
-    hist("b1_jet_index")->Fill(B1_id_true, weight);
-    hist("b2_jet_index")->Fill(B2_id_true, weight);
-    hist("q1_jet_index")->Fill(Q1_id_true, weight);
-    hist("q2_jet_index")->Fill(Q2_id_true, weight);
+  // correct reco efficiency
+
+  // true matching
+  int B1_id_true = B1_match.jet_index;
+  int B2_id_true = B2_match.jet_index;
+  int Q1_id_true = Q1_match.jet_index;
+  int Q2_id_true = Q2_match.jet_index;
+
+
+  hist("b1_jet_index")->Fill(B1_id_true, weight);
+  hist("b2_jet_index")->Fill(B2_id_true, weight);
+  hist("q1_jet_index")->Fill(Q1_id_true, weight);
+  hist("q2_jet_index")->Fill(Q2_id_true, weight);
 
     
-    if(event.get(h_is_mHH_reconstructed)) {
-      // chi2 matching
-      int B1_id_chi2 = event.get(h_b1_index);
-      int B2_id_chi2 = event.get(h_b2_index);
-      fillJetIdMatching(B1_id_chi2, B1_id_true, B2_id_true, b1_correct_chi2, weight);
+  if(event.get(h_is_mHH_reconstructed)) {
+    // chi2 matching
+    int B1_id_chi2 = event.get(h_b1_index);
+    int B2_id_chi2 = event.get(h_b2_index);
+    fillJetIdMatching(B1_id_chi2, B1_id_true, B2_id_true, b1_correct_chi2, weight);
 
-      fillJetIdMatching(B2_id_chi2, B1_id_true, B2_id_true, b2_correct_chi2, weight);
-      fillJetIdMatching2p(B1_id_chi2, B2_id_chi2, B1_id_true, B2_id_true, Hbb_correct_chi2, weight);
+    fillJetIdMatching(B2_id_chi2, B1_id_true, B2_id_true, b2_correct_chi2, weight);
+    fillJetIdMatching2p(B1_id_chi2, B2_id_chi2, B1_id_true, B2_id_true, Hbb_correct_chi2, weight);
 
-      int Q1_id_chi2 = event.get(h_q1_index);
-      int Q2_id_chi2 = event.get(h_q2_index);
+    int Q1_id_chi2 = event.get(h_q1_index);
+    int Q2_id_chi2 = event.get(h_q2_index);
 
-      fillJetIdMatching(Q1_id_chi2, Q1_id_true, Q2_id_true, q1_correct_chi2, weight);
-      fillJetIdMatching(Q2_id_chi2, Q1_id_true, Q2_id_true, q2_correct_chi2, weight);
-      fillJetIdMatching2p(Q1_id_chi2, Q2_id_chi2, Q1_id_true, Q2_id_true, WHad_correct_chi2, weight);
+    fillJetIdMatching(Q1_id_chi2, Q1_id_true, Q2_id_true, q1_correct_chi2, weight);
+    fillJetIdMatching(Q2_id_chi2, Q1_id_true, Q2_id_true, q2_correct_chi2, weight);
+    fillJetIdMatching2p(Q1_id_chi2, Q2_id_chi2, Q1_id_true, Q2_id_true, WHad_correct_chi2, weight);
     
     // simple methods .....
 
 
-      int B1_id_highestPt=0;
-      int B2_id_highestPt=0;
+    int B1_id_highestPt=0;
+    int B2_id_highestPt=0;
 
-      JetId DeepjetMedium = BTag(BTag::DEEPJET, BTag::WP_MEDIUM);
-      int Ndeepjet_med=0;
-      vector<int> lightjet_ids;
+    JetId DeepjetMedium = BTag(BTag::DEEPJET, BTag::WP_MEDIUM);
+    int Ndeepjet_med=0;
+    vector<int> lightjet_ids;
       
-      for (unsigned int i =0; i<event.jets->size(); i++) {
-	if(DeepjetMedium(event.jets->at(i),event)) {
-	  Ndeepjet_med++;
-	  if(Ndeepjet_med == 1) B1_id_highestPt = i+1;
-	  if(Ndeepjet_med == 2) B2_id_highestPt = i+1;
-	}
-	else {
-	  lightjet_ids.push_back(i+1);
-	}
+    for (unsigned int i =0; i<event.jets->size(); i++) {
+      if(DeepjetMedium(event.jets->at(i),event)) {
+	Ndeepjet_med++;
+	if(Ndeepjet_med == 1) B1_id_highestPt = i+1;
+	if(Ndeepjet_med == 2) B2_id_highestPt = i+1;
       }
+      else {
+	lightjet_ids.push_back(i+1);
+      }
+    }
 
-      int Q1_id_highestPt=lightjet_ids[0];
-      int Q2_id_highestPt=lightjet_ids[1];
-      int Q1_id_lowestPt=lightjet_ids[lightjet_ids.size()-2];
-      int Q2_id_lowestPt=lightjet_ids[lightjet_ids.size()-1];
+    int Q1_id_highestPt=lightjet_ids[0];
+    int Q2_id_highestPt=lightjet_ids[1];
+    int Q1_id_lowestPt=lightjet_ids[lightjet_ids.size()-2];
+    int Q2_id_lowestPt=lightjet_ids[lightjet_ids.size()-1];
 
     
-      fillJetIdMatching(B1_id_highestPt, B1_id_true, B2_id_true, b1_correct_highestPt, weight);
-      fillJetIdMatching(B2_id_highestPt, B1_id_true, B2_id_true, b2_correct_highestPt, weight);
-      fillJetIdMatching2p(B1_id_highestPt, B2_id_highestPt, B1_id_true, B2_id_true, Hbb_correct_highestPt, weight);
+    fillJetIdMatching(B1_id_highestPt, B1_id_true, B2_id_true, b1_correct_highestPt, weight);
+    fillJetIdMatching(B2_id_highestPt, B1_id_true, B2_id_true, b2_correct_highestPt, weight);
+    fillJetIdMatching2p(B1_id_highestPt, B2_id_highestPt, B1_id_true, B2_id_true, Hbb_correct_highestPt, weight);
 
-      fillJetIdMatching(Q1_id_highestPt, Q1_id_true, Q2_id_true, q1_correct_highestPt, weight);
-      fillJetIdMatching(Q2_id_highestPt, Q1_id_true, Q2_id_true, q2_correct_highestPt, weight);
-      fillJetIdMatching2p(Q1_id_highestPt, Q2_id_highestPt, Q1_id_true, Q2_id_true, WHad_correct_highestPt, weight);
-      fillJetIdMatching(Q1_id_lowestPt, Q1_id_true, Q2_id_true, q1_correct_lowestPt, weight);
-      fillJetIdMatching(Q2_id_lowestPt, Q1_id_true, Q2_id_true, q2_correct_lowestPt, weight);
-      fillJetIdMatching2p(Q1_id_lowestPt, Q2_id_lowestPt, Q1_id_true, Q2_id_true, WHad_correct_lowestPt, weight);
+    fillJetIdMatching(Q1_id_highestPt, Q1_id_true, Q2_id_true, q1_correct_highestPt, weight);
+    fillJetIdMatching(Q2_id_highestPt, Q1_id_true, Q2_id_true, q2_correct_highestPt, weight);
+    fillJetIdMatching2p(Q1_id_highestPt, Q2_id_highestPt, Q1_id_true, Q2_id_true, WHad_correct_highestPt, weight);
+    fillJetIdMatching(Q1_id_lowestPt, Q1_id_true, Q2_id_true, q1_correct_lowestPt, weight);
+    fillJetIdMatching(Q2_id_lowestPt, Q1_id_true, Q2_id_true, q2_correct_lowestPt, weight);
+    fillJetIdMatching2p(Q1_id_lowestPt, Q2_id_lowestPt, Q1_id_true, Q2_id_true, WHad_correct_lowestPt, weight);
 
-    }
+  }
 
 }
 

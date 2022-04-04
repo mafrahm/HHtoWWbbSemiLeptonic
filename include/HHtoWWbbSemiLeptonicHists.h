@@ -57,10 +57,14 @@ namespace uhh2examples {
     TH1F *MH_WW, *CHI2_H_WW, *MH_WW_simple;
     TH1F *MH_WW_rebin, *MH_WW_simple_rebin;
 
+    TH1F *MH_WW_lessbins, *MH_bb_lessbins;
+    TH1F *MH_WW_rebin2, *MH_bb_rebin2;
+    TH1F *MH_WW_simple_rebin2, *MH_bb_simple_rebin2;
+
     TH1F *MH_bb_limits, *MH_WW_limits;
     TH2F *Mbb_vs_MWW, *Mbb_vs_MWW_limits;
     TH2F *Mbb_vs_MWW_limits1, *Mbb_vs_MWW_limits2, *Mbb_vs_MWW_limits3;
-
+    
     // stuff
     TH1F *sum_event_weights;
     TH1F *N_pv;

@@ -36,10 +36,10 @@ HHtoWWbbSemiLeptonicGenHists::HHtoWWbbSemiLeptonicGenHists(Context & ctx, const 
   book<TH1F>("M_H_b", "M_{Higgs} [GeV] decaying to b", 50, 124.95, 125.05);
   book<TH1F>("M_H_b_reco", "M_{Higgs} [GeV] decaying to b (reco)", 50, 124.95, 125.05);
 
-  M_HH_vs_pt_l = book<TH2F>("M_HH_vs_pt_l", "M_{HH} [GeV] vs p_{T}^{l}", 50,200,600,40,0,200);
-  pt_H_W_vs_pt_H_b = book<TH2F>("pt_H_W_vs_pt_H_b", "p_{T}^{H_W} [GeV] vs p_{T}^{H_b} [GeV]", 50, 0, 500, 50, 0, 500);
-  M_H_W_vs_M_H_b = book<TH2F>("M_H_W_vs_M_H_b", "M_{H_W} [GeV] vs M_{H_b} [GeV]", 50, 124.8, 125.2, 50, 124.8, 125.2);
-  deltaR_HH_vs_pt_H_W = book<TH2F>("deltaR_HH_vs_pt_H_W", "#Delta R_{HH} vs p_{T}^{H_W} [GeV]", 50, 0, 5, 50, 0, 500);
+  //M_HH_vs_pt_l = book<TH2F>("M_HH_vs_pt_l", "M_{HH} [GeV] vs p_{T}^{l}", 50,200,600,40,0,200);
+  pt_H_W_vs_pt_H_b = book<TH2F>("pt_H_W vs pt_H_b", "p_{T}^{H_W} [GeV] vs p_{T}^{H_b} [GeV]", 50, 0, 500, 50, 0, 500);
+  M_H_W_vs_M_H_b = book<TH2F>("M_H_W vs M_H_b", "M_{H_W} [GeV] vs M_{H_b} [GeV]", 50, 124.8, 125.2, 50, 124.8, 125.2);
+  deltaR_HH_vs_pt_H_W = book<TH2F>("deltaR_HH vs pt_H_W", "#Delta R_{HH} vs p_{T}^{H_W} [GeV]", 50, 0, 5, 50, 0, 500);
 
   // W's
   book<TH1F>("pt_WLep", "p_{T}^{WLep} [GeV]", 50, 0, 500);
@@ -55,9 +55,9 @@ HHtoWWbbSemiLeptonicGenHists::HHtoWWbbSemiLeptonicGenHists(Context & ctx, const 
   book<TH1F>("M_WLep", "M_{WLep} [GeV]", 80, 0, 100);
   book<TH1F>("M_WHad", "M_{WHad} [GeV]", 80, 0, 100);
 
-  pt_WLep_vs_pt_WHad = book<TH2F>("pt_WLep_vs_pt_WHad", "p_{T}_{WLep} [GeV] vs p_{T}_{WHad} [GeV]", 50, 0, 500, 50, 0, 500);
-  M_WLep_vs_M_WHad = book<TH2F>("M_WLep_vs_M_WHad", "M_{WLep} [GeV] vs M_{WHad} [GeV]", 80, 0, 100, 80, 0, 100);
-  deltaR_WW_vs_pt_WLep = book<TH2F>("deltaR_WW_vs_pt_WLep", "#Delta R_{WW} vs p_{T}^{WLep} [GeV]", 50, 0, 5, 50, 0, 500);
+  pt_WLep_vs_pt_WHad = book<TH2F>("pt_WLep vs pt_WHad", "p_{T}_{WLep} [GeV] vs p_{T}_{WHad} [GeV]", 50, 0, 500, 50, 0, 500);
+  M_WLep_vs_M_WHad = book<TH2F>("M_WLep vs M_WHad", "M_{WLep} [GeV] vs M_{WHad} [GeV]", 80, 0, 100, 80, 0, 100);
+  deltaR_WW_vs_pt_WLep = book<TH2F>("deltaR_WW vs pt_WLep", "#Delta R_{WW} vs p_{T}^{WLep} [GeV]", 50, 0, 5, 50, 0, 500);
 
 
   // W daughters
@@ -69,8 +69,8 @@ HHtoWWbbSemiLeptonicGenHists::HHtoWWbbSemiLeptonicGenHists(Context & ctx, const 
   book<TH1F>("pt_l", "p_{T}^{lepton} [GeV]", 50, 0, 200);
   book<TH1F>("pt_n", "p_{T}^{neutrino} [GeV]", 50, 0, 200);
 
-  pt_q1_vs_pt_q2 = book<TH2F>("pt_q1_vs_pt_q2", "p_{T}^{q1} [GeV] vs p_{T}^{q2} [GeV]", 50, 0, 500, 50, 0, 500);
-  eta_q1_vs_eta_q2 = book<TH2F>("eta_q1_vs_eta_q2", "#eta^{q1} [GeV] vs #eta^{q2} [GeV]", 50, -5, 5, 50, -5, 5);
+  pt_q1_vs_pt_q2 = book<TH2F>("pt_q1 vs pt_q2", "p_{T}^{q1} [GeV] vs p_{T}^{q2} [GeV]", 50, 0, 500, 50, 0, 500);
+  eta_q1_vs_eta_q2 = book<TH2F>("eta_q1 vs eta_q2", "#eta^{q1} [GeV] vs #eta^{q2} [GeV]", 50, -5, 5, 50, -5, 5);
 
 
   book<TH1F>("eta_q1", "#eta^{q1} [GeV]", 50, -5, 5);
@@ -101,9 +101,9 @@ HHtoWWbbSemiLeptonicGenHists::HHtoWWbbSemiLeptonicGenHists(Context & ctx, const 
 
 
   
-  pt_b1_vs_pt_b2 = book<TH2F>("pt_b1_vs_pt_b2", "p_{T}^{b1} [GeV] vs p_{T}^{b2} [GeV]", 50, 0, 500, 50, 0, 500);
-  M_b1_vs_M_b2 = book<TH2F>("M_b1_vs_M_b2", "M^{b1} [GeV] vs M^{b2} [GeV]", 50, 4.6, 5.2, 50, 4.6, 5.2);
-  deltaR_bb_vs_pt_b1 = book<TH2F>("deltaR_bb_vs_pt_b1", "#Delta R^{bb} vs p_{T}^{b1} [GeV]", 50, 0, 5, 50, 0, 500);
+  pt_b1_vs_pt_b2 = book<TH2F>("pt_b1 vs pt_b2", "p_{T}^{b1} [GeV] vs p_{T}^{b2} [GeV]", 50, 0, 500, 50, 0, 500);
+  M_b1_vs_M_b2 = book<TH2F>("M_b1 vs M_b2", "M^{b1} [GeV] vs M^{b2} [GeV]", 50, 4.6, 5.2, 50, 4.6, 5.2);
+  deltaR_bb_vs_pt_b1 = book<TH2F>("deltaR_bb vs pt_b1", "#Delta R^{bb} vs p_{T}^{b1} [GeV]", 50, 0, 5, 50, 0, 500);
 
 
 }
@@ -165,7 +165,7 @@ void HHtoWWbbSemiLeptonicGenHists::fill(const Event & event){
   hist("deltaPhi HH")->Fill(dphi_HH, weight);
   hist("deltaEta HH")->Fill(deta_HH, weight);
 
-  M_HH_vs_pt_l->Fill(m_HH, ChargedLepton.pt(), weight);
+  //M_HH_vs_pt_l->Fill(m_HH, ChargedLepton.pt(), weight);
   pt_H_W_vs_pt_H_b->Fill(Higgs_W.pt(), Higgs_b.pt(), weight);
   M_H_W_vs_M_H_b->Fill(Higgs_W.M(), Higgs_W.M(), weight);
   deltaR_HH_vs_pt_H_W->Fill(dr_HH, Higgs_W.pt(), weight);
