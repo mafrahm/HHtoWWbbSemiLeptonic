@@ -78,14 +78,17 @@ def get_lines_datacard_processes(varcat, nodes, backgrounds):
 
 
 
-def get_lines_datacard_systematics(systematics, nodes, backgrounds):
+def get_lines_datacard_systematics(systematics, nodes, backgrounds, year):
     lines = []
     lines.append('# SYSTEMATICS')
     for syst in systematics:
         if not syst in processes_per_systematic.keys():
             raise RuntimeError('Systematic %s not in constant dictionaries.' % (syst))
         print 'syst: %s' % (syst)
-        line = syst + '  ' + pdf_per_systematic[syst] + '  '
+        if(correlateYears[syst]):
+            line = syst + '  ' + pdf_per_systematic[syst] + '  '
+        else:
+            line = syst + str(year) + '  ' + pdf_per_systematic[syst] + '  '
         # first for signal:
         for node in nodes:
             signal = signaltag.replace('X', node)
@@ -97,13 +100,13 @@ def get_lines_datacard_systematics(systematics, nodes, backgrounds):
                 line += str(value_per_systematic_and_process[syst,signal]) + '  '
             else:
                 line += '-  '
-            for bkg in backgrounds:
-                if processes_per_systematic[syst] == 'all':
-                    line += str(value_per_systematic_and_process[syst,'all']) + '  '
-                elif bkg in processes_per_systematic[syst]:
-                    line += str(value_per_systematic_and_process[syst,bkg]) + '  '
-                else:
-                    line += '-  '
+        for bkg in backgrounds:
+            if processes_per_systematic[syst] == 'all':
+                line += str(value_per_systematic_and_process[syst,'all']) + '  '
+            elif bkg in processes_per_systematic[syst]:
+                line += str(value_per_systematic_and_process[syst,bkg]) + '  '
+            else:
+                line += '-  '
 
         lines.append(line)
 
@@ -117,7 +120,7 @@ def get_lines_datacard_statistics():
 
 
 
-def create_datacard_inference(year, nodes, channel, backgrounds, systematics, path_datacards, rootfilename, AutoMCStats):
+def create_datacard_inference(year, nodes, channel, backgrounds, systematics, path_datacards, rootfilename, AutoMCStats, cardnametag):
     print 'Creating datacard for %i nodes in channel %s. ' % (len(nodes), channel)
     if not os.path.exists(path_datacards):
         raise RuntimeError('Path %s does not exist.' % (path_datacards))
@@ -126,7 +129,7 @@ def create_datacard_inference(year, nodes, channel, backgrounds, systematics, pa
         raise RuntimeError('Rootfile %s does not exist.' % (path_datacards + '/' + rootfilename))
     # else: print 'rootfile containing histograms: %s' % (path_datacards + '/' + rootfilename)
 
-    filename_datacard = channel + '_allNodes' + '.txt' # + '_node_'
+    filename_datacard = cardnametag + channel + '.txt' # + '_node_'
     # print 'filename: %s ' % (filename_datacard)
     # print 'going to create file: %s' % (path_datacards + '/' + filename_datacard)
     varcat = channel
@@ -138,7 +141,7 @@ def create_datacard_inference(year, nodes, channel, backgrounds, systematics, pa
     lines_channels = get_lines_datacard_channels(varcat) + separator
     lines_input = get_lines_datacard_input(rootfilename, year)
     lines_processes = get_lines_datacard_processes(varcat, nodes, backgrounds)
-    lines_systematics = get_lines_datacard_systematics(systematics, nodes, backgrounds)
+    lines_systematics = get_lines_datacard_systematics(systematics, nodes, backgrounds, year)
     lines_statistics = get_lines_datacard_statistics()
 
     

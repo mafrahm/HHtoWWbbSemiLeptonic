@@ -35,19 +35,21 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 
   //vector<TString> systematics = {"NOMINAL"};
   vector<TString> systematics = {
-    "nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", "pdf",
-    "MuR_TTbar", "MuR_DYJets", "MuR_WJets", "MuR_SingleTop", "MuR_Diboson", "MuR_TTV",
-    "MuF_TTbar", "MuF_DYJets", "MuF_WJets", "MuF_SingleTop", "MuF_Diboson", "MuF_TTV",
-    "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_SingleTop", "scale_Diboson", "scale_TTV",
-    "pdf_TTbar", "pdf_DYJets", "pdf_WJets", "pdf_SingleTop", "pdf_Diboson", "pdf_TTV",
+    "nominal", "muid", "pu", "eleid", "elereco", "muiso", "btag_bc", "btag_udsg", //"pdf",
+    //"MuR_TTbar", "MuR_DYJets", "MuR_WJets", "MuR_Diboson", "MuR_TTV",
+    //"MuF_TTbar", "MuF_DYJets", "MuF_WJets", "MuF_Diboson", "MuF_TTV",
+    "scale_TTbar", "scale_DYJets", "scale_WJets", "scale_Diboson", "scale_TTV",
+    "pdf_TTbar", "pdf_DYJets", "pdf_WJets", "pdf_Diboson", "pdf_TTV",
     "MuR_HH", "MuF_HH", "scale_HH", "pdf_HH",
+    //"scale_SingleTop", "pdf_SingleTop",
+    //"MuR_SingleTop", "MuF_SingleTop",
     //"JEC", "JER"
   };
   vector<TString> syst_shift = {"up", "down"};
   vector<TString> syst_shift_combine = {"Up", "Down"};
   vector<TString> channel_tags = {"much", "ech"};
   vector<TString> region_tags = {"sr", "ttcr", "stcr", "wdycr"/*, "qcdcr"*/};
-  vector<TString> samples_base = {"HHtoWWbbSemiLeptonic_SM", "HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"};
+  vector<TString> samples_base = {"HHtoWWbbSL_cHHH0", "HHtoWWbbSL_cHHH1", "HHtoWWbbSL_cHHH2p45", "HHtoWWbbSL_cHHH5", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets", "DATA"};
 
   TFile* f_out = new TFile(AnalysisTool::combineInputName_allShape, "RECREATE");
 
@@ -143,11 +145,17 @@ void AnalysisTool::ProduceCombineHistogramsNN(bool use_data){
 	      proc += "_kt_1_hbbhww";
 	    }
 	    TString histname_out = region_tags[region] + channel_tags[channel] + "__" + proc + "_" + AnalysisTool::yeartag;
-	    if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
+	    //if(syst != "nominal") histname_out += "__" + syst + syst_shift_combine[j];
+	    if(syst != "nominal"){
+	      if(syst.Contains("scale") || syst.Contains("pdf") || syst.Contains("MuR") || syst.Contains("MuF")) histname_out += "__" + syst + syst_shift_combine[j]; // scale, pdf are correlated between years
+	      else histname_out += "__" + syst + AnalysisTool::year + syst_shift_combine[j];
+	      }
 	    // e.g. histname_out = srmuch_TTbar_2016v3__scale_TTbarUp
 	    if(debug) cout << "histname_out: " << histname_out << endl;
 
 	    h_out->SetName(histname_out);
+	    //h_out->Scale(300/137); // RUN2+3
+	    //h_out->Scale(3000/137); // HL LHC
 	    f_out->cd();
 	    h_out->Write();
 	    f_in->Close();
@@ -172,6 +180,7 @@ void AnalysisTool::ConvertShapeToRate(){
 
   // map: systematic to vector of processes that are supposted to be flattened
   //TString channels = "srmuch,srech";
+  //TString systematics = "JEC,JER,pu";
   TString systematics = "JEC,JER,pu";
   TString processes = "ggHH_kl_0_kt_1_hbbhww,ggHH_kl_1_kt_1_hbbhww,ggHH_kl_2p45_kt_1_hbbhww,ggHH_kl_5_kt_1_hbbhww,SingleTop,TTbar,DYJets,Diboson,QCD,TTV,WJets";
 
@@ -180,7 +189,8 @@ void AnalysisTool::ConvertShapeToRate(){
   //vector<TString> processes = {"ggHH_kl_0_kt_1_hbbhww", "ggHH_kl_1_kt_1_hbbhww", "ggHH_kl_2p45_kt_1_hbbhww", "ggHH_kl_5_kt_1_hbbhww", "SingleTop", "TTbar", "DYJets", "Diboson", "QCD", "TTV", "WJets"};
 
   map<TString,TString> syst_to_procs = {
-    {"JEC", "DYJets,Diboson,TTV,QCD,ggHH_kl_0_kt_1_hbbhww,ggHH_kl_1_kt_1_hbbhww,ggHH_kl_2p45_kt_1_hbbhww,ggHH_kl_5_kt_1_hbbhww"},
+    //{"JEC", "DYJets,Diboson,TTV,QCD,ggHH_kl_0_kt_1_hbbhww,ggHH_kl_1_kt_1_hbbhww,ggHH_kl_2p45_kt_1_hbbhww,ggHH_kl_5_kt_1_hbbhww"},
+    {"JEC", "ggHH_kl_0_kt_1_hbbhww,ggHH_kl_1_kt_1_hbbhww,ggHH_kl_2p45_kt_1_hbbhww,ggHH_kl_5_kt_1_hbbhww,SingleTop,DYJets,Diboson,QCD,TTV,WJets"},
     {"JER", processes},
     {"pu", processes}
   };
@@ -215,7 +225,7 @@ void AnalysisTool::ConvertShapeToRate(){
       if(histnamePieces->GetEntriesFast() > 2) systname = ((TObjString*)histnamePieces->At(2))-> GetString();
       systname.ReplaceAll("Up",  "");
       systname.ReplaceAll("Down","");
-
+      systname.ReplaceAll(AnalysisTool::year,"");
 	
       if(/*!channels.Contains(channelname) ||*/ !systematics.Contains(systname)) {
 	// this channel/syst should be shape: just copy the existing histogram
@@ -237,70 +247,56 @@ void AnalysisTool::ConvertShapeToRate(){
 	    h_out->Write();
 	  }
 	  else{
-	    // these histograms are supposed to be rate: let's change them!
 	    cout << "rate histname: " << histname << endl;
+	    if(histname.Contains("Down")) continue; // skip "Down", do both together for "Up"
+	    // these histograms are supposed to be rate: let's change them!
 	    TString histname_nom = channelname + "__" + procname + "_" + yeartag;
-	    TH1F* h_out = (TH1F*)infile->Get(histname_nom);
-	    double int_nom = h_out->Integral();
-	    double int_var = ((TH1F*)infile->Get(histname))->Integral();
-	    
-	    h_out->Scale(int_var/int_nom);
-	    h_out->SetName(histname);
-	    cout << "int_var/int_nom: " << int_var/int_nom << endl; 
-
-	    outfile->cd();
-	    h_out->Write();
-	  }
-	}
-      }
-    }
-  }
-}
-
-
-
-
-	/*
-	for(TString ch: channels) {
-	  if(debug) cout << "========================== channel: " << ch << endl;
-	  for(it=syst_to_procs.begin(); it != syst_to_procs.end(); it++) {
-	    TString syst = it->first;
-	    if(debug) cout << "================ syst: " << syst << endl;
-	    vector<TString> procs = it->second;
-	    for(TString proc: procs) {
-	      if(debug) cout << "====== proc: " << proc << endl;
-	      TString histname_nom = ch + "__" + proc + "_" + yeartag;
-	      TString histname_up = histname_nom + "__" + syst + "Up";
-	      TString histname_down = histname_nom + "__" + syst + "Down";
-	
-	      TH1F* h_nom = (TH1F*)infile->Get(histname_nom);
-
-	      double int_nom = h_nom->Integral();
-	      double int_up = ((TH1F*)infile->Get(histname_up))->Integral();
-	      double int_down = ((TH1F*)infile->Get(histname_down))->Integral();
-
-	      TH1F* h_up = (TH1F*)h_nom->Clone();
-	      h_up->Scale(int_up/int_nom);
-	      h_up->SetName(histname_up);
-	      TH1F* h_down = (TH1F*)h_nom->Clone();
-	      h_down->Scale(int_down/int_nom);
-	      h_down->SetName(histname_down);
-
-	      if(debug){
-		cout << "int_up   before: " << int_up << ", after: " << h_up->Integral() << endl;
-		cout << "int_down before: " << int_down << ", after: " << h_down->Integral() << endl;
-	      }
-
-	      outfile->cd();
-	      //file->Delete(histname_up);
-	      //file->Delete(histname_down);
-	      h_up->Write();
-	      h_down->Write();
+	    TH1F* h_up = (TH1F*)infile->Get(histname_nom)->Clone();
+	    TH1F* h_down = (TH1F*)infile->Get(histname_nom)->Clone();
+	    double int_nom = h_up->Integral();
+	    //double int_var = ((TH1F*)infile->Get(histname))->Integral();
+	    TString histname_up = histname;
+	    double int_up = ((TH1F*)infile->Get(histname_up))->Integral();
+	    TString histname_down = histname;
+	    histname_down.ReplaceAll("Up","Down");
+	    double int_down = ((TH1F*)infile->Get(histname_down))->Integral();
+	    cout << "int_nom: " << int_nom << endl;
+	    if(histname.Contains("SingleTop_2016v3__JER")){
+	      cout << "--------------------" << endl;
+	      cout << int_up << ", " << int_down << endl;
 	    }
+	    // if both are greater or both are smaller than nom -> symmetrize!
+	    if(int_up >= int_nom && int_down >= int_nom) {
+	      if(int_up>int_down) int_down = 2*int_nom - int_up;
+	      else if (int_down>int_up) int_up = 2*int_nom - int_down;
+	    }
+	    else if(int_up <= int_nom && int_down <= int_nom) {
+	      if(int_up<int_down) int_down = 2*int_nom - int_up;
+	      else if (int_down<int_up) int_up = 2*int_nom - int_down;
+	    }
+	    if(histname.Contains("SingleTop_2016v3__JER")){
+	      cout << int_up << ", " << int_down << endl;
+	    }
+
+	    // h_out->Scale(int_var/int_nom);
+	    // h_out->SetName(histname);
+	    // cout << "int_var/int_nom: " << int_var/int_nom << endl; 
+
+	    h_up->Scale(int_up/int_nom);
+	    h_up->SetName(histname_up);
+	    //cout << "int_up/int_nom: " << int_up/int_nom << endl; 
+	    outfile->cd();
+	    h_up->Write();
+	    h_down->Scale(int_down/int_nom);
+	    h_down->SetName(histname_down);
+	    //cout << "int_down/int_nom: " << int_down/int_nom << endl; 
+	    outfile->cd();
+	    h_down->Write();
 	  }
 	}
       }
     }
   }
+  infile->Close();
+  outfile->Close();
 }
-*/
