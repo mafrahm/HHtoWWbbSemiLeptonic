@@ -13,9 +13,12 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
 
   const TString file_name_shapes = AnalysisTool::combineInputName_rateShape;
   //const TString file_name_shapes = AnalysisTool::combine_path + "input/NN_combine_histograms_" + AnalysisTool::year + ".root";
-  const TString file_name_postfit = AnalysisTool::combine_path + "output/fitDiagnostics" + signaltag + ".root";
+  //const TString file_name_postfit = AnalysisTool::combine_path + "output/fitDiagnostics" + signaltag + ".root";
+  //const TString file_name_postfit = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/inference/data/old_store_jan12/FitDiagnostics/HHModelPinv__model_default/fullsyst_bkgX8_srech__fullsyst_bkgX8_srmuch__fullsyst_bkgX8_stcrech__fullsyst_bkgX8_stcrmuch__fullsyst_bkgX8_ttcrech__fullsyst_bkgX8_ttcrmuch__fullsyst_bkgX8_wdycrech__fullsyst_bkgX8_wdycrmuch/m125.0/poi_r/fitDiagnostics_2016/fitdiagnostics__poi_r__params_r1.0_r_gghh1.0_r_qqhh1.0_kl1.0_kt1.0_CV1.0_C2V1.0__withBOnly.root"; // Inference, 2016
+  const TString file_name_postfit = "/nfs/dust/cms/user/frahmmat/CMSSW_10_2_X_v2/CMSSW_10_2_17/src/UHH2/HHtoWWbbSemiLeptonic/inference/data/old_store_MasterThesis/FitDiagnostics/HHModelPinv__model_default/s1_2016srech__s1_2016srmuch__s1_2016stcrech__s1_2016stcrmuch__s1_2016ttcrech__s1_2016ttcrmuch__s1_2016wdycrech__s1_2016wdycrmuch/m125.0/poi_r/v7_2016/fitdiagnostics__poi_r__params_r1.0_r_gghh1.0_r_qqhh1.0_kl1.0_kt1.0_CV1.0_C2V1.0__withBOnly.root"; // new Interference, 2016
   cout << file_name_postfit << endl;
 
+  //TString prefix = "shapes_fit_b/";
   TString prefix = "shapes_fit_b/";
   if(do_prefit) prefix = "shapes_prefit/";
 
@@ -28,6 +31,7 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
 
   map<TString, TString>::iterator it;
   for(it=AnalysisTool::channel_to_chNumber.begin(); it!=AnalysisTool::channel_to_chNumber.end(); it++) {
+    cout << "Line: " << __LINE__ << endl;
     TString channel = it->first;
     TString ch_name = it->second;
     // binning
@@ -162,7 +166,8 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     h_err->SetLineWidth(0);
     h_err->SetFillStyle(3005);
     h_bkg->Draw();
-    h_bkg->GetYaxis()->SetTitle("Events/bin");
+    h_bkg->GetYaxis()->SetTitle("Events / bin");
+    //h_bkg->GetYaxis()->SetTitle("Events");
     h_bkg->GetXaxis()->SetLabelSize(h_bkg->GetXaxis()->GetLabelSize()/0.65);
     h_bkg->GetYaxis()->SetLabelSize(h_bkg->GetYaxis()->GetLabelSize()/0.65);
     h_bkg->GetXaxis()->SetTitleSize(h_bkg->GetXaxis()->GetTitleSize()/0.65);
@@ -172,7 +177,7 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     h_signal->Draw("HIST SAME");
     h_data->Draw("PZSAME");
 
-    TLegend* leg = new TLegend(0.55,0.5,0.95,0.9);
+    TLegend* leg = new TLegend(0.68,0.50,0.97,0.89);
     leg->SetBorderSize(0);
     leg->SetFillStyle(0);
     leg->AddEntry(h_data, "Data", "pl");
@@ -181,9 +186,49 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     }
     leg->AddEntry(h_err, "tot. uncertainty", "f");
     leg->AddEntry(h_signal, "signal", "l");
-    leg->Draw();
+    if(channel=="ch1" || channel=="ch5" || channel.Contains("sr")) leg->Draw();
 
+    
+    TString infotext = "35.9 fb^{-1} (13 TeV)";
+    TLatex *text1 = new TLatex(3.5, 24, infotext);
+    text1->SetNDC();
+    text1->SetTextAlign(33);
+    text1->SetX(0.95);
+    text1->SetTextFont(42);
+    text1->SetTextSize(0.06);
+    text1->SetY(0.99);
+    text1->Draw("SAME");
     //draw_texts(pad_top,"CMS","Private Work");
+    TString cmstext = "CMS";
+    TLatex *text2 = new TLatex(3.5, 24, cmstext);
+    text2->SetNDC();
+    text2->SetTextAlign(13);
+    text2->SetX(0.23);
+    text2->SetTextFont(62);
+    text2->SetTextSize(0.08);
+    text2->SetY(0.87);
+    text2->Draw();
+
+    //TString preltext = "Private work";
+    TString preltext = "Work in progress";
+    TLatex *text3 = new TLatex(3.5, 24, preltext);
+    text3->SetNDC();
+    text3->SetTextAlign(13);
+    text3->SetX(0.23);
+    text3->SetTextFont(52);
+    text3->SetTextSize(0.06);
+    text3->SetY(0.73);
+    text3->Draw();
+    // Simulation:
+    TLatex *text4 = new TLatex(3.5, 24, "Simulation");
+    text4->SetNDC();
+    text4->SetTextAlign(13);
+    text4->SetX(0.23);
+    text4->SetTextFont(52);
+    text4->SetTextSize(0.06);
+    text4->SetY(0.795);
+    //text4->SetY(0.87);
+    text4->Draw();
 
     gPad->RedrawAxis();
 
@@ -193,7 +238,7 @@ void AnalysisTool::PlotPostfitDistribution(bool do_prefit, bool scale_to_width) 
     g_ratio_err_tot->GetXaxis()->SetLimits(h_err->GetXaxis()->GetXmin(), h_err->GetXaxis()->GetXmax());
     g_ratio_err_stat->SetFillColor(920);
     g_ratio_err_tot->SetFillColor(921);
-    g_ratio_err_tot->GetYaxis()->SetRangeUser(0.35, 1.65);
+    g_ratio_err_tot->GetYaxis()->SetRangeUser(0.75, 1.25);
     g_ratio_err_tot->GetYaxis()->CenterTitle();
     g_ratio_err_tot->GetYaxis()->SetTitle("data/bkg.");
     //g_ratio_err_tot->GetXaxis()->SetTitle("output node "+ch_name);

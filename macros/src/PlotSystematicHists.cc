@@ -23,7 +23,60 @@
 
 using namespace std;
 
-void AnalysisTool::PlotSystematicHists(bool combine_hist){
+void DrawCMSText_systHists(bool bottom) {
+  // Lumi text
+  TString infotext = "35.9 fb^{-1} (13 TeV)";
+  TLatex *text1 = new TLatex(3.5, 24, infotext);
+  text1->SetNDC();
+  text1->SetTextAlign(33);
+  text1->SetX(0.95);
+  text1->SetTextFont(42);
+  text1->SetTextSize(0.06);
+  text1->SetY(0.985);
+  text1->Draw("SAME");
+  // CMS Text
+  bool right = false; // CMS text on the right side
+  TLatex *text2 = new TLatex(3.5, 24, "CMS");
+  text2->SetNDC();
+  text2->SetTextAlign(13);
+  text2->SetX(0.23);
+  if(right) text2->SetX(0.7);
+  text2->SetTextFont(62);
+  text2->SetTextSize(0.08);
+  text2->SetY(0.87);
+  if(bottom) text2->SetY(0.27);
+  //text2->SetY(0.92);
+  text2->Draw();
+
+  TLatex *text3 = new TLatex(3.5, 24, "Work in progress");
+  //TLatex *text3 = new TLatex(3.5, 24, "Private work");
+  text3->SetNDC();
+  text3->SetTextAlign(13);
+  text3->SetX(0.23);
+  if(right) text3->SetX(0.7);
+  text3->SetTextFont(52);
+  text3->SetTextSize(0.06);
+  text3->SetY(0.68);
+  if(bottom) text3->SetY(0.13);
+  //text3->SetY(0.83);
+  text3->Draw();
+
+  // Simulation:
+  TLatex *text4 = new TLatex(3.5, 24, "Simulation");
+  text4->SetNDC();
+  text4->SetTextAlign(13);
+  text4->SetX(0.23);
+  if(right) text4->SetX(0.7);
+  text4->SetTextFont(52);
+  text4->SetTextSize(0.06);
+  text4->SetY(0.72);
+  if(bottom) text4->SetY(0.195);
+  //text4->SetY(0.87);
+  text4->Draw();
+}
+
+
+void AnalysisTool::PlotSystematicHists(bool rateShape, bool combine_hist){
   cout << "PlotSystematicHists: " << endl;
   gStyle->SetOptStat(0);
   gErrorIgnoreLevel = 2002;
@@ -40,8 +93,8 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
 
 
   TFile* infile = new TFile(AnalysisTool::combineInputName_allShape, "READ");
-  //TFile* infile = new TFile(AnalysisTool::combineInputName_rateShape, "READ");
-  if(combine_hist==false) infile = new TFile(AnalysisTool::histsForSyst_name, "READ");
+  if(rateShape) infile = new TFile(AnalysisTool::combineInputName_rateShape, "READ");
+  if(!combine_hist) infile = new TFile(AnalysisTool::histsForSyst_name, "READ");
   // Get histograms (only TH1), tokenize them to get all vars, processes, systs
   // ==========================================================================
 
@@ -189,18 +242,22 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
 	// some custom Range settings
 	double range = .25; // Range is always set symmetric
 
-	
-	if(syst=="JEC" || syst.Contains("scale") || syst=="btag_bc" || syst=="eleid") range=.10;
-	if(syst.Contains("MuR") || syst.Contains("MuF") || syst.Contains("pdf") || syst=="btag_udsg" || syst=="elereco") range=.05;
-	if(syst.Contains("JER") || syst=="muid" || syst=="muiso" || syst=="pu") range=.02;
+	if(syst.Contains("JEC") || syst.Contains("scale") || syst.Contains("btag_bc") || syst.Contains("eleid")) range=.12;
+	if(syst.Contains("MuR") || syst.Contains("MuF") || syst.Contains("pdf") || syst.Contains("btag_udsg") || syst.Contains("elereco")) range=.05;
+	if(syst.Contains("JER")) range =.04;
+	if(syst.Contains("muid") || syst.Contains("muiso") || syst.Contains("pu")) range=.02;
 
-	if(syst=="JER" && proc.Contains("QCD")) range =.05;
-	if(syst=="MuR_WJets" || syst=="MuF_WJets" || syst=="MuF_DYJets") range =.1;
-	if(syst=="scale_WJets") range =.2;
-	if(syst=="pdf_HH") range=.001;
-	if(syst=="eleid" && proc.Contains("QCD")) range =.2;
-	//if(syst=="pu" && (proc.Contains("Diboson") || proc.Contains("QCD"))) range =.2;
+	if(syst.Contains("JER") && proc.Contains("QCD")) range =.05;
+	if(syst.Contains("MuR_WJets") || syst.Contains("MuF_WJets") || syst.Contains("MuF_DYJets")) range =.1;
+	if(syst.Contains("scale_WJets")) range =.2;
+	if(syst.Contains("pdf_HH")) range=.001;
+	if(syst.Contains("eleid") && proc.Contains("QCD")) range =.2;
+	//if(syst.Contains("pu") && (proc.Contains("Diboson") || proc.Contains("QCD"))) range =.2;
+
+	if(proc.Contains("TTbar") && (syst.Contains("scale") || syst.Contains("pdf") || syst.Contains("btag_udsg"))) range = .03;
+
 	h_axis->GetYaxis()->SetRangeUser(1-range,1+range);
+
 
         TCanvas* c = new TCanvas("c", "systematic plots", 400, 400);
         TPad* pad_top = SetupRatioPadTop();
@@ -234,15 +291,7 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
         line1->Draw("SAME");
 
         pad_top->cd();
-        TString infotext = "35.9 fb^{-1} (13 TeV)";
-        TLatex *text1 = new TLatex(3.5, 24, infotext);
-        text1->SetNDC();
-        text1->SetTextAlign(33);
-        text1->SetX(0.94);
-        text1->SetTextFont(43);
-        text1->SetTextSize(16);
-        text1->SetY(0.995);
-        text1->Draw("SAME");
+        DrawCMSText_systHists(true);
 
         TString sampletext = proc;
 	if(proc.Contains("HH")) {
@@ -264,11 +313,12 @@ void AnalysisTool::PlotSystematicHists(bool combine_hist){
         //c->SaveAs(outdir + "png_SystematicHists/" + "SysVars_" + var + "_" + proc + "_" + syst + ".png");
 	if(combine_hist) {
 	  //c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".eps");
-	  c->SaveAs(outdir + "SysVars_" + var + "_" + proc + "_" + syst + ".pdf");
-	  c->SaveAs(outdir + "png/SysVars_" + var + "_" + proc + "_" + syst + ".png");
+	  if(rateShape) c->SaveAs(outdir + "rateShape/SysVarsRateShape_" + var + "_" + proc + "_" + syst + ".pdf");
+	  else          c->SaveAs(outdir + "allShape/SysVarsAllShape_" + var + "_" + proc + "_" + syst + ".pdf");
+
+	  //c->SaveAs(outdir + "png/SysVars_" + var + "_" + proc + "_" + syst + ".png");
 	}
 	else {
-	  //c->SaveAs(outdir + "var/" + var + "_" + proc + "_" + syst + ".eps");
 	  c->SaveAs(outdir + "var/" + var + "_" + proc + "_" + syst + ".pdf");
 
 	}

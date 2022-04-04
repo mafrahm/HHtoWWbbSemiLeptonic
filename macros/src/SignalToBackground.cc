@@ -23,13 +23,13 @@
 
 using namespace std;
 
-// this is my very sloppy script to make efficiency plots
+// this is my very sloppy script to make SigToBkg Plots
 void AnalysisTool::SignalToBackground(TString cuts, TString plotname) {
 
   cout << "hey there, general Kenobi!" << endl;
   cout << "Line: " << __LINE__ << endl;
 
-  TString filename = "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/" + year + "/" + pre_tag + cuts + "/uhh2.AnalysisModuleRunner.";
+  TString filename = "/nfs/dust/cms/user/frahmmat/HHtoWWbbSemiLeptonic/" + year + "/Preselection/" + cuts + "/uhh2.AnalysisModuleRunner.";
   TString tag = "MC."; // no data included
 
   // get signal
@@ -43,8 +43,8 @@ void AnalysisTool::SignalToBackground(TString cuts, TString plotname) {
 
   // get background
   vector<TH1F*> h_backgr;
-  for(unsigned int i=0; i<backgrounds_tag.size(); i++) {
-    TString proc = backgrounds_tag[i];
+  for(unsigned int j=0; j<backgrounds_tag.size(); j++) {
+    TString proc = backgrounds_tag[j];
     TString infilename_backgr = filename + tag + proc + "_" + yeartag + ".root";
     TFile* infile_backgr = new TFile(infilename_backgr);
     TH1F* h_backgr_in = (TH1F*) infile_backgr->Get(plotname);
@@ -68,16 +68,16 @@ void AnalysisTool::SignalToBackground(TString cuts, TString plotname) {
   h_out1->SetAxisRange(10., 100.);
   h_out2->SetAxisRange(10., 100.);
 
-  h_out1->SetYTitle("S/#sqrt{B}");
-  h_out2->SetYTitle("S/B");
+  h_out1->SetYTitle("Signal / #sqrt{Background}");
+  h_out2->SetYTitle("Signal / Background");
 
   if(plotname.Contains("pt_jet")) {
-  h_out1->SetXTitle("p_{T,min}^{Jets}");
-  h_out2->SetXTitle("p_{T,min}^{Jets}");
+    h_out1->SetXTitle("p_{T,min}^{Jets}");
+    h_out2->SetXTitle("p_{T,min}^{Jets}");
   }
   else if(plotname.Contains("pt_mu")) {
-  h_out1->SetXTitle("p_{T,min}^{#mu}");
-  h_out2->SetXTitle("p_{T,min}^{#mu}");
+    h_out1->SetXTitle("p_{T,min}^{#mu}");
+    h_out2->SetXTitle("p_{T,min}^{#mu}");
   }
 
   h_out1->SetTitle("");
@@ -135,20 +135,28 @@ void AnalysisTool::SignalToBackground(TString cuts, TString plotname) {
       B+= h_backgr[j]->Integral(i,n_bins);
     }
     //cout << B << endl;
-    cout << "S/sqrt(B): " << S/sqrt(B) << endl;
+    cout << "Sig / sqrt(BG): " << S/sqrt(B) << endl;
     h_out1->SetBinContent(i, S/sqrt(B));
     h_out2->SetBinContent(i, S/B);
   }
+
+  TObjArray* plotname_pieces = plotname.Tokenize("/");
+
+  TString dirname = ((TObjString*)plotname_pieces->At(0))->GetString();
+  TString varname = ((TObjString*)plotname_pieces->At(1))->GetString();
+
+  TString outfilename = uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/sigToSqrtBackgr_" + dirname + "__" + varname + "__" + year + ".pdf";
+  //TString outfilename = uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/sigToSqrtBackgr_noQCD_" + dirname + "__" + varname + "__" + year + ".pdf";
+
   c1->SetLeftMargin(0.16);
   c1->cd();
   h_out1->Draw("HIST");
-  c1->SaveAs(uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/sigToSqrtBackgr_" + year + "_" + cuts + ".eps");
+  c1->SaveAs(outfilename);
   c1->Clear();
   h_out2->Draw("HIST");
-  c1->SaveAs(uhh2_path + "HHtoWWbbSemiLeptonic/macros/Plots/sigToBackgr_" + year + "_" + cuts + ".eps");
+  outfilename.ReplaceAll("SqrtBackgr", "Backgr");
+  c1->SaveAs(outfilename);
 
 
-  cout << "Line: " << __LINE__ << endl;
-
-
+  cout << "SignaltoBackground: finished! " << endl;
 }
